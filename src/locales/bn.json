@@ -1,5 +1,30 @@
 {
-    "app": {
-        "title": "মা-সাথী"
-    }
+  "app": {
+    "title": "মা সাথী"
+  },
+  "greeting": "হ্যালো, {name}",
+  "user_default": "ব্যবহারকারী",
+  "info_card": {
+    "title": "তথ্য শিরোনামের প্লেসহোল্ডার",
+    "message": "তথ্য বিবরণের স্থানধারক সামগ্রী। গতিশীল তথ্য এখানে প্রদর্শিত হবে।",
+    "know_more": "আরও জানতে চাপুন"
+  },
+  "buttons": {
+    "emergency": "জরুরি সেবা",
+    "reminders": "স্মারক (রিমাইন্ডার)",
+    "information": "তথ্য ও পরামর্শ",
+    "profile": "প্রোফাইল"
+  },
+  "language": {
+    "select": "ভাষা",
+    "en": "English",
+    "bn": "বাংলা (Bengali)"
+  },
+  "profile_settings": {
+    "title": "প্রোফাইল এবং সেটিংস",
+    "personal_info": "ব্যক্তিগত তথ্য",
+    "name_label": "আপনার নাম",
+    "name_placeholder": "আপনার নাম লিখুন",
+    "save_success": "নাম সফলভাবে আপডেট করা হয়েছে"
+  }
 }

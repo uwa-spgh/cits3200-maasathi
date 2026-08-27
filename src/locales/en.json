@@ -1,5 +1,30 @@
 {
   "app": {
     "title": "MaaSathi"
+  },
+  "greeting": "Hello, {name}",
+  "user_default": "User",
+  "info_card": {
+    "title": "Information Title Placeholder",
+    "message": "Information body content placeholder. Dynamic information will be displayed here.",
+    "know_more": "Press to know more"
+  },
+  "buttons": {
+    "emergency": "Emergency",
+    "reminders": "Reminders",
+    "information": "Information",
+    "profile": "Profile"
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "bn": "বাংলা (Bengali)"
+  },
+  "profile_settings": {
+    "title": "Profile & Settings",
+    "personal_info": "Personal Information",
+    "name_label": "Your Name",
+    "name_placeholder": "Enter your name",
+    "save_success": "Name updated successfully"
   }
 }

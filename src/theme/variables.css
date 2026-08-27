@@ -1,0 +1,34 @@
+:root {
+  --color-app-bg: #FBF7F5;
+  --color-card-bg: #EAEAEA;
+  --color-card-text: #1A1A1A;
+  --color-btn-more-bg: #7BC62D;
+  --color-btn-more-text: #000000;
+  --color-emergency-bg: #FF5C5C;
+  --color-emergency-text: #000000;
+  --color-reminders-bg: #F6C945;
+  --color-reminders-text: #000000;
+  --color-information-bg: #7BC62D;
+  --color-information-text: #000000;
+  --color-profile-bg: #33A1DE;
+  --color-profile-text: #000000;
+}
+
+html, body, #app {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: var(--color-app-bg, #FBF7F5);
+}
+
+ion-app {
+  width: 100%;
+  height: 100%;
+  --background: var(--color-app-bg, #FBF7F5);
+  background-color: var(--color-app-bg, #FBF7F5);
+}
+
+ion-content {
+  --background: var(--color-app-bg, #FBF7F5);
+}
