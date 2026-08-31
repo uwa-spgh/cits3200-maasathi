@@ -1,4 +1,5 @@
 import { reactive } from 'vue';
+import { settingsRepo } from '../db/database';
 
 export interface ThemeColors {
   appBg: string;
@@ -127,6 +128,8 @@ export function useTheme() {
     } catch (e) {
       console.error('Failed to save theme to localStorage', e);
     }
+    // Mirror into SQLite so the choice survives WebView storage wipes.
+    void settingsRepo.setJson(STORAGE_KEY, { ...currentTheme });
   };
 
   const applyPreset = (presetKey: PresetKey) => {

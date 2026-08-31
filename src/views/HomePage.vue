@@ -16,15 +16,16 @@
           <h1 class="greeting-text">
             {{ $t('greeting', { name: userName && userName.trim() ? userName : $t('user_default') }) }}
           </h1>
+          <p v-if="statusChip" class="status-chip">{{ statusChip }}</p>
         </div>
 
         <!-- Information Card (Placeholders for dynamic data) -->
         <div class="info-card">
-          <p class="info-intro">{{ infoTitle || $t('info_card.title') }}</p>
+          <p class="info-intro">{{ $t('info_card.title') }}</p>
           <p class="info-body">
-            {{ infoMessage || $t('info_card.message') }}
+            {{ infoMessage }}
           </p>
-          <button class="know-more-btn" @click="handleKnowMore">
+          <button class="know-more-btn" @click="go('WeekInfo')">
             <IonIcon :icon="informationCircleOutline" class="btn-icon" />
             <span>{{ $t('info_card.know_more') }}</span>
           </button>
@@ -35,7 +36,7 @@
           <!-- Emergency Button -->
           <button
             class="tile-btn emergency-tile"
-            @click="handleAction('emergency')"
+            @click="go('Emergency')"
             :aria-label="$t('buttons.emergency')"
           >
             <IonIcon :icon="warningOutline" class="tile-icon" />
@@ -45,7 +46,7 @@
           <!-- Reminders Button -->
           <button
             class="tile-btn reminders-tile"
-            @click="handleAction('reminders')"
+            @click="go('Reminders')"
             :aria-label="$t('buttons.reminders')"
           >
             <IonIcon :icon="timeOutline" class="tile-icon" />
@@ -55,7 +56,7 @@
           <!-- Information Button -->
           <button
             class="tile-btn information-tile"
-            @click="handleAction('information')"
+            @click="go('Information')"
             :aria-label="$t('buttons.information')"
           >
             <IonIcon :icon="informationCircleOutline" class="tile-icon" />
@@ -65,7 +66,7 @@
           <!-- Profile Button -->
           <button
             class="tile-btn profile-tile"
-            @click="handleAction('profile')"
+            @click="go('Profile')"
             :aria-label="$t('buttons.profile')"
           >
             <IonIcon :icon="personOutline" class="tile-icon" />
@@ -74,47 +75,74 @@
         </div>
       </div>
     </IonContent>
+
+    <IonFooter v-if="isHomeBar" class="ion-no-border">
+      <HomeBarFooter />
+    </IonFooter>
   </IonPage>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
-import { useRouter } from 'vue-router';
+import { computed } from 'vue';
 import {
-  IonPage,
-  IonHeader,
-  IonToolbar,
-  IonTitle,
-  IonButtons,
   IonContent,
-  IonIcon
+  IonFooter,
+  IonHeader,
+  IonIcon,
+  IonButtons,
+  IonPage,
+  IonTitle,
+  IonToolbar
 } from '@ionic/vue';
+import { useI18n } from 'vue-i18n';
 import {
   informationCircleOutline,
-  warningOutline,
+  personOutline,
   timeOutline,
-  personOutline
+  warningOutline
 } from 'ionicons/icons';
 
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
+import HomeBarFooter from '../components/HomeBarFooter.vue';
 import { useUser } from '../composables/useUser';
+import { usePregnancy } from '../composables/usePregnancy';
+import { getNavMode } from '../config/app';
+import { useIonRouter } from '@ionic/vue';
 
-const router = useRouter();
+const ionRouter = useIonRouter();
+const { t } = useI18n();
 const { userName } = useUser();
+const { activePregnancy, mode, currentWeek, postpartumDay } = usePregnancy();
 
-// Info card dynamic state (placeholders when empty)
-const infoTitle = ref('');
-const infoMessage = ref('');
+const isHomeBar = computed(() => getNavMode() === 'homeBar');
 
-const handleKnowMore = () => {
-  router.push('/home');
-};
+function go(routeName: string): void {
+  ionRouter.push({ name: routeName });
+}
 
-const handleAction = (actionKey: string) => {
-  if (actionKey === 'profile') {
-    router.push('/settings');
+const statusChip = computed(() => {
+  if (!activePregnancy.value) return '';
+  if (mode.value === 'ANC') {
+    const week = currentWeek.value;
+    return week !== null ? t('home.status_anc', { week }) : t('home.status_anc_unknown');
   }
-};
+  const day = postpartumDay.value;
+  return day !== null ? t('home.status_pnc', { day }) : '';
+});
+
+const infoMessage = computed(() => {
+  if (!activePregnancy.value) {
+    return t('home.no_pregnancy');
+  }
+  if (mode.value === 'ANC') {
+    const week = currentWeek.value;
+    return week !== null
+      ? t('home.info_anc', { week })
+      : t('home.info_anc_unknown');
+  }
+  const day = postpartumDay.value;
+  return t('home.info_pnc', { day });
+});
 </script>
 
 <style scoped>
@@ -151,6 +179,9 @@ const handleAction = (actionKey: string) => {
   width: 100%;
   text-align: center;
   margin-top: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .greeting-text {
@@ -159,6 +190,17 @@ const handleAction = (actionKey: string) => {
   color: var(--color-card-text, #111111);
   margin: 0;
   letter-spacing: -0.5px;
+}
+
+.status-chip {
+  align-self: center;
+  margin: 0;
+  background-color: var(--color-card-bg, #eaeaea);
+  color: var(--color-card-text, #1a1a1a);
+  font-size: 0.85rem;
+  font-weight: 700;
+  border-radius: 999px;
+  padding: 6px 14px;
 }
 
 /* Info Card */

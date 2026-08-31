@@ -21,6 +21,7 @@ import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 import { IonItem, IonSelect, IonSelectOption, IonIcon } from '@ionic/vue';
 import { languageOutline } from 'ionicons/icons';
+import { settingsRepo } from '../db/database';
 
 const { locale } = useI18n({ useScope: 'global' });
 
@@ -34,6 +35,8 @@ const changeLanguage = (newLang: string) => {
     } catch (e) {
       console.error('Failed to save language setting', e);
     }
+    // Mirror into SQLite so the choice survives WebView storage wipes.
+    void settingsRepo.set('maasathi_language', newLang);
   }
 };
 </script>
