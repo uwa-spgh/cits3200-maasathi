@@ -56,30 +56,35 @@ import { useI18n } from 'vue-i18n';
 
 const { t } = useI18n();
 const { contacts, load, telHref } = useEmergencyContacts();
-const { activePregnancy, mode } = usePregnancy();
+const { activePregnancy, mode, currentWeek } = usePregnancy();
 
 const dangerGroups = ref<{ key: string; signs: string[] }[]>([]);
-
-onMounted(() => {
-  void load();
-  const groupKey = !activePregnancy.value
-    ? 'pregnancy'
-    : mode.value === 'PNC'
-      ? 'postpartum'
-      : 'pregnancy';
-  dangerGroups.value = [
-    {
-      key: groupKey,
-      signs: Array.from({ length: SIGN_COUNTS[groupKey] }, (_, i) => `sign${i + 1}`)
-    }
-  ];
-});
 
 const SIGN_COUNTS: Record<string, number> = {
   pregnancy: 11,
   labour: 7,
-  postpartum: 9
+  postpartum: 9,
+  newborn: 6
 };
+
+onMounted(() => {
+  void load();
+  dangerGroups.value = emergencyGroups().map((key) => ({
+    key,
+    signs: Array.from({ length: SIGN_COUNTS[key] }, (_, i) => `sign${i + 1}`)
+  }));
+});
+
+/** Context-relevant checklists for all four stages:
+ *  - ANC: pregnancy signs, plus labour signs from week 36 (Visit 4 guidance).
+ *  - PNC: mother (postpartum) signs plus the newborn checklist.
+ */
+function emergencyGroups(): string[] {
+  if (!activePregnancy.value) return ['pregnancy'];
+  if (mode.value === 'PNC') return ['postpartum', 'newborn'];
+  const week = currentWeek.value;
+  return week !== null && week >= 36 ? ['pregnancy', 'labour'] : ['pregnancy'];
+}
 
 void t;
 </script>

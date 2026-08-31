@@ -25,8 +25,10 @@ function desiredItems(pregnancy: Pregnancy, ttNextDue: string | null, ttComplete
     if (lmp) {
       const registeredDate = pregnancy.registeredAt.slice(0, 10);
       for (const visit of ANC_VISITS) {
-        const target = addDaysIso(lmp, ANC_VISIT_TARGET_WEEKS[visit] * 7);
-        const dueDate = visit === 'visit1' && target < registeredDate ? registeredDate : target;
+        const dueDate =
+          visit === 'visit1'
+            ? registeredDate
+            : addDaysIso(lmp, ANC_VISIT_TARGET_WEEKS[visit] * 7);
         result.push({
           id: itemId(pregnancy.id, 'ANC', visit),
           pregnancyId: pregnancy.id,

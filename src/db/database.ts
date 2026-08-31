@@ -199,11 +199,20 @@ class LocalStorageDriver implements DbDriver {
   }
 
   private readTable(table: string): Record<string, unknown>[] {
+    const key = this.key(table);
+    let raw: string | null = null;
     try {
-      const raw = localStorage.getItem(this.key(table));
+      raw = localStorage.getItem(key);
       return raw ? (JSON.parse(raw) as Record<string, unknown>[]) : [];
     } catch (e) {
-      console.error(`Failed to read table ${table}`, e);
+      if (raw !== null) {
+        try {
+          localStorage.setItem(`${key}.corrupt`, raw);
+        } catch {
+          console.error(`Failed to back up corrupt payload of ${key}`);
+        }
+      }
+      console.error(`Failed to read table ${table}; corrupt payload backed up, starting empty`, e);
       return [];
     }
   }
@@ -213,6 +222,7 @@ class LocalStorageDriver implements DbDriver {
       localStorage.setItem(this.key(table), JSON.stringify(rows));
     } catch (e) {
       console.error(`Failed to write table ${table}`, e);
+      throw e instanceof Error ? e : new Error(`Failed to write table ${table}`);
     }
   }
 

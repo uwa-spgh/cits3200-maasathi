@@ -1,9 +1,8 @@
 import { computed, ref } from 'vue';
 import { pregnancyRepo, ttDoseRepo, ttHistoryRepo } from '../db/database';
 import { uuid, type TtDose, type TtDose as TtDoseType, type TtHistory, type TtStatus } from '../db/schemas';
-import { addDaysIso, todayIso } from '../utils/date';
+import { nextDueFromLastDose, todayIso } from '../utils/date';
 
-const TT_DOSE_INTERVAL_DAYS = 28;
 export const TT_MAX_DOSES = 5;
 
 const history = ref<TtHistory | null>(null);
@@ -47,7 +46,8 @@ export function useTt() {
    * Next due date per Bangladesh EPI rules:
    * - Unknown history: never guessed (null). Mother confirms with health worker.
    * - Dose 1: as early as possible in the pregnancy.
-   * - Later doses: last dose date + 4 weeks.
+   * - Later doses: per the lifetime schedule from the date of the last dose
+   *   (TT2 +4 weeks, TT3 +6 months, TT4/TT5 +1 year).
    * - Un-datable history (count known but date unknown): null.
    */
   function computeNextDue(pregnancyRegisteredAtIso: string | null): string | null {
@@ -56,7 +56,9 @@ export function useTt() {
     if (h.status === 'unknown') return null;
     if (lifetimeDoseCount.value >= TT_MAX_DOSES) return null;
     if (h.status === 'never') return pregnancyRegisteredAtIso ? pregnancyRegisteredAtIso.slice(0, 10) : todayIso();
-    if (h.lastDoseDate) return addDaysIso(h.lastDoseDate, TT_DOSE_INTERVAL_DAYS);
+    if (h.lastDoseDate) {
+      return nextDueFromLastDose(h.dosesReceived ?? 1, h.lastDoseDate);
+    }
     if (h.dosesReceived !== null && h.dosesReceived > 0) return null;
     return pregnancyRegisteredAtIso ? pregnancyRegisteredAtIso.slice(0, 10) : todayIso();
   }
@@ -123,7 +125,7 @@ export function useTt() {
       dosesReceived: number,
       lastDoseDate: dateGiven,
       currentPregnancyDoseDate: active ? dateGiven : h.currentPregnancyDoseDate,
-      nextDueDate: isLast ? null : addDaysIso(dateGiven, TT_DOSE_INTERVAL_DAYS)
+      nextDueDate: isLast ? null : nextDueFromLastDose(number, dateGiven)
     });
   }
 
