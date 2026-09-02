@@ -253,18 +253,18 @@ function setTtAndFinish(status: TtStatus): void {
 
 async function finish(): Promise<void> {
   setUserName(name.value);
-  if (lmp.value || edd.value) {
-    await registerPregnancy({
-      lmp: lmp.value || null,
-      edd: edd.value || null
-    });
-  }
   if (ttStatus.value !== 'not_asked') {
     await setRegistration({
       status: ttStatus.value,
       dosesReceived: ttStatus.value === 'known' ? ttDoses.value : null,
       lastDoseDate: ttStatus.value === 'known' ? ttLastDate.value || null : null,
       cardAvailable: ttStatus.value === 'known'
+    });
+  }
+  if (lmp.value || edd.value) {
+    await registerPregnancy({
+      lmp: lmp.value || null,
+      edd: edd.value || null
     });
   }
   await completeOnboarding();

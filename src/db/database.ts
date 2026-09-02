@@ -191,7 +191,7 @@ interface DbDriver {
 
 class LocalStorageDriver implements DbDriver {
   private key(table: string): string {
-    return `maasathi_db_v1_${table}`;
+    return `maasathi_db_v2_${table}`;
   }
 
   async init(): Promise<void> {
@@ -232,7 +232,11 @@ class LocalStorageDriver implements DbDriver {
 
   async upsert<T>(def: TableDef<T>, row: T): Promise<void> {
     const rows = this.readTable(def.name);
-    const rec = row as unknown as Record<string, unknown>;
+    const values = def.toRow(row);
+    const rec: Record<string, unknown> = {};
+    def.columns.forEach((col, i) => {
+      rec[col] = values[i];
+    });
     const idx = rows.findIndex((r) => r['id'] === rec['id']);
     if (idx >= 0) rows[idx] = rec;
     else rows.push(rec);

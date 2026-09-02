@@ -1,5 +1,5 @@
 import { computed, ref } from 'vue';
-import { scheduleRepo } from '../db/database';
+import { pregnancyRepo, scheduleRepo } from '../db/database';
 import type { Pregnancy, ScheduleItem } from '../db/schemas';
 import { t } from '../i18n';
 import { cancelItemReminders, scheduleItemReminders } from '../services/notifications';
@@ -142,9 +142,20 @@ export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
 }
 
 async function load(): Promise<void> {
-  const id = activePregnancyId.value;
-  if (!id) return;
-  items.value = (await scheduleRepo.byPregnancy(id)).sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  const active = await pregnancyRepo.active();
+  if (!active) {
+    items.value = [];
+    activePregnancyId.value = null;
+    return;
+  }
+  const existing = await scheduleRepo.byPregnancy(active.id);
+  if (existing.length === 0) {
+    await useTt().load();
+    await regenerateSchedule(active);
+    return;
+  }
+  activePregnancyId.value = active.id;
+  items.value = existing.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 }
 
 async function markCompleted(item: ScheduleItem): Promise<void> {

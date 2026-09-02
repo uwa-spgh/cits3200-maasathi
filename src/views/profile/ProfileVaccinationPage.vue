@@ -78,6 +78,8 @@ import {
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
 import { useTt } from '../../composables/useTt';
+import { regenerateSchedule } from '../../composables/useSchedule';
+import { pregnancyRepo } from '../../db/database';
 import { formatDate } from '../../utils/date';
 import type { TtStatus } from '../../db/schemas';
 
@@ -129,6 +131,7 @@ async function saveTt(): Promise<void> {
     lastDoseDate: status === 'known' ? ttForm.value.lastDoseDate || null : null,
     cardAvailable: status === 'known'
   });
+  await regenerateActive();
   await showSaved();
 }
 
@@ -137,7 +140,13 @@ async function saveDose(): Promise<void> {
   await recordDose(recordDoseDate.value, recordFacility.value);
   recordDoseDate.value = '';
   recordFacility.value = '';
+  await regenerateActive();
   await showSaved();
+}
+
+async function regenerateActive(): Promise<void> {
+  const active = await pregnancyRepo.active();
+  if (active) await regenerateSchedule(active);
 }
 </script>
 

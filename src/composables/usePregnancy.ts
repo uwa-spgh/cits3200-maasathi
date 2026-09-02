@@ -8,7 +8,7 @@ import {
 } from '../db/database';
 import { uuid, type CareMode, type Pregnancy } from '../db/schemas';
 import { cancelAllReminders } from '../services/notifications';
-import { PNC_CONTACT_OFFSET_DAYS, addDaysIso, gestationalWeek, lmpFromEdd, postpartumDays, todayIso } from '../utils/date';
+import { PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, gestationalWeek, lmpFromEdd, postpartumDays, todayIso } from '../utils/date';
 import { regenerateSchedule } from './useSchedule';
 
 const PNC_END_DAY = PNC_CONTACT_OFFSET_DAYS['contact4'];
@@ -140,10 +140,14 @@ export function usePregnancy() {
   function applyDateSource(target: Pregnancy, input: Partial<Pregnancy>): void {
     if (input.lmp) {
       target.dateSource = 'lmp';
+      target.lmp = input.lmp;
+      target.edd = target.edd ?? eddFromLmp(input.lmp);
       target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(input.lmp));
     } else if (input.edd) {
       target.dateSource = 'edd';
       const derivedLmp = lmpFromEdd(input.edd);
+      target.edd = input.edd;
+      target.lmp = derivedLmp;
       target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(derivedLmp));
     }
   }
