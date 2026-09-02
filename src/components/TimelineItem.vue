@@ -1,17 +1,17 @@
 <template>
-  <div class="timeline-item" :class="typeClass">
+  <div :id="`tl-item-${item.id}`" class="timeline-item" :class="typeClass">
     <div class="marker-col">
       <span class="dot"></span>
       <span v-if="!isLast" class="line"></span>
     </div>
     <div class="content-col">
-      <div class="item-card">
+      <div class="item-card" :class="{ done: item.status === 'completed' }">
         <div class="item-main" @click="$emit('select', item)">
           <div class="item-text">
             <span class="item-title">{{ title }}</span>
             <span class="item-date">{{ dateDisplay }}</span>
           </div>
-          <span v-if="dueLabel" class="due-chip">{{ dueLabel }}</span>
+          <span v-if="dueLabel" class="due-chip" :class="{ 'due-today': isDueToday }">{{ dueLabel }}</span>
           <IonIcon
             v-if="item.status === 'completed'"
             :icon="checkmarkCircle"
@@ -207,12 +207,37 @@ const dueLabel = computed(() => {
   if (days === 1) return useI18n().t('timeline.due_tomorrow');
   return useI18n().t('timeline.due_in_days', { days });
 });
+
+const isDueToday = computed(() => {
+  if (props.item.status === 'completed') return false;
+  return daysBetween(todayIso(), props.item.dueDate) === 0;
+});
 </script>
 
 <style scoped>
 .timeline-item {
   display: flex;
   gap: 10px;
+  scroll-margin: 96px;
+}
+
+.item-card.done {
+  opacity: 0.7;
+}
+
+.item-card.done .item-title {
+  text-decoration: line-through;
+}
+
+.due-chip.due-today {
+  background-color: var(--color-emergency-bg, #ff5c5c);
+  color: #fff;
+  animation: chip-pulse 1.8s ease-in-out infinite;
+}
+
+@keyframes chip-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
 }
 
 .marker-col {
