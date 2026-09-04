@@ -1,5 +1,375 @@
 {
   "app": {
     "title": "MaaSathi"
+  },
+  "greeting": "Hello, {name}",
+  "user_default": "User",
+  "common": {
+    "back": "Back",
+    "home": "Home",
+    "save": "Save",
+    "saved": "Saved",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "next": "Next",
+    "skip": "Skip for now",
+    "not_set": "Not set",
+    "yes": "Yes",
+    "no": "No",
+    "not_sure": "I'm not sure",
+    "mode_anc": "ANC mode",
+    "mode_pnc": "PNC mode"
+  },
+  "nav": {
+    "home": "Home",
+    "reminders": "Reminders",
+    "information": "Info",
+    "profile": "Profile"
+  },
+  "notification": {
+    "title": "MaaSathi reminder"
+  },
+  "placeholder": {
+    "hint": "Placeholder — content will be added here"
+  },
+  "info_card": {
+    "title": "Current stage message",
+    "know_more": "Press to know more"
+  },
+  "buttons": {
+    "emergency": "Emergency",
+    "reminders": "Reminders",
+    "information": "Information",
+    "profile": "Profile"
+  },
+  "home": {
+    "status_anc": "Pregnancy · Week {week}",
+    "status_anc_unknown": "Pregnancy tracking",
+    "status_pnc": "After birth · Day {day}",
+    "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
+    "info_anc": "Placeholder: your current-week message will appear here. You are in week {week} of your pregnancy.",
+    "info_anc_unknown": "Placeholder: add your LMP or due date in Profile to see week-based messages.",
+    "info_pnc": "Placeholder: your postnatal day {day} message will appear here."
+  },
+  "language": {
+    "select": "Language",
+    "en": "English",
+    "bn": "বাংলা (Bengali)"
+  },
+  "week_info": {
+    "title": "This week",
+    "current_stage_info": "Information about the current stage",
+    "upcoming_milestones": "Upcoming milestones",
+    "see_timeline": "See full timeline",
+    "no_pregnancy": "No active pregnancy",
+    "week_of": "Week {week} of pregnancy",
+    "week_unknown": "Pregnancy stage unknown",
+    "day_after_birth": "Day {day} after birth"
+  },
+  "emergency": {
+    "title": "Emergency",
+    "no_number": "No number saved — add one in Profile",
+    "nearest_facility_placeholder": "Nearest health facility (offline)",
+    "danger_signs": "Relevant danger signs",
+    "contacts": {
+      "national": "Call emergency services",
+      "hospital": "Call hospital",
+      "doctor": "Call doctor"
+    }
+  },
+  "danger_signs": {
+    "page_title": "Danger signs",
+    "section_title": "Danger signs — go to the health facility immediately",
+    "newborn_title": "Newborn danger signs — go to the health facility immediately",
+    "pregnancy": {
+      "title": "During pregnancy",
+      "signs": {
+        "sign1": "Vaginal bleeding",
+        "sign2": "Severe abdominal pain",
+        "sign3": "Blurred vision",
+        "sign4": "High blood pressure",
+        "sign5": "Severe headache",
+        "sign6": "Difficulty breathing",
+        "sign7": "Excessive vomiting",
+        "sign8": "Swelling of face or legs",
+        "sign9": "No or reduced fetal movement",
+        "sign10": "Convulsions (fits)",
+        "sign11": "High fever"
+      }
+    },
+    "labour": {
+      "title": "During labour and delivery",
+      "signs": {
+        "sign1": "Heavy vaginal bleeding",
+        "sign2": "Labour lasting more than 12 hours",
+        "sign3": "Abnormal fetal position",
+        "sign4": "Shoulder dystocia",
+        "sign5": "Severe headache",
+        "sign6": "Retained placenta",
+        "sign7": "High fever"
+      }
+    },
+    "postpartum": {
+      "title": "After delivery (postpartum)",
+      "signs": {
+        "sign1": "Abdominal pain",
+        "sign2": "Blurred vision",
+        "sign3": "High fever",
+        "sign4": "Too weak to get out of bed",
+        "sign5": "Foul-smelling vaginal discharge",
+        "sign6": "Fast or difficult breathing",
+        "sign7": "Convulsions",
+        "sign8": "Breasts swollen, red, or sore",
+        "sign9": "Heavy vaginal bleeding"
+      }
+    },
+    "newborn": {
+      "title": "Newborn",
+      "signs": {
+        "sign1": "Unable to feed or stopped feeding well",
+        "sign2": "Fast or difficult breathing",
+        "sign3": "Fever or feels cold to the touch",
+        "sign4": "Convulsions",
+        "sign5": "Floppy, very weak, or moves only when stimulated",
+        "sign6": "Yellowing of skin or eyes in the first 24 hours"
+      }
+    }
+  },
+  "reminders": {
+    "title": "Reminders",
+    "today": "Today",
+    "upcoming": "Upcoming reminders",
+    "past": "Past reminders"
+  },
+  "timeline": {
+    "empty": "No reminders here",
+    "detail_placeholder": "Placeholder — details about this appointment will appear here",
+    "mark_completed": "Mark completed",
+    "mark_upcoming": "Move back to upcoming",
+    "due_today": "Due today",
+    "due_tomorrow": "Due tomorrow",
+    "due_in_days": "In {days} days",
+    "visit_details_title": "Visit record",
+    "facility": "Facility / provider",
+    "bp": "Blood pressure",
+    "weight": "Weight (kg)",
+    "urine_test": "Urine test done",
+    "blood_test": "Blood test done",
+    "ultrasound": "Ultrasound date",
+    "danger_signs_reported": "Danger signs reported",
+    "birth_plan": "Birth preparedness plan completed",
+    "tt_unknown_notice": "Your tetanus vaccination history is unknown. Please show your vaccination card to your health worker — they will tell you which dose you need.",
+    "anc": {
+      "visit1": "ANC Visit 1 (before 16 weeks)",
+      "visit2": "ANC Visit 2 (24–28 weeks)",
+      "visit3": "ANC Visit 3 (32 weeks)",
+      "visit4": "ANC Visit 4 (36 weeks)"
+    },
+    "pnc": {
+      "contact1": "PNC Contact 1 (within 24 hours)",
+      "contact2": "PNC Contact 2 (48–72 hours)",
+      "contact3": "PNC Contact 3 (7–14 days)",
+      "contact4": "PNC Contact 4 (6 weeks)"
+    },
+    "tt": {
+      "next": "Tetanus (TT) vaccination due"
+    },
+    "milestone": {
+      "edd": "Expected date of delivery",
+      "child_epi_start": "Child immunisation (EPI) module starts"
+    }
+  },
+  "information": {
+    "title": "Information",
+    "topics": {
+      "anc": "Antenatal care (ANC)",
+      "pnc": "Postnatal care (PNC)",
+      "danger_signs": "Danger signs",
+      "nutrition": "Nutrition",
+      "vaccination": "Vaccination"
+    }
+  },
+  "anc": {
+    "trimester": "Trimester {n}",
+    "visit_content": "Visit content placeholder",
+    "tests_title": "Tests usually done",
+    "tests_placeholder": "Tests placeholder",
+    "visits": {
+      "visit1": "Visit 1 (before 16 weeks)",
+      "visit2": "Visit 2 (24–28 weeks)",
+      "visit3": "Visit 3 (32 weeks)",
+      "visit4": "Visit 4 (36 weeks)"
+    }
+  },
+  "pnc": {
+    "contact_content": "Contact content placeholder",
+    "breastfeeding_title": "Breastfeeding support",
+    "breastfeeding_placeholder": "Breastfeeding content placeholder",
+    "contacts": {
+      "contact1": "Contact 1 (within 24 hours)",
+      "contact2": "Contact 2 (48–72 hours)",
+      "contact3": "Contact 3 (7–14 days)",
+      "contact4": "Contact 4 (6 weeks)"
+    }
+  },
+  "tt": {
+    "tracker_title": "Tetanus (TT) vaccination tracker",
+    "doses_count": "{count} of {max} lifetime doses recorded",
+    "next_due": "Next dose due: {date}",
+    "unknown_notice": "Vaccination history unknown — confirm with your health worker",
+    "complete_notice": "All 5 lifetime doses complete",
+    "schedule_title": "My dose record",
+    "dose_item": "Dose {n} — {date}",
+    "date_unknown": "date unknown",
+    "no_doses": "No doses recorded yet",
+    "education_title": "About tetanus",
+    "education_placeholder": "Tetanus education content placeholder",
+    "epi_card_title": "Your EPI card",
+    "epi_card_placeholder": "EPI card guidance placeholder",
+    "status_not_asked": "Not set",
+    "status_unknown": "History unknown",
+    "status_complete": "Complete",
+    "status_in_progress": "In progress"
+  },
+  "nutrition": {
+    "page_title": "Nutrition",
+    "section_title": "Nutrition",
+    "placeholder": "Nutrition content placeholder",
+    "content_placeholder": "Nutrition content placeholder",
+    "topics": {
+      "healthy_diet": "Healthy diet",
+      "ifa": "Iron and folic acid",
+      "calcium": "Calcium",
+      "hydration": "Hydration and rest",
+      "activity": "Physical activity"
+    }
+  },
+  "profile": {
+    "title": "Profile & Settings",
+    "menu_personal": "Personal information",
+    "menu_pregnancy": "My pregnancy",
+    "menu_vaccination": "My vaccinations",
+    "menu_contacts": "Emergency contacts",
+    "menu_settings": "Settings",
+    "menu_history": "Past pregnancy",
+    "data_section": "Data",
+    "contacts_hint": "These numbers are used by the Emergency page. All data stays on your phone.",
+    "contacts_number_placeholder": "Enter phone number",
+    "personal_info": "Personal information",
+    "name_label": "Your name",
+    "name_placeholder": "Enter your name",
+    "age_label": "Age",
+    "age_placeholder": "Enter your age",
+    "pregnancy_info": "Current pregnancy",
+    "lmp_label": "Last menstrual period (LMP)",
+    "edd_label": "Expected date of delivery (EDD)",
+    "date_pair_hint": "Enter either date — the other is calculated automatically",
+    "delivery_date_label": "Date of delivery",
+    "delivery_place_label": "Place of delivery",
+    "gravida_label": "Number of previous pregnancies",
+    "parity_label": "Number of previous births",
+    "prev_outcomes_label": "Previous pregnancy outcomes",
+    "optional": "Optional",
+    "outcome_none": "No issues",
+    "outcome_miscarriage": "Miscarriage",
+    "outcome_stillbirth": "Stillbirth",
+    "outcome_complications": "Complications",
+    "prev_cs_label": "Previous caesarean delivery",
+    "pregnancy_type_label": "Current pregnancy type",
+    "type_single": "Single",
+    "type_multiple": "Multiple",
+    "high_risk_label": "High-risk pregnancy",
+    "birth_registration": "Birth registration",
+    "birth_registration_hint": "Registering the birth switches the app from ANC to PNC mode and rebuilds your reminders",
+    "delivery_mode_label": "Mode of delivery",
+    "mode_vaginal": "Vaginal",
+    "mode_caesarean": "Caesarean",
+    "birth_outcome_label": "Birth outcome",
+    "outcome_live_birth": "Live birth",
+    "baby_sex_label": "Baby's sex",
+    "sex_female": "Female",
+    "sex_male": "Male",
+    "breastfeeding_label": "Breastfeeding started",
+    "post_complications_label": "Post-delivery complications",
+    "post_danger_signs_label": "Danger signs after delivery",
+    "register_birth_btn": "Register birth",
+    "pnc_switched": "Birth registered — switched to PNC mode",
+    "tt_section": "Tetanus (TT) vaccination",
+    "tt_question": "Have you received a tetanus (TT) vaccine before?",
+    "tt_known_count": "Yes, and I know how many doses",
+    "tt_known_unsure": "Yes, but I do not remember how many",
+    "tt_never": "No, never",
+    "tt_answer_later": "I do not know / answer later",
+    "tt_dose_count_label": "Number of doses received (0–5)",
+    "tt_last_dose_label": "Date of most recent dose",
+    "tt_unknown_hint": "Your history will be recorded as unknown. Do not worry — confirm with your health worker at your next ANC visit.",
+    "record_dose_label": "Record a dose received today",
+    "record_dose_btn": "Record dose",
+    "history_section": "Past pregnancies",
+    "history_empty": "No past pregnancies yet",
+    "history_item": "Past pregnancy",
+    "new_pregnancy_btn": "Register new pregnancy",
+    "close_pregnancy_btn": "Close current pregnancy early",
+    "close_confirm_title": "Close pregnancy?",
+    "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
+    "settings_section": "Settings",
+    "nav_mode_label": "Navigation style",
+    "nav_mode_hint": "Developer option — app restarts to apply",
+    "nav_home_bar": "Home button bar",
+    "nav_tab_bar": "Tab bar",
+    "reset_data_btn": "Reset all data",
+    "reset_confirm_title": "Reset all data?",
+    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
+  },
+  "history": {
+    "title": "Past pregnancy",
+    "pregnancy_details": "Pregnancy details",
+    "child_details": "Child details",
+    "child_dob": "Date of birth",
+    "registered_weeks": "Weeks pregnant at registration",
+    "date_source": "Date provided as",
+    "visit_tracking": "Visit records",
+    "care_summary": "Care summary",
+    "anc_completed": "ANC visits completed",
+    "pnc_completed": "PNC contacts completed",
+    "tt_doses": "TT doses given",
+    "schedule_record": "Appointment record",
+    "archived_on": "Moved to history",
+    "notes": "Notes",
+    "no_notes": "No notes recorded",
+    "not_found": "Record not found"
+  },
+  "onboarding": {
+    "welcome_title": "Welcome to MaaSathi",
+    "welcome_text": "Your companion for a safe pregnancy and a healthy baby. Choose your language to begin.",
+    "name_title": "What is your name?",
+    "q_lmp": "Do you know when your last period started?",
+    "q_lmp_when": "When did your last period start?",
+    "q_edd": "Do you know your expected delivery date?",
+    "q_edd_when": "When is your expected delivery date?",
+    "q_estimate": "About how many months pregnant are you?",
+    "estimate_hint": "This sets an estimated due date. You can correct it later in your Profile.",
+    "tt_title": "Tetanus vaccination",
+    "q_tt_count": "Do you know how many doses you have had?",
+    "done_title": "You are all set",
+    "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
+    "start_app": "Start using MaaSathi"
+  },
+  "theme": {
+    "title": "Appearance",
+    "open": "Customise",
+    "presets": "Theme presets",
+    "preset_vibrant": "Vibrant",
+    "preset_pastel": "Pastel",
+    "preset_contrast": "High contrast",
+    "preset_dark": "Dark",
+    "customize_colors": "Customise colours",
+    "background_color": "Background",
+    "card_color": "Card",
+    "emergency_color": "Emergency",
+    "reminders_color": "Reminders",
+    "information_color": "Information",
+    "profile_color": "Profile",
+    "reset": "Reset"
   }
 }
