@@ -1,17 +1,17 @@
 <template>
-  <div :id="`tl-item-${item.id}`" class="timeline-item" :class="typeClass">
+  <div :id="`tl-item-${item.id}`" class="timeline-item" :class="[typeClass, statusClass]">
     <div class="marker-col">
       <span class="dot"></span>
       <span v-if="!isLast" class="line"></span>
     </div>
     <div class="content-col">
-      <div class="item-card" :class="{ done: item.status === 'completed' }">
+      <div class="item-card" :class="{ done: item.status === 'completed', overdue: isOverdue, today: isDueToday }">
         <div class="item-main" @click="$emit('select', item)">
           <div class="item-text">
             <span class="item-title">{{ title }}</span>
-            <span class="item-date">{{ dateDisplay }}</span>
+            <span class="item-date">{{ dateDisplay }} · {{ relativeLabel }}</span>
           </div>
-          <span v-if="dueLabel" class="due-chip" :class="{ 'due-today': isDueToday }">{{ dueLabel }}</span>
+          <span v-if="dueLabel" class="due-chip" :class="{ 'due-today': isDueToday, 'due-overdue': isOverdue, 'due-done': item.status === 'completed' }">{{ dueLabel }}</span>
           <IonIcon
             v-if="item.status === 'completed'"
             :icon="checkmarkCircle"
@@ -146,10 +146,22 @@ defineEmits<{
   (e: 'undo', item: ScheduleItem): void;
 }>();
 
-const { locale } = useI18n();
+const { locale, t: translate } = useI18n();
 const { activePregnancy } = usePregnancy();
 
 const typeClass = computed(() => `type-${props.item.type.toLowerCase()}`);
+
+const daysDiff = computed(() => daysBetween(todayIso(), props.item.dueDate));
+
+const isOverdue = computed(() => props.item.status !== 'completed' && daysDiff.value < 0);
+const isDueToday = computed(() => props.item.status !== 'completed' && daysDiff.value === 0);
+
+const statusClass = computed(() => {
+  if (props.item.status === 'completed') return 'status-done';
+  if (isOverdue.value) return 'status-overdue';
+  if (isDueToday.value) return 'status-today';
+  return 'status-upcoming';
+});
 
 const dateDisplay = computed(() => formatDate(props.item.dueDate, locale.value));
 
@@ -200,17 +212,27 @@ async function saveTracking(): Promise<void> {
 }
 
 const dueLabel = computed(() => {
-  if (props.item.status === 'completed') return '';
-  const days = daysBetween(todayIso(), props.item.dueDate);
-  if (days < 0) return '';
-  if (days === 0) return useI18n().t('timeline.due_today');
-  if (days === 1) return useI18n().t('timeline.due_tomorrow');
-  return useI18n().t('timeline.due_in_days', { days });
+  if (props.item.status === 'completed') return translate('timeline.status_done');
+  const days = daysDiff.value;
+  if (days < 0) {
+    const ago = Math.abs(days);
+    return ago === 1 ? translate('timeline.overdue_1_day') : translate('timeline.overdue_days', { days: ago });
+  }
+  if (days === 0) return translate('timeline.due_today');
+  if (days === 1) return translate('timeline.due_tomorrow');
+  return translate('timeline.due_in_days', { days });
 });
 
-const isDueToday = computed(() => {
-  if (props.item.status === 'completed') return false;
-  return daysBetween(todayIso(), props.item.dueDate) === 0;
+const relativeLabel = computed(() => {
+  if (props.item.status === 'completed') return translate('timeline.status_done');
+  const days = daysDiff.value;
+  if (days < 0) {
+    const ago = Math.abs(days);
+    return ago === 1 ? translate('timeline.ago_1_day') : translate('timeline.ago_days', { days: ago });
+  }
+  if (days === 0) return translate('timeline.due_today');
+  if (days === 1) return translate('timeline.due_tomorrow');
+  return translate('timeline.in_days', { days });
 });
 </script>
 
@@ -233,6 +255,40 @@ const isDueToday = computed(() => {
   background-color: var(--color-emergency-bg, #ff5c5c);
   color: #fff;
   animation: chip-pulse 1.8s ease-in-out infinite;
+}
+
+.due-chip.due-overdue {
+  background-color: #1a1a1a;
+  color: #ffd9d9;
+  border: 1.5px solid var(--color-emergency-bg, #ff5c5c);
+  animation: chip-pulse 1.8s ease-in-out infinite;
+}
+
+.due-chip.due-done {
+  background-color: rgba(123, 198, 45, 0.2);
+  color: var(--color-card-text, #1a1a1a);
+}
+
+.item-card.overdue {
+  border-left: 5px solid var(--color-emergency-bg, #ff5c5c);
+}
+
+.item-card.today {
+  border-left: 5px solid var(--color-emergency-bg, #ff5c5c);
+  box-shadow: 0 4px 14px rgba(255, 92, 92, 0.25);
+}
+
+.status-overdue .dot {
+  background-color: var(--color-emergency-bg, #ff5c5c) !important;
+  animation: chip-pulse 1.8s ease-in-out infinite;
+}
+
+.status-today .dot {
+  background-color: var(--color-emergency-bg, #ff5c5c) !important;
+}
+
+.status-done .dot {
+  background-color: var(--color-btn-more-bg, #7bc62d) !important;
 }
 
 @keyframes chip-pulse {
@@ -282,6 +338,12 @@ const isDueToday = computed(() => {
   border-radius: 16px;
   padding: 12px 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  border-left: 5px solid transparent;
+  transition: box-shadow 0.2s ease, transform 0.15s ease, border-color 0.2s ease;
+}
+
+.item-card:active {
+  transform: scale(0.99);
 }
 
 .item-main {
@@ -328,6 +390,12 @@ const isDueToday = computed(() => {
   margin-top: 12px;
   border-top: 1px dashed rgba(0, 0, 0, 0.15);
   padding-top: 10px;
+  animation: expand-in 0.22s ease;
+}
+
+@keyframes expand-in {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 .detail-note {
