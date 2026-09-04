@@ -233,7 +233,11 @@
       "all_sub": "{count} item(s) across your journey",
       "all_sub_overdue": "{overdue} overdue — catch up soon",
       "future_empty": "Nothing scheduled ahead — you're all caught up",
-      "past_empty": "Nothing in the past yet"
+      "past_empty": "Nothing in the past yet",
+      "up_next": "Up next",
+      "show_more": "Show {count} more",
+      "show_past": "Show past ({count})",
+      "hide_past": "Hide past"
     }
   },
   "information": {

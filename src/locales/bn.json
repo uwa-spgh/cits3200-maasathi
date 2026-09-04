@@ -233,7 +233,11 @@
       "all_sub": "যাত্রাজুড়ে {count}টি বিষয়",
       "all_sub_overdue": "{overdue}টি বিলম্বিত — শীঘ্রই করুন",
       "future_empty": "সামনে কিছু নেই — আপনি এগিয়ে আছেন",
-      "past_empty": "অতীতে এখনও কিছু নেই"
+      "past_empty": "অতীতে এখনও কিছু নেই",
+      "up_next": "পরবর্তী",
+      "show_more": "আরও {count}টি দেখুন",
+      "show_past": "অতীত দেখুন ({count})",
+      "hide_past": "অতীত লুকান"
     }
   },
   "information": {
