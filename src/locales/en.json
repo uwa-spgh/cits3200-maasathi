@@ -49,7 +49,13 @@
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "info_anc": "Placeholder: your current-week message will appear here. You are in week {week} of your pregnancy.",
     "info_anc_unknown": "Placeholder: add your LMP or due date in Profile to see week-based messages.",
-    "info_pnc": "Placeholder: your postnatal day {day} message will appear here."
+    "info_pnc": "Placeholder: your postnatal day {day} message will appear here.",
+    "journey": {
+      "next": "Next",
+      "danger": "Danger Signs",
+      "wellbeing": "Wellbeing Info",
+      "view_all": "View all"
+    }
   },
   "language": {
     "select": "Language",
