@@ -55,20 +55,14 @@
                 <IonIcon v-if="d.major" :icon="d.icon" />
               </button>
 
-              <span v-if="showTodayRing" class="rail-today" :style="{ top: todayPct + '%' }">
-                <span class="today-ring"></span>
-                <span class="today-caption">{{ $t('reminders.today') }}</span>
-              </span>
+              <!-- Bright line marking the current date -->
+              <span v-if="hasData" class="today-line" :style="{ top: todayPct + '%' }"></span>
               <span
-                v-else-if="hasData"
-                class="rail-today-caption"
+                v-if="hasData"
+                class="today-caption"
                 :style="{ top: todayPct + '%' }"
               >
                 {{ $t('reminders.today') }}
-              </span>
-
-              <span v-if="nextLabel" class="rail-next-label" :style="{ top: nextPct + '%' }">
-                {{ nextLabel }}
               </span>
 
               <!-- Baby due cap (the EDD milestone) -->
@@ -245,12 +239,6 @@ const dots = computed(() => {
   return sorted;
 });
 
-// The standalone ring only renders when no marker can carry the Today
-// styling and it won't collide with the end caps.
-const showTodayRing = computed(
-  () => hasData.value && !dots.value.some((d) => d.isToday) && !todayNearTop.value && !todayNearBottom.value
-);
-
 type DotKind = 'anc' | 'pnc' | 'tt' | 'milestone';
 
 function kindOf(i: ScheduleItem): DotKind {
@@ -339,20 +327,6 @@ function shortDate(iso: string): string {
     month: 'short'
   });
 }
-
-const nextPct = computed(() => {
-  const e = nextEvent.value;
-  const base = baseIso.value;
-  if (!e || !base) return 0;
-  return Math.min(96, Math.max(4, clampPct(daysBetween(base, e.dueDate) / totalDays.value)));
-});
-
-// Hide the next-date caption when it would collide with the Today marker.
-const nextLabel = computed(() => {
-  if (!nextEvent.value) return '';
-  if (Math.abs(nextPct.value - todayPct.value) < 7) return '';
-  return shortDate(nextEvent.value.dueDate);
-});
 </script>
 
 <style scoped>
@@ -432,15 +406,18 @@ const nextLabel = computed(() => {
   background: rgba(26, 26, 26, 0.75);
 }
 
-/* Trimester boundary ticks */
+/* Trimester boundary notches */
 .tri-tick {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  height: 14px;
-  width: 0;
-  border-left: 2px dashed rgba(26, 26, 26, 0.4);
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: 3px;
+  width: 18px;
+  border-radius: 2px;
+  background: rgba(26, 26, 26, 0.45);
   pointer-events: none;
+  z-index: 1;
 }
 
 /* Trimester badges sit just left of the spine so dots never cover them */
@@ -571,56 +548,29 @@ const nextLabel = computed(() => {
   transform: translate(-50%, -50%) scale(1.12);
 }
 
-.rail-today {
+/* Bright horizontal line marking the current date */
+.today-line {
   position: absolute;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  z-index: 3;
-  pointer-events: none;
-  display: flex;
-  align-items: center;
-}
-
-.today-ring {
-  height: 15px;
-  width: 15px;
-  border-radius: 50%;
+  left: 6px;
+  right: 6px;
+  height: 3px;
+  transform: translateY(-50%);
+  border-radius: 2px;
   background: var(--color-reminders-bg, #f6c945);
-  border: 3px solid #d9a521;
-  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.9);
+  box-shadow: 0 0 6px rgba(246, 201, 69, 0.65);
+  z-index: 2;
+  pointer-events: none;
 }
 
 .today-caption {
   position: absolute;
-  right: 14px;
-  font-size: 0.72rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--color-card-text, #1a1a1a);
-  opacity: 0.8;
-}
-
-.rail-today-caption {
-  position: absolute;
-  right: calc(50% + 20px);
+  left: calc(50% + 16px);
   transform: translateY(-50%);
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
   white-space: nowrap;
   color: var(--color-card-text, #1a1a1a);
-  opacity: 0.8;
-  pointer-events: none;
-}
-
-.rail-next-label {
-  position: absolute;
-  left: calc(50% + 22px);
-  transform: translateY(-50%);
-  font-size: 0.72rem;
-  font-weight: 700;
-  white-space: nowrap;
-  color: var(--color-card-text, #1a1a1a);
-  opacity: 0.8;
+  opacity: 0.85;
   pointer-events: none;
 }
 
