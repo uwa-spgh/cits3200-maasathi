@@ -3,12 +3,12 @@
     <IonContent class="home-content ion-padding">
       <div class="content-wrapper">
         <div class="top-bar">
+          <span class="app-caption">{{ $t('app.title') }} app</span>
+          <span class="top-spacer" aria-hidden="true"></span>
           <button class="profile-pill top" @click="go('Profile')">
             <IonIcon :icon="personOutline" />
             <span>{{ $t('buttons.profile') }}</span>
           </button>
-          <span class="app-caption">{{ $t('app.title') }} app</span>
-          <span class="top-spacer" aria-hidden="true"></span>
         </div>
 
         <h1 class="greeting-text">
@@ -111,10 +111,6 @@
         </div>
       </div>
     </IonContent>
-
-    <IonFooter v-if="isHomeBar" class="ion-no-border">
-      <HomeBarFooter />
-    </IonFooter>
   </IonPage>
 </template>
 
@@ -122,7 +118,6 @@
 import { computed, onMounted, ref } from 'vue';
 import {
   IonContent,
-  IonFooter,
   IonIcon,
   IonPage,
   useIonRouter
@@ -142,11 +137,9 @@ import {
   type IonIconNames
 } from 'ionicons/icons';
 
-import HomeBarFooter from '../components/HomeBarFooter.vue';
 import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { getNavMode } from '../config/app';
 import { daysBetween, formatDate, todayIso } from '../utils/date';
 import type { ScheduleItem } from '../db/schemas';
 
@@ -156,7 +149,6 @@ const { userName } = useUser();
 const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 
-const isHomeBar = computed(() => getNavMode() === 'homeBar');
 const selectedId = ref<string | null>(null);
 
 onMounted(() => {
@@ -340,7 +332,8 @@ function shortDate(iso: string): string {
   align-items: center;
   gap: 14px;
   padding-top: 6px;
-  padding-bottom: 20px;
+  padding-bottom: 16px;
+  min-height: 100%;
 }
 
 .top-bar {
@@ -372,7 +365,8 @@ function shortDate(iso: string): string {
   display: flex;
   gap: 16px;
   align-items: stretch;
-  min-height: 580px;
+  flex: 1;
+  min-height: 560px;
 }
 
 /* ---- Left rail ---- */
