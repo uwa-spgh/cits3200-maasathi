@@ -3,8 +3,12 @@
     <IonContent class="home-content ion-padding">
       <div class="content-wrapper">
         <div class="top-bar">
+          <button class="profile-pill top" @click="go('Profile')">
+            <IonIcon :icon="personOutline" />
+            <span>{{ $t('buttons.profile') }}</span>
+          </button>
           <span class="app-caption">{{ $t('app.title') }} app</span>
-          <LanguageSwitcher />
+          <span class="top-spacer" aria-hidden="true"></span>
         </div>
 
         <h1 class="greeting-text">
@@ -105,11 +109,6 @@
             </button>
           </div>
         </div>
-
-        <button class="profile-pill" @click="go('Profile')">
-          <IonIcon :icon="personOutline" />
-          <span>{{ $t('buttons.profile') }}</span>
-        </button>
       </div>
     </IonContent>
 
@@ -143,7 +142,6 @@ import {
   type IonIconNames
 } from 'ionicons/icons';
 
-import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import HomeBarFooter from '../components/HomeBarFooter.vue';
 import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
@@ -358,7 +356,6 @@ function shortDate(iso: string): string {
   font-size: 0.8rem;
   font-weight: 600;
   opacity: 0.45;
-  margin-left: 48px;
 }
 
 .greeting-text {
@@ -705,7 +702,7 @@ function shortDate(iso: string): string {
   font-weight: 700;
   cursor: pointer;
   box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  margin-top: 6px;
+  flex-shrink: 0;
 }
 
 .profile-pill:active {
@@ -714,5 +711,10 @@ function shortDate(iso: string): string {
 
 .profile-pill ion-icon {
   font-size: 1.1rem;
+}
+
+.top-spacer {
+  width: 96px;
+  flex-shrink: 0;
 }
 </style>

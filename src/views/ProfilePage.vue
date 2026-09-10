@@ -37,6 +37,12 @@
         <IonIcon :icon="chevronForwardOutline" class="chev" />
       </button>
 
+      <div class="menu-item lang-row">
+        <IonIcon :icon="languageOutline" class="menu-icon" />
+        <span>{{ $t('language.select') }}</span>
+        <LanguageSwitcher class="lang-inline" />
+      </div>
+
       <button class="menu-item" @click="router.push({ name: 'ProfileSettings' })">
         <IonIcon :icon="settingsOutline" class="menu-icon" />
         <span>{{ $t('profile.menu_settings') }}</span>
@@ -70,6 +76,7 @@ import {
   archiveOutline,
   callOutline,
   chevronForwardOutline,
+  languageOutline,
   medkitOutline,
   personOutline,
   settingsOutline,
@@ -77,6 +84,7 @@ import {
 } from 'ionicons/icons';
 
 import PageShell from '../components/PageShell.vue';
+import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
 import { useHistory, type PregnancySummary } from '../composables/useHistory';
@@ -186,5 +194,13 @@ function openHistory(pregnancyId: string): void {
 
 .history-row .menu-icon {
   color: rgba(0, 0, 0, 0.4);
+}
+
+.lang-row {
+  cursor: default;
+}
+
+.lang-row .lang-inline {
+  margin-left: auto;
 }
 </style>
