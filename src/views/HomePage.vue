@@ -21,21 +21,29 @@
 
             <div class="rail" aria-hidden="false">
               <span class="rail-line"></span>
+
+              <!-- Got pregnant cap -->
+              <span class="rail-cap top" aria-hidden="true">
+                <IonIcon :icon="heartOutline" />
+              </span>
+              <span class="rail-cap-label top">{{ $t('home.journey.conceived') }}</span>
+
+              <!-- Trimester badges sit on the spine -->
               <span
-                v-for="tick in trimesterTicks"
-                :key="tick.key"
-                class="trimester-tick"
-                :style="{ top: tick.pct + '%' }"
-              ></span>
+                v-for="tri in triBadges"
+                :key="tri.key"
+                class="tri-badge"
+                :style="{ top: tri.pct + '%' }"
+              >
+                {{ tri.label }}
+              </span>
+
+              <!-- Event markers -->
               <button
                 v-for="d in dots"
                 :key="d.id"
                 class="rail-dot"
-                :class="[
-                  d.major ? 'major' : 'minor',
-                  `kind-${d.kind}`,
-                  { done: d.done, today: d.isToday, selected: d.id === selectedId }
-                ]"
+                :class="[d.major ? 'major' : 'minor', { done: d.done, today: d.isToday, selected: d.id === selectedId }]"
                 :style="{ top: d.pct + '%' }"
                 :title="d.title"
                 :aria-label="d.title"
@@ -43,6 +51,7 @@
               >
                 <IonIcon v-if="d.major" :icon="d.icon" />
               </button>
+
               <span v-if="showTodayRing" class="rail-today" :style="{ top: todayPct + '%' }">
                 <span class="today-ring"></span>
                 <span class="today-caption">{{ $t('reminders.today') }}</span>
@@ -54,10 +63,23 @@
               >
                 {{ $t('reminders.today') }}
               </span>
+
               <span v-if="nextLabel" class="rail-next-label" :style="{ top: nextPct + '%' }">
                 {{ nextLabel }}
-              </span>              <span v-if="hasData" class="rail-end-label top">{{ startLabel }}</span>
-              <span v-if="hasData" class="rail-end-label bottom">{{ endLabel }}</span>
+              </span>
+
+              <!-- Baby due cap (the EDD milestone) -->
+              <button
+                v-if="eddItem"
+                class="rail-cap bottom"
+                :class="{ done: eddDone, selected: eddItem.id === selectedId }"
+                :title="eddTitle"
+                :aria-label="eddTitle"
+                @click="selectedId = eddItem.id"
+              >
+                <IonIcon :icon="happyOutline" />
+              </button>
+              <span class="rail-cap-label bottom">{{ $t('home.journey.baby_due') }}</span>
             </div>
 
             <button class="nav-pill" @click="go('Reminders')">
@@ -118,9 +140,10 @@ import { useI18n } from 'vue-i18n';
 import {
   arrowBackCircleOutline,
   arrowForwardCircleOutline,
+  informationCircleOutline,
+  happyOutline,
   heartOutline,
   homeOutline,
-  informationCircleOutline,
   personOutline,
   pulseOutline,
   shieldCheckmarkOutline,
@@ -193,16 +216,17 @@ const dots = computed(() => {
   const today = todayIso();
   const todayPos = clampPct(daysBetween(base, today) / totalDays.value);
   const sorted = items.value
+    .filter((i) => !(i.type === 'MILESTONE' && i.ref === 'edd'))
     .map((i) => {
       const kind = kindOf(i);
-      const major = kind === 'anc' || kind === 'tt' || (kind === 'milestone' && i.ref === 'edd');
-      const pct = Math.min(95, Math.max(5, clampPct(daysBetween(base, i.dueDate) / totalDays.value)));
+      const major = kind === 'anc' || kind === 'tt';
+      const pct = Math.min(92, Math.max(8, clampPct(daysBetween(base, i.dueDate) / totalDays.value)));
       return {
         id: i.id,
         item: i,
         kind,
         major,
-        icon: iconFor(kind, i),
+        icon: iconFor(kind),
         pct,
         done: i.status === 'completed',
         isToday: i.status !== 'completed' && Math.abs(pct - todayPos) < 3.5,
@@ -229,24 +253,29 @@ function kindOf(i: ScheduleItem): DotKind {
   return 'milestone';
 }
 
-function iconFor(kind: DotKind, i: ScheduleItem): IonIconNames | null {
+function iconFor(kind: DotKind): IonIconNames | null {
   if (kind === 'anc') return pulseOutline as IonIconNames;
   if (kind === 'tt') return shieldCheckmarkOutline as IonIconNames;
   if (kind === 'pnc') return homeOutline as IonIconNames;
-  return (i.ref === 'edd' ? heartOutline : starOutline) as IonIconNames;
+  return starOutline as IonIconNames;
 }
 
-// Trimester boundaries at week 13+3 and 27+3 of the 40-week span.
-const trimesterTicks = computed(() => {
+// Trimester badges at the midpoints of the three 40-week segments.
+const triBadges = computed(() => {
   if (isPnc.value) return [];
   return [
-    { key: 't1t2', pct: clampPct(94 / 280) },
-    { key: 't2t3', pct: clampPct(192 / 280) }
+    { key: 't1', label: 'T1', pct: (45.5 / 280) * 100 },
+    { key: 't2', label: 'T2', pct: (140 / 280) * 100 },
+    { key: 't3', label: 'T3', pct: (234.5 / 280) * 100 }
   ];
 });
 
-const startLabel = computed(() => (isPnc.value ? t('timeline.journey.birth') : t('timeline.journey.lmp')));
-const endLabel = computed(() => (isPnc.value ? t('timeline.journey.day42') : t('timeline.journey.edd_short')));
+// The EDD milestone renders as the rail's bottom cap.
+const eddItem = computed(() => items.value.find((i) => i.type === 'MILESTONE' && i.ref === 'edd') ?? null);
+const eddDone = computed(() => eddItem.value?.status === 'completed');
+const eddTitle = computed(() =>
+  eddItem.value ? `${t(eddItem.value.titleKey)} · ${formatDate(eddItem.value.dueDate, locale.value)}` : ''
+);
 
 const nextEvent = computed<ScheduleItem | null>(() => {
   const today = todayIso();
@@ -356,6 +385,7 @@ const nextLabel = computed(() => {
   display: flex;
   gap: 16px;
   align-items: stretch;
+  min-height: 580px;
 }
 
 /* ---- Left rail ---- */
@@ -393,14 +423,14 @@ const nextLabel = computed(() => {
 .rail {
   position: relative;
   flex: 1;
-  min-height: 420px;
+  min-height: 460px;
   width: 100%;
 }
 
 .rail-line {
   position: absolute;
-  top: 20px;
-  bottom: 20px;
+  top: 22px;
+  bottom: 22px;
   left: 50%;
   width: 3px;
   transform: translateX(-50%);
@@ -409,29 +439,72 @@ const nextLabel = computed(() => {
   opacity: 0.85;
 }
 
-.trimester-tick {
+/* Trimester badges sitting on the spine */
+.tri-badge {
   position: absolute;
   left: 50%;
-  transform: translateX(-50%);
-  height: 12px;
-  width: 0;
-  border-left: 2px dashed rgba(26, 58, 107, 0.45);
+  transform: translate(-50%, -50%);
+  background: var(--color-card-bg, #fbf7f5);
+  border: 2px solid #1a3a6b;
+  border-radius: 999px;
+  padding: 1px 7px;
+  font-size: 0.6rem;
+  font-weight: 800;
+  color: #1a3a6b;
+  opacity: 0.65;
+  z-index: 1;
   pointer-events: none;
 }
 
-.rail-end-label {
+/* End caps: got pregnant / baby due */
+.rail-cap {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  height: 30px;
+  width: 30px;
+  border-radius: 50%;
+  background: #1a3a6b;
+  color: #fff;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 2;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.3);
+}
+
+.rail-cap.top { top: 22px; }
+.rail-cap.bottom { bottom: 22px; }
+
+.rail-cap ion-icon {
+  font-size: 1rem;
+  --ionicon-stroke-weight: 700;
+}
+
+.rail-cap.done {
+  background: #4d6fa8;
+}
+
+.rail-cap.selected {
+  outline: 3px solid rgba(51, 161, 222, 0.55);
+  outline-offset: 2px;
+}
+
+.rail-cap-label {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 800;
   white-space: nowrap;
-  opacity: 0.5;
+  opacity: 0.55;
   pointer-events: none;
 }
 
-.rail-end-label.top { top: -2px; }
-.rail-end-label.bottom { bottom: -2px; }
+.rail-cap-label.top { top: -8px; }
+.rail-cap-label.bottom { bottom: -8px; }
 
 .rail-dot {
   position: absolute;
@@ -447,20 +520,21 @@ const nextLabel = computed(() => {
   align-items: center;
   justify-content: center;
   transition: transform 0.15s ease;
+  border: 2.5px solid #1a3a6b;
+  color: #1a3a6b;
 }
 
 /* Minor markers: small plain dots */
 .rail-dot.minor {
   height: 12px;
   width: 12px;
-  border: 3px solid #1a3a6b;
+  background: #1a3a6b;
 }
 
 /* Major markers: big highlighted dots with an icon */
 .rail-dot.major {
   height: 32px;
   width: 32px;
-  border: 2.5px solid transparent;
   font-size: 0;
 }
 
@@ -469,21 +543,15 @@ const nextLabel = computed(() => {
   --ionicon-stroke-weight: 700;
 }
 
-.rail-dot.kind-anc { border-color: #e0a52e; color: #b07d12; background: #fff8e6; }
-.rail-dot.kind-tt { border-color: #ff5c5c; color: #d63a3a; background: #ffecec; }
-.rail-dot.kind-milestone { border-color: #33a1de; color: #1d7cb0; background: #e9f6fd; }
-.rail-dot.kind-pnc { border-color: #7bc62d; color: #5a9a1d; background: #f0fadf; }
-
 .rail-dot.done {
   background: #1a3a6b;
-  border-color: #1a3a6b !important;
-  color: #fff !important;
+  color: #fff;
 }
 
 .rail-dot.today {
-  border-color: #7fb3e8 !important;
-  background: #bcdcff !important;
-  color: #1a3a6b !important;
+  border-color: #7fb3e8;
+  background: #bcdcff;
+  color: #1a3a6b;
   animation: today-pulse 2s ease-in-out infinite;
 }
 
@@ -560,8 +628,8 @@ const nextLabel = computed(() => {
 }
 
 .reminders-card {
-  flex: 2;
-  min-height: 260px;
+  flex: 1;
+  min-height: 300px;
   border: 1.5px solid rgba(246, 201, 69, 0.7);
   background-color: var(--color-card-bg, #ffffff);
   color: var(--color-card-text, #1a1a1a);
