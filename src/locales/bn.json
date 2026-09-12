@@ -185,32 +185,11 @@
       "anc": "প্রসবপূর্ণ সেবা (অ্যানসি)",
       "pnc": "প্রসবোত্তর সেবা (পিএনসি)",
       "danger_signs": "বিপদচিহ্ন",
-      "nutrition": "পুষ্টি",
       "vaccination": "টিকাদান"
     }
   },
-  "anc": {
-    "trimester": "ত্রৈমাসিক {n}",
-    "visit_content": "ভিজিটের তথ্যের স্থানধারক",
-    "tests_title": "সাধারণত করা পরীক্ষা",
-    "tests_placeholder": "পরীক্ষার তথ্যের স্থানধারক",
-    "visits": {
-      "visit1": "ভিজিট ১ (১৬ সপ্তাহের আগে)",
-      "visit2": "ভিজিট ২ (২৪–২৮ সপ্তাহ)",
-      "visit3": "ভিজিট ৩ (৩২ সপ্তাহ)",
-      "visit4": "ভিজিট ৪ (৩৬ সপ্তাহ)"
-    }
-  },
   "pnc": {
-    "contact_content": "যোগাযোগের তথ্যের স্থানধারক",
-    "breastfeeding_title": "মাতৃদুগ্ধ পানের সহায়তা",
-    "breastfeeding_placeholder": "মাতৃদুগ্ধ সংক্রান্ত তথ্যের স্থানধারক",
-    "contacts": {
-      "contact1": "যোগাযোগ ১ (২৪ ঘণ্টার মধ্যে)",
-      "contact2": "যোগাযোগ ২ (৪৮–৭২ ঘণ্টা)",
-      "contact3": "যোগাযোগ ৩ (৭–১৪ দিন)",
-      "contact4": "যোগাযোগ ৪ (৬ সপ্তাহ)"
-    }
+    "breastfeeding_title": "মাতৃদুগ্ধ পানের সহায়তা"
   },
   "tt": {
     "tracker_title": "টিটেনাস (টিটি) টিকা ট্র্যাকার",
@@ -223,26 +202,12 @@
     "date_unknown": "তারিখ অজানা",
     "no_doses": "এখনো কোনো ডোজ নথিভুক্ত হয়নি",
     "education_title": "টিটেনাস সম্পর্কে",
-    "education_placeholder": "টিটেনাস শিক্ষার তথ্যের স্থানধারক",
     "epi_card_title": "আপনার ইপিআই কার্ড",
     "epi_card_placeholder": "ইপিআই কার্ড নির্দেশনার স্থানধারক",
     "status_not_asked": "সেট করা হয়নি",
     "status_unknown": "ইতিহাস অজানা",
     "status_complete": "সম্পন্ন",
     "status_in_progress": "চলমান"
-  },
-  "nutrition": {
-    "page_title": "পুষ্টি",
-    "section_title": "পুষ্টি",
-    "placeholder": "পুষ্টি সংক্রান্ত তথ্যের স্থানধারক",
-    "content_placeholder": "পুষ্টি সংক্রান্ত তথ্যের স্থানধারক",
-    "topics": {
-      "healthy_diet": "সুষম খাদ্য",
-      "ifa": "আয়রন ও ফলিক অ্যাসিড",
-      "calcium": "ক্যালসিয়াম",
-      "hydration": "পানি ও বিশ্রাম",
-      "activity": "শারীরিক কার্যকলাপ"
-    }
   },
   "profile": {
     "title": "প্রোফাইল ও সেটিংস",

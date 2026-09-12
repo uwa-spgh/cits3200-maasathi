@@ -28,19 +28,20 @@
         </ul>
       </ExpandableCard>
 
-      <ExpandableCard :title="$t('tt.education_title')">
-        <PlaceholderBox :title="$t('tt.education_placeholder')" :hint="$t('placeholder.hint')" />
-      </ExpandableCard>
-
       <ExpandableCard :title="$t('tt.epi_card_title')">
         <PlaceholderBox :title="$t('tt.epi_card_placeholder')" :hint="$t('placeholder.hint')" />
       </ExpandableCard>
+
+      <button class="section-btn" @click="openTetanusInfo">
+        {{ $t('tt.education_title') }}
+      </button>
     </div>
   </PageShell>
 </template>
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useIonRouter } from '@ionic/vue';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
@@ -50,7 +51,12 @@ import { useI18n } from 'vue-i18n';
 import { formatDate } from '../utils/date';
 
 const { t, locale } = useI18n();
+const ionRouter = useIonRouter();
 const { history, doses, lifetimeDoseCount, isComplete, isUnknown } = useTt();
+
+function openTetanusInfo(): void {
+  ionRouter.push({ name: 'VaccinationTetanus' });
+}
 
 const statusLabel = computed(() => {
   if (!history.value || history.value.status === 'not_asked') return t('tt.status_not_asked');
@@ -78,6 +84,23 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.section-btn {
+  background-color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-btn-more-text, #000);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+}
+
+.section-btn:active {
+  transform: scale(0.97);
 }
 
 .tt-card {

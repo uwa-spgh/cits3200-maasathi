@@ -6,28 +6,41 @@
     color="green"
   >
     <div class="anc-page">
-      <button
-        v-for="trimester in [1, 2, 3]"
-        :key="trimester"
-        class="trimester-btn"
-        @click="openTrimester(trimester)"
+      <ExpandableCard
+        v-for="topic in infoTopics"
+        :key="topic.key"
+        :title="$t(`anc.${topic.key}_title`)"
       >
-        {{ $t('anc.trimester', { n: trimester }) }}
-      </button>
+        <ul class="sign-list">
+          <li v-for="n in topic.points" :key="n">{{ $t(`anc.${topic.key}.point${n}`) }}</li>
+        </ul>
+      </ExpandableCard>
     </div>
   </PageShell>
 </template>
 
 <script setup lang="ts">
-import { useIonRouter } from '@ionic/vue';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
+import ExpandableCard from '../components/ExpandableCard.vue';
 
-const ionRouter = useIonRouter();
-
-function openTrimester(n: number): void {
-  ionRouter.push({ name: 'AncTrimester', params: { trimester: String(n) } });
-}
+const infoTopics: { key: string; points: number }[] = [
+  { key: 'early_care', points: 2 },
+  { key: 'anc_visits', points: 2 },
+  { key: 'healthy_diet', points: 2 },
+  { key: 'iron_folic_acid', points: 2 },
+  { key: 'calcium_supplementation', points: 2 },
+  { key: 'physical_activity', points: 2 },
+  { key: 'hydration_rest', points: 2 },
+  { key: 'mental_wellbeing', points: 2 },
+  { key: 'danger_signs_note', points: 1 },
+  { key: 'birth_preparedness', points: 2 },
+  { key: 'skilled_birth_care', points: 2 },
+  { key: 'maternal_immunisation', points: 2 },
+  { key: 'avoid_harmful_substances', points: 2 },
+  { key: 'hygiene_infection_prevention', points: 2 },
+  { key: 'preparing_baby_care', points: 2 }
+];
 </script>
 
 <style scoped>
@@ -37,20 +50,13 @@ function openTrimester(n: number): void {
   gap: 14px;
 }
 
-.trimester-btn {
-  background-color: var(--color-btn-more-bg, #7bc62d);
-  color: var(--color-btn-more-text, #000);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 999px;
-  padding: 14px 20px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-  transition: transform 0.15s ease;
-}
-
-.trimester-btn:active {
-  transform: scale(0.97);
+.sign-list {
+  margin: 0;
+  padding-left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 0.9rem;
+  color: var(--color-card-text, #1a1a1a);
 }
 </style>

@@ -6,34 +6,45 @@
     color="green"
   >
     <div class="pnc-page">
+      <button class="section-btn" @click="openBreastfeeding">
+        {{ $t('pnc.breastfeeding_title') }}
+      </button>
+
       <ExpandableCard
-        v-for="contact in contacts"
-        :key="contact"
-        :title="$t(`pnc.contacts.${contact}`)"
+        v-for="topic in infoTopics"
+        :key="topic.key"
+        :title="$t(`pnc.${topic.key}_title`)"
       >
-        <PlaceholderBox :title="$t('pnc.contact_content')" :hint="$t('placeholder.hint')" />
-      </ExpandableCard>
-
-      <ExpandableCard :title="$t('danger_signs.newborn_title')">
         <ul class="sign-list">
-          <li v-for="n in 6" :key="n">{{ $t(`danger_signs.newborn.signs.sign${n}`) }}</li>
+          <li v-for="n in topic.points" :key="n">{{ $t(`pnc.${topic.key}.point${n}`) }}</li>
         </ul>
-      </ExpandableCard>
-
-      <ExpandableCard :title="$t('pnc.breastfeeding_title')">
-        <PlaceholderBox :title="$t('pnc.breastfeeding_placeholder')" :hint="$t('placeholder.hint')" />
       </ExpandableCard>
     </div>
   </PageShell>
 </template>
 
 <script setup lang="ts">
+import { useIonRouter } from '@ionic/vue';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
 
-const contacts = ['contact1', 'contact2', 'contact3', 'contact4'] as const;
+const ionRouter = useIonRouter();
+
+const infoTopics: { key: string; points: number }[] = [
+  { key: 'rest', points: 1 },
+  { key: 'bleeding', points: 1 },
+  { key: 'pain', points: 1 },
+  { key: 'eating', points: 1 },
+  { key: 'cleanliness', points: 1 },
+  { key: 'checkup', points: 1 },
+  { key: 'family_planning', points: 1 },
+  { key: 'mood', points: 1 }
+];
+
+function openBreastfeeding(): void {
+  ionRouter.push({ name: 'PncBreastfeeding' });
+}
 </script>
 
 <style scoped>
@@ -41,6 +52,23 @@ const contacts = ['contact1', 'contact2', 'contact3', 'contact4'] as const;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.section-btn {
+  background-color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-btn-more-text, #000);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+}
+
+.section-btn:active {
+  transform: scale(0.97);
 }
 
 .sign-list {
