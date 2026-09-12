@@ -334,7 +334,8 @@ const relativeLabel = computed(() => {
 }
 
 .item-card {
-  background-color: var(--color-card-bg, #eaeaea);
+  background-color: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
   border-radius: 16px;
   padding: 12px 14px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);

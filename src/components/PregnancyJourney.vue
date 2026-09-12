@@ -105,7 +105,8 @@ const markers = computed(() => {
 
 <style scoped>
 .journey-card {
-  background-color: var(--color-card-bg, #eaeaea);
+  background-color: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   padding: 16px 18px 14px 18px;
   color: var(--color-card-text, #1a1a1a);

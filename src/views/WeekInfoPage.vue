@@ -64,7 +64,8 @@ function goReminders(): void {
 }
 
 .stage-card {
-  background-color: var(--color-card-bg, #eaeaea);
+  background-color: #fff;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
   border-radius: 20px;
   padding: 20px;
   text-align: center;

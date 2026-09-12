@@ -50,16 +50,17 @@ const topics = computed(() => {
 }
 
 .topic-btn {
-  background-color: var(--color-btn-more-bg, #7bc62d);
-  color: var(--color-btn-more-text, #000);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 999px;
+  background-color: #fff;
+  color: var(--color-card-text, #1a1a1a);
+  border: 2px solid var(--color-information-bg, #7bc62d);
+  border-radius: 20px;
   padding: 14px 20px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.15s ease;
+  text-align: left;
 }
 
 .topic-btn:active {

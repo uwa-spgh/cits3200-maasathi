@@ -140,8 +140,9 @@ async function focusItem(item: ScheduleItem): Promise<void> {
 }
 
 .notice-card {
-  background-color: var(--color-reminders-bg, #f6c945);
-  color: var(--color-reminders-text, #000);
+  background-color: #fff;
+  border: 2px solid var(--color-reminders-bg, #f6c945);
+  color: var(--color-card-text, #1a1a1a);
   border-radius: 16px;
   padding: 12px 16px;
   font-size: 0.9rem;

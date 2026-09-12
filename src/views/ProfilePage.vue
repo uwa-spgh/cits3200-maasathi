@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="profile"
     :title="$t('profile.title')"
     :icon="personOutline"
     color="blue"
@@ -124,9 +125,9 @@ function openHistory(pregnancyId: string): void {
   align-items: center;
   gap: 14px;
   width: 100%;
-  background-color: var(--color-card-bg, #eaeaea);
+  background-color: #fff;
   color: var(--color-card-text, #1a1a1a);
-  border: none;
+  border: 1.5px solid rgba(0, 0, 0, 0.1);
   border-radius: 18px;
   padding: 16px;
   font-size: 1rem;

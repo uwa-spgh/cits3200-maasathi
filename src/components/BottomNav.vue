@@ -33,7 +33,7 @@ import { IonIcon } from '@ionic/vue';
 import { homeIcons } from '../config/icons';
 
 defineProps<{
-  active: 'home' | 'profile' | 'danger';
+  active: 'home' | 'profile' | 'danger' | 'none';
 }>();
 
 defineEmits<{

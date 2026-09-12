@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="danger"
     :title="$t('information.title')"
     :breadcrumb="$t('information.topics.danger_signs')"
     :icon="informationCircleOutline"
