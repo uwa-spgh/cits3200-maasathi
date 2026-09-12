@@ -73,7 +73,8 @@
       "nutrition_title": "Remember to eat well and move!",
       "nutrition_body": "Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits)",
       "listen": "Listen",
-      "learn_more": "Learn more"
+      "learn_more": "Learn more",
+      "wellbeing_placeholder": "Wellbeing information will appear here."
     },
     "rail": {
       "scroll_back": "Scroll timeline back",

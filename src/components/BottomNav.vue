@@ -49,7 +49,6 @@ defineEmits<{
   box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: flex-end;
-  justify-content: space-around;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)) 12px;
 }
 
@@ -66,6 +65,7 @@ defineEmits<{
   cursor: pointer;
   padding: 4px 12px;
   opacity: 0.85;
+  flex: 1;
 }
 
 .nav-item:active {

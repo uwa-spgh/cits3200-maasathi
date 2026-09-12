@@ -9,23 +9,25 @@
     </button>
 
     <div ref="trackEl" class="rail-track" role="list" :aria-label="$t('home.rail.timeline_label')">
-      <span class="rail-line" aria-hidden="true"></span>
-      <div
-        v-for="n in nodes"
-        :key="n.id"
-        class="node-slot"
-        role="listitem"
-      >
-        <span v-if="n.id === currentId" class="node-date">{{ n.dateLabel }}</span>
-        <button
-          class="node"
-          :class="{ done: n.done, current: n.id === currentId, selected: n.id === selectedId }"
-          :title="n.title"
-          :aria-label="n.title"
-          @click="$emit('select', n.id)"
+      <div class="nodes-row">
+        <span class="rail-line" aria-hidden="true"></span>
+        <div
+          v-for="n in nodes"
+          :key="n.id"
+          class="node-slot"
+          role="listitem"
         >
-          <IonIcon :icon="n.done ? homeIcons.nodeDone : homeIcons.nodeTodo" />
-        </button>
+          <span v-if="n.id === currentId" class="node-date">{{ n.dateLabel }}</span>
+          <button
+            class="node"
+            :class="{ done: n.done, current: n.id === currentId, selected: n.id === selectedId }"
+            :title="n.title"
+            :aria-label="n.title"
+            @click="$emit('select', n.id)"
+          >
+            <IonIcon :icon="n.done ? homeIcons.nodeDone : homeIcons.nodeTodo" />
+          </button>
+        </div>
       </div>
     </div>
 
@@ -95,6 +97,8 @@ function scrollBy(direction: 1 | -1): void {
   padding: 4px;
   flex-shrink: 0;
   display: flex;
+  /* optically align with the node row below the date-label space */
+  margin-top: 22px;
 }
 
 .rail-chevron:active {
@@ -106,19 +110,25 @@ function scrollBy(direction: 1 | -1): void {
 }
 
 .rail-track {
-  position: relative;
   flex: 1;
-  display: flex;
-  align-items: center;
-  gap: 10px;
   overflow-x: auto;
-  padding: 26px 4px 6px 4px;
+  padding: 28px 4px 6px 4px;
   scrollbar-width: none;
   scroll-behavior: smooth;
+  min-width: 0;
 }
 
 .rail-track::-webkit-scrollbar {
   display: none;
+}
+
+.nodes-row {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: max-content;
+  min-width: 100%;
 }
 
 .rail-line {

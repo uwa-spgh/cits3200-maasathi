@@ -79,7 +79,7 @@ import type { ScheduleItem } from '../db/schemas';
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { userName } = useUser();
-const { activePregnancy, mode, currentWeek, postpartumDay } = usePregnancy();
+const { activePregnancy } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 const { speak } = useSpeech();
 
@@ -157,15 +157,8 @@ function onRemindersTap(): void {
   go(activePregnancy.value ? 'Reminders' : 'Profile');
 }
 
-// ---- "How are you?" card: stage-appropriate wellbeing note ----
-const wellbeingBody = computed(() => {
-  if (!activePregnancy.value) return t('home.no_pregnancy');
-  if (mode.value === 'ANC') {
-    const week = currentWeek.value;
-    return week !== null ? t('home.info_anc', { week }) : t('home.info_anc_unknown');
-  }
-  return t('home.info_pnc', { day: postpartumDay.value });
-});
+// ---- "How are you?" card: short placeholder until stage content lands ----
+const wellbeingBody = computed(() => t('home.cards.wellbeing_placeholder'));
 </script>
 
 <style scoped>
