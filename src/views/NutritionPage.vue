@@ -11,7 +11,7 @@
         :key="topic"
         :title="$t(`nutrition.topics.${topic}`)"
       >
-        <PlaceholderBox :title="$t('nutrition.content_placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t(`nutrition.body.${topic}`) || $t('content.empty')" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -21,7 +21,7 @@
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
+import ContentText from '../components/ContentText.vue';
 
 const topics = ['healthy_diet', 'ifa', 'calcium', 'hydration', 'activity'] as const;
 </script>

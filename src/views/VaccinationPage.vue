@@ -29,11 +29,11 @@
       </ExpandableCard>
 
       <ExpandableCard :title="$t('tt.education_title')">
-        <PlaceholderBox :title="$t('tt.education_placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t('tt.about_body') || $t('content.empty')" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('tt.epi_card_title')">
-        <PlaceholderBox :title="$t('tt.epi_card_placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t('tt.epi_card_body') || $t('content.empty')" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -44,7 +44,7 @@ import { computed } from 'vue';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
+import ContentText from '../components/ContentText.vue';
 import { useTt } from '../composables/useTt';
 import { useI18n } from 'vue-i18n';
 import { formatDate } from '../utils/date';

@@ -105,6 +105,20 @@ maasathi/
 *   **Archiving:** After the 6-week PNC contact date passes, the pregnancy is automatically moved to history (accessible under Profile → Past pregnancies) with a full appointment record. It can also be closed early manually, and a new pregnancy registered at any time.
 *   **Reminders:** Local notifications are scheduled 7, 3, 1 and 0 days before every upcoming appointment or vaccination.
 
+## App Content (en.json / bn.json)
+All user-facing information lives in `src/locales/en.json` and `src/locales/bn.json` — there is no other content store. To write or correct app content, edit the values (never the keys) in both files:
+
+*   `nutrition.body.*` — the five nutrition topic articles.
+*   `anc.visit_body.*`, `anc.tests_body`, `anc.nutrition_body` — ANC visit articles.
+*   `pnc.contact_body.*`, `pnc.breastfeeding_body` — postnatal articles.
+*   `tt.about_body`, `tt.epi_card_body` — tetanus education.
+*   `week_info.body_stage`, `week_info.body_milestones` — This-Week articles.
+*   `danger_signs.*` — danger-sign titles and lists (already filled in).
+*   `home.cards.*` — home-screen card sentences and reminder templates (`{ordinal}` / `{date}` / `{week}` / `{day}` are filled in automatically — keep them in the text).
+*   `content.empty` — shown wherever a content value is still blank ("Content coming soon.").
+
+Use `\n` inside a value for paragraph breaks — pages render each line as its own paragraph. UI chrome (titles, buttons, labels) lives alongside the content under the other keys; content articles are the `*_body` keys and the lists above.
+
 ## Navigation Prototypes
 The app ships with two navigation implementations so they can be compared side by side:
 *   `homeBar` — a single centred home button at the bottom of every page, exactly as in the Figma mockups.

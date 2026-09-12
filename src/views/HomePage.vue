@@ -42,13 +42,13 @@
           accent="green"
           :title="$t('home.cards.nutrition_title')"
           :title-icon="homeIcons.nutritionTitle"
-          :body="$t('home.cards.nutrition_body')"
+          :body="nutritionBody"
           :graphic-icon="homeIcons.nutritionGraphicMain"
           :graphic-icon-secondary="homeIcons.nutritionGraphicSecondary"
           :listen-label="$t('home.cards.listen')"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="go('Nutrition')"
-          @listen="listen($t('home.cards.nutrition_body'))"
+          @listen="listen(nutritionBody)"
           @learn-more="go('Nutrition')"
         />
       </div>
@@ -159,6 +159,7 @@ function onRemindersTap(): void {
 
 // ---- "How are you?" card: short placeholder until stage content lands ----
 const wellbeingBody = computed(() => t('home.cards.wellbeing_placeholder'));
+const nutritionBody = computed(() => t('home.cards.nutrition_body') || t('content.empty'));
 </script>
 
 <style scoped>

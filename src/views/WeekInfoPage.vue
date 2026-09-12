@@ -9,15 +9,13 @@
         <p class="stage-label">{{ stageLabel }}</p>
       </div>
 
-      <PlaceholderBox
-        :title="$t('week_info.current_stage_info')"
-        :hint="$t('placeholder.hint')"
-      />
+      <ExpandableCard :title="$t('week_info.current_stage_info')">
+        <ContentText :text="$t('week_info.body_stage') || $t('content.empty')" />
+      </ExpandableCard>
 
-      <PlaceholderBox
-        :title="$t('week_info.upcoming_milestones')"
-        :hint="$t('placeholder.hint')"
-      />
+      <ExpandableCard :title="$t('week_info.upcoming_milestones')">
+        <ContentText :text="$t('week_info.body_milestones') || $t('content.empty')" />
+      </ExpandableCard>
 
       <IonButton expand="block" class="goto-btn" @click="goReminders">
         <IonIcon slot="start" :icon="timeOutline" />
@@ -33,7 +31,8 @@ import { useIonRouter } from '@ionic/vue';
 import { IonButton, IonIcon } from '@ionic/vue';
 import { calendarOutline, timeOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
+import ExpandableCard from '../components/ExpandableCard.vue';
+import ContentText from '../components/ContentText.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useI18n } from 'vue-i18n';
 

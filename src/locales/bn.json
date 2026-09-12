@@ -71,7 +71,7 @@
       "ordinal_4": "চতুর্থ",
       "wellbeing_title": "আপনি কেমন আছেন?",
       "nutrition_title": "ভালো করে খান এবং চলাফেরা করুন!",
-      "nutrition_body": "সাশ্রয়ী স্থানীয় খাবার (ভাত, ডাল, সবজি, ডিম, মাছ, ফল) দিয়ে সুষম খাবার খান",
+      "nutrition_body": "",
       "listen": "শুনুন",
       "learn_more": "আরও জানুন",
       "wellbeing_placeholder": "সুস্থতা তথ্য এখানে দেখা যাবে।"
@@ -98,7 +98,9 @@
     "no_pregnancy": "কোনো সক্রিয় গর্ভাবস্থা নেই",
     "week_of": "গর্ভাবস্থার {week} সপ্তাহ",
     "week_unknown": "গর্ভাবস্থার পর্যায় অজানা",
-    "day_after_birth": "প্রসবের {day} দিন পরে"
+    "day_after_birth": "প্রসবের {day} দিন পরে",
+    "body_stage": "",
+    "body_milestones": ""
   },
   "emergency": {
     "title": "জরুরি সেবা",
@@ -294,7 +296,15 @@
       "visit2": "ভিজিট ২ (২৪–২৮ সপ্তাহ)",
       "visit3": "ভিজিট ৩ (৩২ সপ্তাহ)",
       "visit4": "ভিজিট ৪ (৩৬ সপ্তাহ)"
-    }
+    },
+    "visit_body": {
+      "visit1": "",
+      "visit2": "",
+      "visit3": "",
+      "visit4": ""
+    },
+    "tests_body": "",
+    "nutrition_body": ""
   },
   "pnc": {
     "contact_content": "যোগাযোগের তথ্যের স্থানধারক",
@@ -305,7 +315,14 @@
       "contact2": "যোগাযোগ ২ (৪৮–৭২ ঘণ্টা)",
       "contact3": "যোগাযোগ ৩ (৭–১৪ দিন)",
       "contact4": "যোগাযোগ ৪ (৬ সপ্তাহ)"
-    }
+    },
+    "contact_body": {
+      "contact1": "",
+      "contact2": "",
+      "contact3": "",
+      "contact4": ""
+    },
+    "breastfeeding_body": ""
   },
   "tt": {
     "tracker_title": "টিটেনাস (টিটি) টিকা ট্র্যাকার",
@@ -324,7 +341,9 @@
     "status_not_asked": "সেট করা হয়নি",
     "status_unknown": "ইতিহাস অজানা",
     "status_complete": "সম্পন্ন",
-    "status_in_progress": "চলমান"
+    "status_in_progress": "চলমান",
+    "about_body": "",
+    "epi_card_body": ""
   },
   "nutrition": {
     "page_title": "পুষ্টি",
@@ -337,6 +356,13 @@
       "calcium": "ক্যালসিয়াম",
       "hydration": "পানি ও বিশ্রাম",
       "activity": "শারীরিক কার্যকলাপ"
+    },
+    "body": {
+      "healthy_diet": "",
+      "ifa": "",
+      "calcium": "",
+      "hydration": "",
+      "activity": ""
     }
   },
   "profile": {
@@ -466,5 +492,8 @@
     "information_color": "তথ্য",
     "profile_color": "প্রোফাইল",
     "reset": "রিসেট"
+  },
+  "content": {
+    "empty": "বিষয়বস্তু শীঘ্রই আসছে।"
   }
 }

@@ -71,7 +71,7 @@
       "ordinal_4": "fourth",
       "wellbeing_title": "How are you?",
       "nutrition_title": "Remember to eat well and move!",
-      "nutrition_body": "Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits)",
+      "nutrition_body": "",
       "listen": "Listen",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here."
@@ -98,7 +98,9 @@
     "no_pregnancy": "No active pregnancy",
     "week_of": "Week {week} of pregnancy",
     "week_unknown": "Pregnancy stage unknown",
-    "day_after_birth": "Day {day} after birth"
+    "day_after_birth": "Day {day} after birth",
+    "body_stage": "",
+    "body_milestones": ""
   },
   "emergency": {
     "title": "Emergency",
@@ -294,7 +296,15 @@
       "visit2": "Visit 2 (24–28 weeks)",
       "visit3": "Visit 3 (32 weeks)",
       "visit4": "Visit 4 (36 weeks)"
-    }
+    },
+    "visit_body": {
+      "visit1": "",
+      "visit2": "",
+      "visit3": "",
+      "visit4": ""
+    },
+    "tests_body": "",
+    "nutrition_body": ""
   },
   "pnc": {
     "contact_content": "Contact content placeholder",
@@ -305,7 +315,14 @@
       "contact2": "Contact 2 (48–72 hours)",
       "contact3": "Contact 3 (7–14 days)",
       "contact4": "Contact 4 (6 weeks)"
-    }
+    },
+    "contact_body": {
+      "contact1": "",
+      "contact2": "",
+      "contact3": "",
+      "contact4": ""
+    },
+    "breastfeeding_body": ""
   },
   "tt": {
     "tracker_title": "Tetanus (TT) vaccination tracker",
@@ -324,7 +341,9 @@
     "status_not_asked": "Not set",
     "status_unknown": "History unknown",
     "status_complete": "Complete",
-    "status_in_progress": "In progress"
+    "status_in_progress": "In progress",
+    "about_body": "",
+    "epi_card_body": ""
   },
   "nutrition": {
     "page_title": "Nutrition",
@@ -337,6 +356,13 @@
       "calcium": "Calcium",
       "hydration": "Hydration and rest",
       "activity": "Physical activity"
+    },
+    "body": {
+      "healthy_diet": "",
+      "ifa": "",
+      "calcium": "",
+      "hydration": "",
+      "activity": ""
     }
   },
   "profile": {
@@ -466,5 +492,8 @@
     "information_color": "Information",
     "profile_color": "Profile",
     "reset": "Reset"
+  },
+  "content": {
+    "empty": "Content coming soon."
   }
 }

@@ -11,7 +11,7 @@
         :key="contact"
         :title="$t(`pnc.contacts.${contact}`)"
       >
-        <PlaceholderBox :title="$t('pnc.contact_content')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t(`pnc.contact_body.${contact}`) || $t('content.empty')" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('danger_signs.newborn_title')">
@@ -21,7 +21,7 @@
       </ExpandableCard>
 
       <ExpandableCard :title="$t('pnc.breastfeeding_title')">
-        <PlaceholderBox :title="$t('pnc.breastfeeding_placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t('pnc.breastfeeding_body') || $t('content.empty')" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -31,7 +31,7 @@
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
+import ContentText from '../components/ContentText.vue';
 
 const contacts = ['contact1', 'contact2', 'contact3', 'contact4'] as const;
 </script>
