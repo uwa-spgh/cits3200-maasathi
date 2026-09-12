@@ -57,6 +57,31 @@
       "view_all": "View all",
       "conceived": "Got pregnant",
       "baby_due": "Baby due"
+    },
+    "cards": {
+      "reminder_title": "Reminder",
+      "reminder_anc": "You have your {ordinal} ANC visit on {date}",
+      "reminder_pnc": "You have your {ordinal} postnatal contact on {date}",
+      "reminder_tt": "Your tetanus vaccination is due on {date}",
+      "reminder_edd": "Your due date is {date}",
+      "reminder_generic": "{title} · {date}",
+      "ordinal_1": "first",
+      "ordinal_2": "second",
+      "ordinal_3": "third",
+      "ordinal_4": "fourth",
+      "wellbeing_title": "How are you?",
+      "nutrition_title": "Remember to eat well and move!",
+      "nutrition_body": "Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits)",
+      "listen": "Listen",
+      "learn_more": "Learn more"
+    },
+    "rail": {
+      "scroll_back": "Scroll timeline back",
+      "scroll_forward": "Scroll timeline forward",
+      "timeline_label": "Pregnancy timeline"
+    },
+    "nav": {
+      "label": "Main navigation"
     }
   },
   "language": {

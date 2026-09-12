@@ -57,6 +57,31 @@
       "view_all": "সব দেখুন",
       "conceived": "গর্ভধারণ শুরু",
       "baby_due": "প্রসবের সময়"
+    },
+    "cards": {
+      "reminder_title": "রিমাইন্ডার",
+      "reminder_anc": "আপনার {ordinal} ANC ভিজিট {date}",
+      "reminder_pnc": "আপনার {ordinal} প্রসব-পরবর্তী যোগাযোগ {date}",
+      "reminder_tt": "আপনার টিটেনাস টিকা {date} তারিখে দেওয়ার সময়",
+      "reminder_edd": "আপনার সম্ভাব্য প্রসবের তারিখ {date}",
+      "reminder_generic": "{title} · {date}",
+      "ordinal_1": "প্রথম",
+      "ordinal_2": "দ্বিতীয়",
+      "ordinal_3": "তৃতীয়",
+      "ordinal_4": "চতুর্থ",
+      "wellbeing_title": "আপনি কেমন আছেন?",
+      "nutrition_title": "ভালো করে খান এবং চলাফেরা করুন!",
+      "nutrition_body": "সাশ্রয়ী স্থানীয় খাবার (ভাত, ডাল, সবজি, ডিম, মাছ, ফল) দিয়ে সুষম খাবার খান",
+      "listen": "শুনুন",
+      "learn_more": "আরও জানুন"
+    },
+    "rail": {
+      "scroll_back": "টাইমলাইন পেছনে স্ক্রল করুন",
+      "scroll_forward": "টাইমলাইন সামনে স্ক্রল করুন",
+      "timeline_label": "গর্ভাবস্থার টাইমলাইন"
+    },
+    "nav": {
+      "label": "প্রধান নেভিগেশন"
     }
   },
   "language": {
