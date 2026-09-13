@@ -9,6 +9,7 @@
         v-for="topic in topics"
         :key="topic.route"
         class="topic-btn"
+        :class="{ danger: topic.key === 'danger_signs' }"
         @click="ionRouter.push({ name: topic.route })"
       >
         {{ $t(`information.topics.${topic.key}`) }}
@@ -65,5 +66,9 @@ const topics = computed(() => {
 
 .topic-btn:active {
   transform: scale(0.97);
+}
+
+.topic-btn.danger {
+  border-color: var(--color-emergency-bg, #ff5c5c);
 }
 </style>
