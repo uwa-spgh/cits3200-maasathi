@@ -7,12 +7,12 @@
  * exports (each resolves to an SVG path string for `<IonIcon>`).
  */
 import {
-  checkmarkCircle,
   chevronBackCircle,
   chevronForwardCircle,
-  ellipseOutline,
   happyOutline,
+  heartOutline,
   home,
+  homeOutline,
   informationCircleOutline,
   nutritionOutline,
   personOutline,
@@ -30,9 +30,12 @@ export const homeIcons = {
   railBack: chevronBackCircle,
   railForward: chevronForwardCircle,
   /** Timeline node states */
-  nodeDone: checkmarkCircle,
-  nodeTodo: ellipseOutline,
   nodeAction: shieldCheckmarkOutline,
+  /** Timeline node per event type — shown inside every circle */
+  nodeAnc: pulseOutline,
+  nodePnc: homeOutline,
+  nodeTt: shieldCheckmarkOutline,
+  nodeMilestone: heartOutline,
   /** Reminder card: title icon + large graphic */
   reminderTitle: timeOutline,
   reminderGraphic: pulseOutline,

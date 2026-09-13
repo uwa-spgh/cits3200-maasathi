@@ -10,7 +10,7 @@
     </button>
 
     <div ref="trackEl" class="rail-track" role="list" :aria-label="$t('home.rail.timeline_label')">
-      <div class="nodes-row">
+      <div class="nodes-row" :class="{ spread }">
         <span class="rail-line" aria-hidden="true"></span>
         <div
           v-for="n in nodes"
@@ -26,7 +26,7 @@
             :aria-label="n.title"
             @click="$emit('select', n.id)"
           >
-            <IonIcon :icon="n.action ? homeIcons.nodeAction : n.done ? homeIcons.nodeDone : homeIcons.nodeTodo" />
+            <IonIcon :icon="n.action ? homeIcons.nodeAction : n.icon" />
           </button>
         </div>
       </div>
@@ -68,6 +68,23 @@ const trackEl = ref<HTMLElement | null>(null);
 
 const canGoBack = ref(false);
 const canGoForward = ref(false);
+const spread = ref(true);
+
+type NodeKind = 'anc' | 'pnc' | 'tt' | 'milestone';
+
+function kindOf(item: ScheduleItem): NodeKind {
+  if (item.type === 'ANC') return 'anc';
+  if (item.type === 'PNC') return 'pnc';
+  if (item.type === 'TT') return 'tt';
+  return 'milestone';
+}
+
+function kindIcon(kind: NodeKind): string {
+  if (kind === 'anc') return homeIcons.nodeAnc;
+  if (kind === 'pnc') return homeIcons.nodePnc;
+  if (kind === 'tt') return homeIcons.nodeTt;
+  return homeIcons.nodeMilestone;
+}
 
 const nodes = computed(() => {
   const sorted = props.items
@@ -77,6 +94,7 @@ const nodes = computed(() => {
     id: i.id,
     done: i.status === 'completed',
     action: false,
+    icon: kindIcon(kindOf(i)),
     dateLabel: formatDayMonthShort(i.dueDate, locale.value),
     title: `${t(i.titleKey)} · ${formatDate(i.dueDate, locale.value)}`
   }));
@@ -87,6 +105,7 @@ const nodes = computed(() => {
       id: props.actionNode.id,
       done: false,
       action: true,
+      icon: homeIcons.nodeAction,
       dateLabel: '',
       title: props.actionNode.title
     };
@@ -101,10 +120,13 @@ function updateChevrons(): void {
   if (!el) {
     canGoBack.value = false;
     canGoForward.value = false;
+    spread.value = true;
     return;
   }
   canGoBack.value = el.scrollLeft > 4;
   canGoForward.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+  // When everything fits, spread the events across the full rail width.
+  spread.value = el.scrollWidth <= el.clientWidth + 1;
 }
 
 let observer: ResizeObserver | null = null;
@@ -191,6 +213,11 @@ function scrollBy(direction: 1 | -1): void {
   min-width: 100%;
 }
 
+.nodes-row.spread {
+  width: 100%;
+  justify-content: space-between;
+}
+
 .rail-line {
   position: absolute;
   left: 0;
@@ -220,13 +247,17 @@ function scrollBy(direction: 1 | -1): void {
 }
 
 .node {
-  border: none;
-  background: var(--color-app-bg, #fbf7f5);
+  border: 2.5px solid var(--color-card-text, #1a1a1a);
+  background: #fff;
+  color: var(--color-card-text, #1a1a1a);
   border-radius: 50%;
   padding: 0;
   cursor: pointer;
   display: flex;
-  color: rgba(0, 0, 0, 0.35);
+  align-items: center;
+  justify-content: center;
+  height: 34px;
+  width: 34px;
   transition: transform 0.15s ease;
 }
 
@@ -235,11 +266,12 @@ function scrollBy(direction: 1 | -1): void {
 }
 
 .node ion-icon {
-  font-size: 1.35rem;
+  font-size: 1.15rem;
 }
 
 .node.done {
-  color: var(--color-card-text, #1a1a1a);
+  background: var(--color-card-text, #1a1a1a);
+  color: #fff;
 }
 
 .node.current {
