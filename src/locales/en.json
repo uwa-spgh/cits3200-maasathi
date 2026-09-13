@@ -275,7 +275,8 @@
       "show_more": "Show {count} more",
       "show_past": "Show past ({count})",
       "hide_past": "Hide past"
-    }
+    },
+    "prep_title": "Before your visit"
   },
   "information": {
     "title": "Information",
@@ -305,7 +306,13 @@
       "visit4": ""
     },
     "tests_body": "",
-    "nutrition_body": ""
+    "nutrition_body": "",
+    "prep": {
+      "visit1": "",
+      "visit2": "",
+      "visit3": "",
+      "visit4": ""
+    }
   },
   "pnc": {
     "contact_content": "Contact content placeholder",
@@ -323,7 +330,13 @@
       "contact3": "",
       "contact4": ""
     },
-    "breastfeeding_body": ""
+    "breastfeeding_body": "",
+    "prep": {
+      "contact1": "",
+      "contact2": "",
+      "contact3": "",
+      "contact4": ""
+    }
   },
   "tt": {
     "tracker_title": "Tetanus (TT) vaccination tracker",
@@ -344,7 +357,8 @@
     "status_complete": "Complete",
     "status_in_progress": "In progress",
     "about_body": "",
-    "epi_card_body": ""
+    "epi_card_body": "",
+    "prep": ""
   },
   "nutrition": {
     "page_title": "Nutrition",

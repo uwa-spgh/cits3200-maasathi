@@ -275,7 +275,8 @@
       "show_more": "আরও {count}টি দেখুন",
       "show_past": "অতীত দেখুন ({count})",
       "hide_past": "অতীত লুকান"
-    }
+    },
+    "prep_title": "ভিজিটের আগে"
   },
   "information": {
     "title": "তথ্য",
@@ -305,7 +306,13 @@
       "visit4": ""
     },
     "tests_body": "",
-    "nutrition_body": ""
+    "nutrition_body": "",
+    "prep": {
+      "visit1": "",
+      "visit2": "",
+      "visit3": "",
+      "visit4": ""
+    }
   },
   "pnc": {
     "contact_content": "যোগাযোগের তথ্যের স্থানধারক",
@@ -323,7 +330,13 @@
       "contact3": "",
       "contact4": ""
     },
-    "breastfeeding_body": ""
+    "breastfeeding_body": "",
+    "prep": {
+      "contact1": "",
+      "contact2": "",
+      "contact3": "",
+      "contact4": ""
+    }
   },
   "tt": {
     "tracker_title": "টিটেনাস (টিটি) টিকা ট্র্যাকার",
@@ -344,7 +357,8 @@
     "status_complete": "সম্পন্ন",
     "status_in_progress": "চলমান",
     "about_body": "",
-    "epi_card_body": ""
+    "epi_card_body": "",
+    "prep": ""
   },
   "nutrition": {
     "page_title": "পুষ্টি",

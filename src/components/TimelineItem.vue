@@ -19,6 +19,10 @@
           />
         </div>
         <div v-if="expanded" class="item-detail">
+          <div v-if="prepKey" class="prep-box">
+            <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
+            <ContentText :text="$t(prepKey) || $t('content.empty')" />
+          </div>
           <div class="detail-actions">
             <IonButton
               v-if="item.status !== 'completed'"
@@ -55,6 +59,7 @@ import {
   checkmarkOutline
 } from 'ionicons/icons';
 import { useI18n } from 'vue-i18n';
+import ContentText from './ContentText.vue';
 import type { ScheduleItem } from '../db/schemas';
 import { formatDate } from '../utils/date';
 import { daysBetween, todayIso } from '../utils/date';
@@ -95,6 +100,16 @@ const statusClass = computed(() => {
 });
 
 const dateDisplay = computed(() => formatDate(props.item.dueDate, locale.value));
+
+/** Per-visit prep notes live in the locale files (anc/pnc prep, tt prep).
+ *  Shown for upcoming visits only — completed ones stay basic. */
+const prepKey = computed<string | null>(() => {
+  if (props.item.status === 'completed') return null;
+  if (props.item.type === 'ANC') return `anc.prep.${props.item.ref}`;
+  if (props.item.type === 'PNC') return `pnc.prep.${props.item.ref}`;
+  if (props.item.type === 'TT') return 'tt.prep';
+  return null;
+});
 
 const dueLabel = computed(() => {
   if (props.item.status === 'completed') return translate('timeline.status_done');
@@ -287,6 +302,20 @@ const relativeLabel = computed(() => {
 .detail-actions {
   display: flex;
   justify-content: flex-end;
+}
+
+.prep-box {
+  background-color: var(--color-app-bg, #fbf7f5);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+}
+
+.prep-title {
+  margin: 0 0 4px 0;
+  font-size: 0.82rem;
+  font-weight: 800;
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .action-btn {
