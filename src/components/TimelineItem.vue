@@ -24,7 +24,7 @@
             <ContentText :text="infoBody || ''" />
           </div>
           <div v-if="articleKey" class="prep-box">
-            <p class="prep-title">{{ $t('timeline.about_visit') }}</p>
+            <p class="prep-title">{{ $t(articleTitleKey) }}</p>
             <ContentText :text="$t(articleKey) || $t('content.empty')" />
           </div>
           <div v-if="prepKey" class="prep-box">
@@ -124,12 +124,17 @@ const prepKey = computed<string | null>(() => {
   return null;
 });
 
-/** Visit article (Layla's content) — shown on ANC/PNC reminders, past or future. */
+/** Visit/vaccine article (authored content) — shown on ANC/PNC/TT reminders. */
 const articleKey = computed<string | null>(() => {
   if (props.item.type === 'ANC') return `anc.visit_body.${props.item.ref}`;
   if (props.item.type === 'PNC') return `pnc.contact_body.${props.item.ref}`;
+  if (props.item.type === 'TT') return 'tt.about_body';
   return null;
 });
+
+const articleTitleKey = computed(() =>
+  props.item.type === 'TT' ? 'timeline.about_vaccine' : 'timeline.about_visit'
+);
 
 const dueLabel = computed(() => {
   if (props.item.status === 'completed') return translate('timeline.status_done');
