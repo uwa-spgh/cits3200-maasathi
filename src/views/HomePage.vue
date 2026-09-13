@@ -4,7 +4,7 @@
       <div class="header-inner">
         <p class="brand-tag">MaaSathi app</p>
         <h1 class="greeting">
-          {{ $t('home.greeting', { name: userName || $t('home.default_name') }) }}
+          {{ $t('greeting', { name: userName || $t('home.default_name') }) }}
         </h1>
       </div>
     </IonHeader>
