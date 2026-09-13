@@ -11,9 +11,7 @@
         <HomeTimelineRail
           :items="items"
           :current-id="shownEvent?.id ?? null"
-          :selected-id="selectedId"
-          :action-node="ttActionNode"
-          @select="previewEvent"
+          @select="openEvent"
         />
 
         <HomeCard
@@ -62,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { IonContent, IonFooter, IonPage, useIonRouter } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
 
@@ -85,8 +83,6 @@ const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 const { speak } = useSpeech();
 const { isComplete: ttComplete, load: loadTt } = useTt();
-
-const selectedId = ref<string | null>(null);
 
 onMounted(() => {
   void loadSchedule();
@@ -115,23 +111,18 @@ const nextEvent = computed<ScheduleItem | null>(() => {
   );
 });
 
-// Tapping a rail node previews that event in the reminder card.
+// The reminder card always shows the next thing needing attention.
 const shownEvent = computed<ScheduleItem | null>(() => {
   if (!activePregnancy.value) return null;
-  if (selectedId.value) {
-    return items.value.find((i) => i.id === selectedId.value) ?? nextEvent.value;
-  }
   return nextEvent.value;
 });
 
-async function previewEvent(id: string): Promise<void> {
+function openEvent(id: string): void {
   if (id === 'tt-action') {
     go('ProfileVaccination');
     return;
   }
-  selectedId.value = id;
-  await nextTick();
-  document.getElementById('home-reminder-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
 
 // Tetanus never makes it into the schedule when the history is unknown,
@@ -170,7 +161,12 @@ const reminderBody = computed(() => {
 });
 
 function onRemindersTap(): void {
-  go(activePregnancy.value ? 'Reminders' : 'Profile');
+  if (!activePregnancy.value) {
+    go('Profile');
+    return;
+  }
+  const id = shownEvent.value?.id;
+  ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
 }
 
 // ---- "How are you?" card: short placeholder until stage content lands ----

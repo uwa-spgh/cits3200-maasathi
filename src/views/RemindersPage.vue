@@ -5,13 +5,6 @@
     color="yellow"
   >
     <div class="reminders-page">
-      <!-- Zoomed out: where am I in the whole journey -->
-      <PregnancyJourney
-        :items="items"
-        :selected-id="expandedId"
-        @select="focusItem"
-      />
-
       <div v-if="ttNotice" class="notice-card">
         {{ $t('timeline.tt_unknown_notice') }}
       </div>
@@ -63,17 +56,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue';
+import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { useRoute } from 'vue-router';
 import { timeOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import TimelineList from '../components/TimelineList.vue';
-import PregnancyJourney from '../components/PregnancyJourney.vue';
 import { useSchedule } from '../composables/useSchedule';
 import { useTt } from '../composables/useTt';
 import { usePregnancy } from '../composables/usePregnancy';
 import type { ScheduleItem } from '../db/schemas';
 import { todayIso } from '../utils/date';
 
+const route = useRoute();
 const { activePregnancy } = usePregnancy();
 const { items, markCompleted, markUpcoming } = useSchedule();
 const { isUnknown } = useTt();
@@ -107,9 +101,30 @@ const pastItems = computed(() =>
     .sort((a, b) => (b.completedAt ?? b.dueDate).localeCompare(a.completedAt ?? a.dueDate))
 );
 
-onMounted(() => {
-  void useSchedule().load();
+onMounted(async () => {
+  await useSchedule().load();
+  await applyFocusQuery();
 });
+
+watch(
+  () => route.query.focus,
+  () => {
+    void applyFocusQuery();
+  }
+);
+
+/** Deep link from Home (?focus=<itemId>): reveal that item and scroll to it. */
+async function applyFocusQuery(): Promise<void> {
+  const id = route.query.focus;
+  if (typeof id !== 'string' || id === '') return;
+  const item = items.value.find((i) => i.id === id);
+  if (!item) return;
+  if (upcomingRest.value.some((i) => i.id === id)) showAllUpcoming.value = true;
+  if (pastItems.value.some((i) => i.id === id)) showPast.value = true;
+  expandedId.value = id;
+  await nextTick();
+  document.getElementById(`tl-item-${id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
 
 function toggleExpand(id: string): void {
   expandedId.value = expandedId.value === id ? null : id;
@@ -121,14 +136,6 @@ async function onComplete(item: ScheduleItem): Promise<void> {
 
 async function onUndo(item: ScheduleItem): Promise<void> {
   await markUpcoming(item);
-}
-
-async function focusItem(item: ScheduleItem): Promise<void> {
-  // Tapping a dot on the overview reveals that task below.
-  if (item.status === 'completed') showPast.value = true;
-  expandedId.value = item.id;
-  await nextTick();
-  document.getElementById(`tl-item-${item.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
 </script>
 
