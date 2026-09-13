@@ -79,7 +79,8 @@
     "rail": {
       "scroll_back": "Scroll timeline back",
       "scroll_forward": "Scroll timeline forward",
-      "timeline_label": "Pregnancy timeline"
+      "timeline_label": "Pregnancy timeline",
+      "tt_action": "Tetanus vaccination — confirm with your health worker"
     },
     "nav": {
       "label": "Main navigation"

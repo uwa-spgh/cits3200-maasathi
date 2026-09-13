@@ -12,6 +12,7 @@
           :items="items"
           :current-id="shownEvent?.id ?? null"
           :selected-id="selectedId"
+          :action-node="ttActionNode"
           @select="previewEvent"
         />
 
@@ -72,6 +73,7 @@ import { homeIcons } from '../config/icons';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { useSpeech } from '../composables/useSpeech';
+import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import { formatDayMonthLong, todayIso } from '../utils/date';
 import type { ScheduleItem } from '../db/schemas';
@@ -79,14 +81,16 @@ import type { ScheduleItem } from '../db/schemas';
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { userName } = useUser();
-const { activePregnancy } = usePregnancy();
+const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 const { speak } = useSpeech();
+const { isComplete: ttComplete, load: loadTt } = useTt();
 
 const selectedId = ref<string | null>(null);
 
 onMounted(() => {
   void loadSchedule();
+  void loadTt();
 });
 
 function go(routeName: string): void {
@@ -121,10 +125,22 @@ const shownEvent = computed<ScheduleItem | null>(() => {
 });
 
 async function previewEvent(id: string): Promise<void> {
+  if (id === 'tt-action') {
+    go('ProfileVaccination');
+    return;
+  }
   selectedId.value = id;
   await nextTick();
   document.getElementById('home-reminder-card')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 }
+
+// Tetanus never makes it into the schedule when the history is unknown,
+// so surface it as an explicit action node instead of dropping it.
+const ttActionNode = computed<{ id: string; title: string } | null>(() => {
+  if (!activePregnancy.value || mode.value !== 'ANC' || ttComplete.value) return null;
+  if (items.value.some((i) => i.type === 'TT')) return null;
+  return { id: 'tt-action', title: t('home.rail.tt_action') };
+});
 
 function visitNumber(item: ScheduleItem | null): number | null {
   if (!item) return null;

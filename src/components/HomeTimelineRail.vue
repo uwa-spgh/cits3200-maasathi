@@ -1,6 +1,7 @@
 <template>
   <div class="rail-row">
     <button
+      v-if="canGoBack"
       class="rail-chevron"
       :aria-label="$t('home.rail.scroll_back')"
       @click="scrollBy(-1)"
@@ -25,13 +26,14 @@
             :aria-label="n.title"
             @click="$emit('select', n.id)"
           >
-            <IonIcon :icon="n.done ? homeIcons.nodeDone : homeIcons.nodeTodo" />
+            <IonIcon :icon="n.action ? homeIcons.nodeAction : n.done ? homeIcons.nodeDone : homeIcons.nodeTodo" />
           </button>
         </div>
       </div>
     </div>
 
     <button
+      v-if="canGoForward"
       class="rail-chevron"
       :aria-label="$t('home.rail.scroll_forward')"
       @click="scrollBy(1)"
@@ -42,17 +44,19 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 import { IonIcon } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
 import { homeIcons } from '../config/icons';
-import { formatDayMonthShort, formatDate } from '../utils/date';
+import { formatDayMonthShort, formatDate, todayIso } from '../utils/date';
 import type { ScheduleItem } from '../db/schemas';
 
 const props = defineProps<{
   items: ScheduleItem[];
   currentId?: string | null;
   selectedId?: string | null;
+  /** Extra action node, e.g. confirming TT vaccination when history is unknown. */
+  actionNode?: { id: string; title: string } | null;
 }>();
 
 defineEmits<{
@@ -62,16 +66,72 @@ defineEmits<{
 const { t, locale } = useI18n();
 const trackEl = ref<HTMLElement | null>(null);
 
-const nodes = computed(() =>
-  props.items
+const canGoBack = ref(false);
+const canGoForward = ref(false);
+
+const nodes = computed(() => {
+  const sorted = props.items
     .slice()
-    .sort((a, b) => a.dueDate.localeCompare(b.dueDate))
-    .map((i) => ({
-      id: i.id,
-      done: i.status === 'completed',
-      dateLabel: formatDayMonthShort(i.dueDate, locale.value),
-      title: `${t(i.titleKey)} · ${formatDate(i.dueDate, locale.value)}`
-    }))
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  const list = sorted.map((i) => ({
+    id: i.id,
+    done: i.status === 'completed',
+    action: false,
+    dateLabel: formatDayMonthShort(i.dueDate, locale.value),
+    title: `${t(i.titleKey)} · ${formatDate(i.dueDate, locale.value)}`
+  }));
+  if (props.actionNode) {
+    // No due date is known, so it sits at the "now" position in the rail.
+    const at = sorted.findIndex((i) => i.dueDate > todayIso());
+    const node = {
+      id: props.actionNode.id,
+      done: false,
+      action: true,
+      dateLabel: '',
+      title: props.actionNode.title
+    };
+    if (at < 0) list.push(node);
+    else list.splice(at, 0, node);
+  }
+  return list;
+});
+
+function updateChevrons(): void {
+  const el = trackEl.value;
+  if (!el) {
+    canGoBack.value = false;
+    canGoForward.value = false;
+    return;
+  }
+  canGoBack.value = el.scrollLeft > 4;
+  canGoForward.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+}
+
+let observer: ResizeObserver | null = null;
+
+function onTrackScroll(): void {
+  updateChevrons();
+}
+
+onMounted(() => {
+  void nextTick().then(() => updateChevrons());
+  if (typeof ResizeObserver !== 'undefined' && trackEl.value) {
+    observer = new ResizeObserver(() => updateChevrons());
+    observer.observe(trackEl.value);
+  }
+  trackEl.value?.addEventListener('scroll', onTrackScroll, { passive: true });
+});
+
+onUnmounted(() => {
+  observer?.disconnect();
+  trackEl.value?.removeEventListener('scroll', onTrackScroll);
+});
+
+watch(
+  () => [props.items.length, props.actionNode?.id, locale.value],
+  () => {
+    void nextTick().then(() => updateChevrons());
+  }
 );
 
 function scrollBy(direction: 1 | -1): void {

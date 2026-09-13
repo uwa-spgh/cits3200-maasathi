@@ -17,6 +17,7 @@ import {
   nutritionOutline,
   personOutline,
   pulseOutline,
+  shieldCheckmarkOutline,
   timeOutline,
   volumeHighOutline,
   walkOutline,
@@ -31,6 +32,7 @@ export const homeIcons = {
   /** Timeline node states */
   nodeDone: checkmarkCircle,
   nodeTodo: ellipseOutline,
+  nodeAction: shieldCheckmarkOutline,
   /** Reminder card: title icon + large graphic */
   reminderTitle: timeOutline,
   reminderGraphic: pulseOutline,
