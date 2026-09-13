@@ -19,19 +19,34 @@
           <span>{{ $t('home.cards.listen') }}</span>
         </button>
       </ExpandableCard>
+            
+      <button
+        class="breastfeeding-link"
+        type="button"
+        @click="ionRouter.push({ name: 'PncBreastfeeding' })"
+      >
+        <span>{{ $t('pnc.breastfeeding_title') }}</span>
+        <IonIcon :icon="chevronForwardOutline" />
+      </button>
     </div>
   </PageShell>
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from '@ionic/vue';
-import { informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
+import { IonIcon, useIonRouter } from '@ionic/vue';
+import {
+  informationCircleOutline,
+  volumeMediumOutline,
+  chevronForwardOutline
+} from 'ionicons/icons';
+  
 import { useI18n } from 'vue-i18n';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import { useSpeech } from '../composables/useSpeech';
 
 const { t, locale } = useI18n();
+const ionRouter = useIonRouter();
 const { speak } = useSpeech();
 
 interface Topic {
@@ -95,5 +110,19 @@ function listenTopic(topic: Topic): void {
 
 .topic-listen-btn:active {
   background: #e2e8f0;
+}
+
+.breastfeeding-link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #cbd5e1;
+  border-radius: 10px;
+  background: white;
+  color: #1a1a1a;
+  font-weight: 700;
+  cursor: pointer;
 }
 </style>
