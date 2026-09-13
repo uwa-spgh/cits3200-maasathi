@@ -39,7 +39,7 @@
 import { IonIcon } from '@ionic/vue';
 import { homeIcons } from '../config/icons';
 
-export type CardAccent = 'yellow' | 'blue' | 'green';
+export type CardAccent = 'yellow' | 'blue' | 'green' | 'red';
 
 defineProps<{
   accent: CardAccent;
@@ -78,6 +78,7 @@ defineEmits<{
 .accent-yellow { border-color: var(--color-reminders-bg, #f6c945); }
 .accent-blue { border-color: var(--color-profile-bg, #33a1de); }
 .accent-green { border-color: var(--color-information-bg, #7bc62d); }
+.accent-red { border-color: var(--color-emergency-bg, #ff5c5c); }
 
 .card-top {
   display: flex;
@@ -101,6 +102,10 @@ defineEmits<{
 .title-icon {
   font-size: 1.35rem;
   flex-shrink: 0;
+}
+
+.accent-red .title-icon {
+  color: var(--color-emergency-bg, #ff5c5c);
 }
 
 .card-body {
@@ -168,4 +173,5 @@ defineEmits<{
 .accent-yellow .pill-btn { background: var(--color-reminders-bg, #f6c945); }
 .accent-blue .pill-btn { background: var(--color-profile-bg, #33a1de); }
 .accent-green .pill-btn { background: var(--color-information-bg, #7bc62d); }
+.accent-red .pill-btn { background: var(--color-emergency-bg, #ff5c5c); color: #fff; }
 </style>

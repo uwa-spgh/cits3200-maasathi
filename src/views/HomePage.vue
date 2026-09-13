@@ -1,21 +1,25 @@
 <template>
   <IonPage>
-    <IonContent class="home-content ion-padding">
-      <div class="content-wrapper">
-        <span class="app-caption">{{ $t('app.title') }} app</span>
-
-        <h1 class="greeting-text">
-          {{ $t('greeting', { name: userName && userName.trim() ? userName : $t('user_default') }) }}
+    <IonHeader class="home-header ion-no-border">
+      <div class="header-inner">
+        <p class="brand-tag">MaaSathi app</p>
+        <h1 class="greeting">
+          {{ $t('home.greeting', { name: userName || $t('home.default_name') }) }}
         </h1>
+      </div>
+    </IonHeader>
 
+    <IonContent class="home-content">
+      <div class="content-wrapper">
+        <!-- Horizontal visual timeline rail -->
         <HomeTimelineRail
           :items="items"
           :current-id="shownEvent?.id ?? null"
           @select="openEvent"
         />
 
+        <!-- High-level glanceable cards -->
         <HomeCard
-          id="home-reminder-card"
           accent="yellow"
           :title="$t('home.cards.reminder_title')"
           :title-icon="homeIcons.reminderTitle"
@@ -23,8 +27,10 @@
           :badge="reminderBadge"
           :graphic-icon="homeIcons.reminderGraphic"
           :listen-label="$t('home.cards.listen')"
+          :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
           @listen="listen(reminderBody)"
+          @learn-more="onRemindersTap"
         />
 
         <HomeCard
@@ -33,8 +39,10 @@
           :title-icon="homeIcons.wellbeingTitle"
           :body="wellbeingBody"
           :listen-label="$t('home.cards.listen')"
-          @open="go('WeekInfo')"
+          :learn-more-label="$t('home.cards.learn_more')"
+          @open="onInformationTap"
           @listen="listen(wellbeingBody)"
+          @learn-more="onInformationTap"
         />
 
         <HomeCard
@@ -61,9 +69,14 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
-import { IonContent, IonFooter, IonPage, useIonRouter } from '@ionic/vue';
+import {
+  IonContent,
+  IonFooter,
+  IonHeader,
+  IonPage,
+  useIonRouter
+} from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
-
 import BottomNav from '../components/BottomNav.vue';
 import HomeCard from '../components/HomeCard.vue';
 import HomeTimelineRail from '../components/HomeTimelineRail.vue';
@@ -73,17 +86,17 @@ import { useSchedule } from '../composables/useSchedule';
 import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
-import { formatDayMonthLong, todayIso } from '../utils/date';
-import { currentStageRef, excerpt } from '../utils/stageArticle';
 import type { ScheduleItem } from '../db/schemas';
+import { formatDayMonthLong, todayIso } from '../utils/date';
+import { getStageSurfacedContent } from '../utils/stageArticle';
 
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { userName } = useUser();
 const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
+const { load: loadTt } = useTt();
 const { speak } = useSpeech();
-const { isComplete: ttComplete, load: loadTt } = useTt();
 
 onMounted(() => {
   void loadSchedule();
@@ -120,19 +133,11 @@ const shownEvent = computed<ScheduleItem | null>(() => {
 
 function openEvent(id: string): void {
   if (id === 'tt-action') {
-    go('ProfileVaccination');
+    go('VaccinationTetanus');
     return;
   }
   ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
-
-// Tetanus never makes it into the schedule when the history is unknown,
-// so surface it as an explicit action node instead of dropping it.
-const ttActionNode = computed<{ id: string; title: string } | null>(() => {
-  if (!activePregnancy.value || mode.value !== 'ANC' || ttComplete.value) return null;
-  if (items.value.some((i) => i.type === 'TT')) return null;
-  return { id: 'tt-action', title: t('home.rail.tt_action') };
-});
 
 function visitNumber(item: ScheduleItem | null): number | null {
   if (!item) return null;
@@ -161,6 +166,10 @@ const reminderBody = computed(() => {
   return t('home.cards.reminder_generic', { title: t(e.titleKey), date });
 });
 
+/**
+ * Tapping the reminder card or "Learn more" on it takes the user to the Reminders section,
+ * focusing on that upcoming visit item in the timeline.
+ */
 function onRemindersTap(): void {
   if (!activePregnancy.value) {
     go('Profile');
@@ -170,16 +179,21 @@ function onRemindersTap(): void {
   ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
 }
 
-// ---- "How are you?" card: important info about the current stage ----
-const wellbeingBody = computed(() => {
-  const fallback = t('home.cards.wellbeing_placeholder');
-  if (!activePregnancy.value) return fallback;
-  const stage = currentStageRef(items.value, mode.value);
-  if (!stage) return fallback;
-  const key = stage.ns === 'pnc' ? `pnc.contact_body.${stage.ref}` : `anc.visit_body.${stage.ref}`;
-  return excerpt(t(key)) || fallback;
-});
-const nutritionBody = computed(() => t('home.cards.nutrition_body') || t('content.empty'));
+/**
+ * Tapping the Information card opens Layla's comprehensive information page for the current mode.
+ */
+function onInformationTap(): void {
+  if (mode.value === 'PNC') {
+    go('Pnc');
+  } else {
+    go('Anc');
+  }
+}
+
+// ---- Surfaced Stage Content: Wellbeing & Nutrition ----
+const surfaced = computed(() => getStageSurfacedContent(items.value, mode.value, t));
+const wellbeingBody = computed(() => surfaced.value.wellbeingBody);
+const nutritionBody = computed(() => surfaced.value.nutritionBody);
 </script>
 
 <style scoped>
@@ -190,37 +204,40 @@ const nutritionBody = computed(() => t('home.cards.nutrition_body') || t('conten
 .content-wrapper {
   max-width: 480px;
   margin: 0 auto;
+  padding: 12px 16px 24px 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 14px;
-  padding-top: 10px;
-  padding-bottom: 20px;
-  min-height: 100%;
+  gap: 16px;
 }
 
-.app-caption {
+.home-header {
+  background: var(--color-app-bg, #fbf7f5);
+  padding: 24px 20px 8px 20px;
+}
+
+.header-inner {
+  max-width: 480px;
+  margin: 0 auto;
+}
+
+.brand-tag {
   font-size: 0.85rem;
   font-weight: 700;
-  opacity: 0.55;
-  align-self: flex-start;
-  color: var(--color-card-text, #1a1a1a);
+  color: #8c8c8c;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-.greeting-text {
-  font-size: 2.1rem;
+.greeting {
+  font-size: 1.85rem;
   font-weight: 800;
-  color: var(--color-card-text, #111111);
+  color: #1a1a1a;
   margin: 0;
-  letter-spacing: -0.5px;
-  align-self: flex-start;
-}
-
-#home-reminder-card {
-  scroll-margin: 90px;
 }
 
 .nav-footer {
-  background: transparent;
+  background: var(--color-app-bg, #fbf7f5);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
 }
 </style>
