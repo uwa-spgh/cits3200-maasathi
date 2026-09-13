@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="profile"
     :title="$t('profile.title')"
     :breadcrumb="$t('profile.menu_personal')"
     :icon="personOutline"

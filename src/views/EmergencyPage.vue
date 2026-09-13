@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="danger"
     :title="$t('emergency.title')"
     :icon="warningOutline"
     color="red"
@@ -106,12 +107,13 @@ void t;
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: var(--color-emergency-bg, #ff5c5c);
-  color: var(--color-emergency-text, #000);
-  border-radius: 999px;
+  background-color: #fff;
+  color: var(--color-card-text, #1a1a1a);
+  border: 2px solid var(--color-emergency-bg, #ff5c5c);
+  border-radius: 20px;
   padding: 12px 18px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.12);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
   transition: transform 0.15s ease;
 }
 

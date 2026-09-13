@@ -28,12 +28,12 @@
         </ul>
       </ExpandableCard>
 
-      <ExpandableCard :title="$t('tt.education_title')">
-        <PlaceholderBox :title="$t('tt.education_placeholder')" :hint="$t('placeholder.hint')" />
-      </ExpandableCard>
+      <button class="section-btn" @click="openTetanusInfo">
+        {{ $t('tt.education_title') }}
+      </button>
 
       <ExpandableCard :title="$t('tt.epi_card_title')">
-        <PlaceholderBox :title="$t('tt.epi_card_placeholder')" :hint="$t('placeholder.hint')" />
+        <p class="card-text">{{ $t('tt.bring_epi_card.point1') }}</p>
       </ExpandableCard>
     </div>
   </PageShell>
@@ -41,16 +41,21 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
+import { useIonRouter } from '@ionic/vue';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
 import { useTt } from '../composables/useTt';
 import { useI18n } from 'vue-i18n';
 import { formatDate } from '../utils/date';
 
 const { t, locale } = useI18n();
+const ionRouter = useIonRouter();
 const { history, doses, lifetimeDoseCount, isComplete, isUnknown } = useTt();
+
+function openTetanusInfo(): void {
+  ionRouter.push({ name: 'VaccinationTetanus' });
+}
 
 const statusLabel = computed(() => {
   if (!history.value || history.value.status === 'not_asked') return t('tt.status_not_asked');
@@ -123,6 +128,24 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   opacity: 0.85;
 }
 
+.section-btn {
+  background-color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-btn-more-text, #000);
+  border: 1px solid rgba(0, 0, 0, 0.2);
+  border-radius: 999px;
+  padding: 14px 20px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  transition: transform 0.15s ease;
+  text-align: center;
+}
+
+.section-btn:active {
+  transform: scale(0.97);
+}
+
 .dose-list {
   margin: 0;
   padding-left: 20px;
@@ -138,5 +161,12 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   margin-left: -20px;
   font-style: italic;
   opacity: 0.7;
+}
+
+.card-text {
+  margin: 0;
+  font-size: 0.9rem;
+  line-height: 1.45;
+  color: var(--color-card-text, #1a1a1a);
 }
 </style>

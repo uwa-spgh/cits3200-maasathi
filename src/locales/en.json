@@ -12,7 +12,6 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "next": "Next",
-    "skip": "Skip for now",
     "not_set": "Not set",
     "yes": "Yes",
     "no": "No",
@@ -32,24 +31,55 @@
   "placeholder": {
     "hint": "Placeholder — content will be added here"
   },
-  "info_card": {
-    "title": "Current stage message",
-    "know_more": "Press to know more"
-  },
   "buttons": {
-    "emergency": "Emergency",
-    "reminders": "Reminders",
-    "information": "Information",
     "profile": "Profile"
   },
   "home": {
-    "status_anc": "Pregnancy · Week {week}",
-    "status_anc_unknown": "Pregnancy tracking",
-    "status_pnc": "After birth · Day {day}",
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
-    "info_anc": "Placeholder: your current-week message will appear here. You are in week {week} of your pregnancy.",
-    "info_anc_unknown": "Placeholder: add your LMP or due date in Profile to see week-based messages.",
-    "info_pnc": "Placeholder: your postnatal day {day} message will appear here."
+    "cards": {
+      "reminder_title": "Reminder",
+      "reminder_anc": "You have your {ordinal} ANC visit on {date}",
+      "reminder_pnc": "You have your {ordinal} postnatal contact on {date}",
+      "reminder_tt": "Your tetanus vaccination is due on {date}. Remember to bring your EPI card.",
+      "reminder_edd": "Your due date is {date}",
+      "reminder_generic": "{title} · {date}",
+      "ordinal_1": "first",
+      "ordinal_2": "second",
+      "ordinal_3": "third",
+      "ordinal_4": "fourth",
+      "wellbeing_title": "Information",
+      "nutrition_title": "Remember to eat well and move!",
+      "nutrition_body": "",
+      "listen": "Listen",
+      "learn_more": "Learn more",
+      "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "danger_title": "Danger signs to watch",
+      "danger_anc_body": "Go to a health facility immediately for heavy bleeding, severe headache, blurred vision, sudden swelling, high fever, or reduced baby movement.",
+      "danger_pnc_body": "Go to a health facility immediately for heavy postpartum bleeding, high fever, foul discharge, or if your newborn cannot feed or feels cold.",
+      "danger_generic_body": "Seek medical care immediately if you experience severe pain, heavy bleeding, high fever, or difficulty breathing.",
+      "stage_anc_visit1": "Start antenatal care early. Take daily iron-folic acid tablets to prevent anaemia, drink plenty of clean water, and get enough rest.",
+      "stage_anc_visit2": "Continue your daily iron-folic acid and start calcium tablets. Monitor your blood pressure and watch for sudden swelling or headaches.",
+      "stage_anc_visit3": "Plan where you will give birth and keep emergency contacts ready. Continue calcium and iron supplements, and monitor baby's daily movements.",
+      "stage_anc_visit4": "Prepare clean baby clothes and plan transport to the health facility. Learn signs of labour and ask family for postpartum support.",
+      "stage_pnc_contact1": "Rest as much as possible. Check for normal bleeding and start exclusive breastfeeding within the first hour of birth.",
+      "stage_pnc_contact2": "Feed your baby on demand day and night. Keep the umbilical cord clean and dry, and watch for any signs of fever or pain.",
+      "stage_pnc_contact3": "Keep your body clean and attend your 1–2 week checkup. Rest when tired and reach out to family if you feel overwhelmed.",
+      "stage_pnc_contact4": "Attend your 6-week postnatal checkup. Discuss family planning and talk with your health worker about your physical and emotional recovery.",
+      "nutrition_anc_visit1": "Eat balanced local foods like rice, dal, vegetables, eggs, and fish. Take iron tablets with water, not tea.",
+      "nutrition_anc_visit2": "Calcium is essential now: eat dairy, leafy greens, or small fish with bones. Take calcium tablets at a different time from iron.",
+      "nutrition_anc_visit3": "Eat small, nutritious meals and drink clean fluids throughout the day. Rest on your side to support blood flow to baby.",
+      "nutrition_anc_visit4": "Maintain easily digestible, high-energy foods and stay well hydrated. Light daily walking helps prepare for labour.",
+      "nutrition_pnc": "Drink extra water every time you breastfeed and eat nutrient-rich foods to replenish your body and support healthy milk production."
+    },
+    "rail": {
+      "scroll_back": "Scroll timeline back",
+      "scroll_forward": "Scroll timeline forward",
+      "timeline_label": "Pregnancy timeline",
+      "tt_action": "Tetanus vaccination — confirm with your health worker"
+    },
+    "nav": {
+      "label": "Main navigation"
+    }
   },
   "language": {
     "select": "Language",
@@ -57,14 +87,16 @@
     "bn": "বাংলা (Bengali)"
   },
   "week_info": {
-    "title": "This week",
+    "title": "Information",
     "current_stage_info": "Information about the current stage",
     "upcoming_milestones": "Upcoming milestones",
     "see_timeline": "See full timeline",
     "no_pregnancy": "No active pregnancy",
     "week_of": "Week {week} of pregnancy",
     "week_unknown": "Pregnancy stage unknown",
-    "day_after_birth": "Day {day} after birth"
+    "day_after_birth": "Day {day} after birth",
+    "body_stage": "",
+    "body_milestones": ""
   },
   "emergency": {
     "title": "Emergency",
@@ -78,7 +110,6 @@
     }
   },
   "danger_signs": {
-    "page_title": "Danger signs",
     "section_title": "Danger signs — go to the health facility immediately",
     "newborn_title": "Newborn danger signs — go to the health facility immediately",
     "pregnancy": {
@@ -137,19 +168,23 @@
   },
   "reminders": {
     "title": "Reminders",
-    "today": "Today",
-    "upcoming": "Upcoming reminders",
-    "past": "Past reminders"
+    "see_all_upcoming": "See all upcoming ({count})",
+    "show_fewer_upcoming": "Show fewer",
+    "past_visits": "Past visits"
   },
   "timeline": {
     "empty": "No reminders here",
-    "detail_placeholder": "Placeholder — details about this appointment will appear here",
     "mark_completed": "Mark completed",
     "mark_upcoming": "Move back to upcoming",
     "due_today": "Due today",
     "due_tomorrow": "Due tomorrow",
     "due_in_days": "In {days} days",
-    "visit_details_title": "Visit record",
+    "in_days": "in {days} days",
+    "ago_1_day": "1 day ago",
+    "ago_days": "{days} days ago",
+    "overdue_1_day": "1 day overdue",
+    "overdue_days": "{days} days overdue",
+    "status_done": "Done",
     "facility": "Facility / provider",
     "bp": "Blood pressure",
     "weight": "Weight (kg)",
@@ -177,7 +212,25 @@
     "milestone": {
       "edd": "Expected date of delivery",
       "child_epi_start": "Child immunisation (EPI) module starts"
-    }
+    },
+    "journey": {
+      "up_next": "Up next",
+      "show_more": "Show {count} more",
+      "show_past": "Show past ({count})",
+      "hide_past": "Hide past"
+    },
+    "prep_title": "Before your visit",
+    "about_visit": "About this visit",
+    "about_vaccine": "About this vaccine",
+    "read_anc_guide": "Read ANC guide",
+    "read_pnc_guide": "Read PNC guide",
+    "read_tt_guide": "Read TT vaccine guide",
+    "visit_info_btn": "Information about this visit",
+    "learn_more_tt": "About Tetanus vaccine & EPI card",
+    "contact_info_btn": "Information about this contact",
+    "view_tt_page": "View Tetanus vaccine & EPI card information",
+    "view_visit_page": "View visit guidance & information",
+    "view_contact_page": "View contact guidance & information"
   },
   "information": {
     "title": "Information",
@@ -187,29 +240,196 @@
       "danger_signs": "Danger signs",
       "nutrition": "Nutrition",
       "vaccination": "Vaccination"
-    }
+    },
+    "now_title": "What to know right now",
+    "browse_title": "Browse all topics"
   },
   "anc": {
     "trimester": "Trimester {n}",
-    "visit_content": "Visit content placeholder",
     "tests_title": "Tests usually done",
-    "tests_placeholder": "Tests placeholder",
     "visits": {
       "visit1": "Visit 1 (before 16 weeks)",
       "visit2": "Visit 2 (24–28 weeks)",
       "visit3": "Visit 3 (32 weeks)",
       "visit4": "Visit 4 (36 weeks)"
+    },
+    "visit_body": {
+      "visit1": "Early ANC care\n• Start antenatal care early (before 12 weeks if possible).\n• Attend all scheduled ANC visits for you and your baby’s health.\n\nANC visits\n• Go for regular check-ups to monitor your health and your baby’s growth.\n• Keep your ANC card and follow health worker advice.\n\nDanger signs\n• Seek medical care immediately for heavy bleeding, severe abdominal pain, severe headache, fever, swelling, reduced baby movement, or difficulty breathing.",
+      "visit2": "Iron and folic acid\n• Take daily iron-folic acid (IFA) tablets as advised by your health worker.\n• IFA helps prevent anaemia and supports your baby’s growth.\n\nCalcium supplementation\n• Take calcium tablets as recommended during pregnancy.\n• Calcium helps keep your bones and your baby’s bones healthy.\n\nPre-eclampsia monitoring\n• Monitor for swelling and high blood pressure (pre-eclampsia).",
+      "visit3": "Birth preparedness\n• Plan where you will give birth and how you will reach the facility.\n• Save emergency contacts and keep necessary items ready.\n\nSkilled birth care\n• Giving birth with a skilled health worker helps keep mother and baby safe.\n• Go to a health facility when labour starts.\n\nMental wellbeing\n• Feeling worried or tired can happen during pregnancy.\n• Talk to someone you trust if you feel stressed, sad, or overwhelmed.",
+      "visit4": "Preparing for baby care\n• Learn about breastfeeding, newborn care, and danger signs before delivery.\n• Plan support from family after birth.\n\nAvoid harmful substances\n• Avoid alcohol, tobacco, and other harmful substances during pregnancy.\n• Avoid taking medicines without advice from a health worker.\n\nHygiene and infection prevention\n• Wash hands regularly and use safe drinking water.\n• Keep food clean and well cooked."
+    },
+    "tests_body": "",
+    "nutrition_body": "Healthy diet\n• Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits).\n• Eat small, frequent meals if you feel nauseous.",
+    "prep": {
+      "visit1": "Bring your antenatal card or previous medical reports. Note the date of your last period, and any questions you want to ask your health worker.",
+      "visit2": "Bring your antenatal card. Note any headaches, blurred vision, or swelling in your hands or face to discuss with your health worker.",
+      "visit3": "Bring your antenatal card. Discuss your birth plan, emergency transport, and family support for delivery.",
+      "visit4": "Bring your antenatal card. Review danger signs of labour, pack clean baby clothes, and confirm hospital emergency numbers."
+    },
+    "early_care_title": "Early ANC care",
+    "early_care": {
+      "point1": "Start antenatal care early (before 12 weeks if possible).",
+      "point2": "Attend all scheduled ANC visits for you and your baby’s health."
+    },
+    "anc_visits_title": "ANC visits",
+    "anc_visits": {
+      "point1": "Go for regular check-ups to monitor your health and your baby’s growth.",
+      "point2": "Keep your ANC card and follow health worker advice."
+    },
+    "healthy_diet_title": "Healthy diet",
+    "healthy_diet": {
+      "point1": "Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits).",
+      "point2": "Eat small, frequent meals if you feel nauseous."
+    },
+    "iron_folic_acid_title": "Iron and folic acid",
+    "iron_folic_acid": {
+      "point1": "Take daily iron-folic acid (IFA) tablets as advised by your health worker.",
+      "point2": "IFA helps prevent anaemia and supports your baby’s growth."
+    },
+    "calcium_supplementation_title": "Calcium supplementation",
+    "calcium_supplementation": {
+      "point1": "Take calcium tablets as recommended during pregnancy.",
+      "point2": "Calcium helps keep your bones and your baby’s bones healthy."
+    },
+    "physical_activity_title": "Physical activity",
+    "physical_activity": {
+      "point1": "Move a little every day, such as walking or gentle stretching.",
+      "point2": "Rest when tired and stop if you feel pain, dizziness, breathing problems, or bleeding."
+    },
+    "hydration_rest_title": "Hydration and rest",
+    "hydration_rest": {
+      "point1": "Drink enough water and fluids every day, especially in hot weather.",
+      "point2": "Get enough rest and sleep when you can."
+    },
+    "mental_wellbeing_title": "Mental wellbeing",
+    "mental_wellbeing": {
+      "point1": "Feeling worried or tired can happen during pregnancy.",
+      "point2": "Talk to someone you trust if you feel stressed, sad, or overwhelmed."
+    },
+    "danger_signs_note_title": "Danger signs",
+    "danger_signs_note": {
+      "point1": "Seek medical care immediately for heavy bleeding, severe abdominal pain, severe headache, fever, swelling, reduced baby movement, or difficulty breathing."
+    },
+    "pre_eclampsia_monitoring_title": "Pre-eclampsia monitoring",
+    "pre_eclampsia_monitoring": {
+      "point1": "Monitor for swelling and high blood pressure (pre-eclampsia)."
+    },
+    "birth_preparedness_title": "Birth preparedness",
+    "birth_preparedness": {
+      "point1": "Plan where you will give birth and how you will reach the facility.",
+      "point2": "Save emergency contacts and keep necessary items ready."
+    },
+    "skilled_birth_care_title": "Skilled birth care",
+    "skilled_birth_care": {
+      "point1": "Giving birth with a skilled health worker helps keep mother and baby safe.",
+      "point2": "Go to a health facility when labour starts."
+    },
+    "maternal_immunisation_title": "Maternal immunisation",
+    "maternal_immunisation": {
+      "point1": "Take recommended vaccines during pregnancy to protect you and your baby.",
+      "point2": "Follow the schedule advised by your health worker."
+    },
+    "avoid_harmful_substances_title": "Avoid harmful substances",
+    "avoid_harmful_substances": {
+      "point1": "Avoid alcohol, tobacco, and other harmful substances during pregnancy.",
+      "point2": "Avoid taking medicines without advice from a health worker."
+    },
+    "hygiene_infection_prevention_title": "Hygiene and infection prevention",
+    "hygiene_infection_prevention": {
+      "point1": "Wash hands regularly and use safe drinking water.",
+      "point2": "Keep food clean and well cooked."
+    },
+    "preparing_baby_care_title": "Preparing for baby care",
+    "preparing_baby_care": {
+      "point1": "Learn about breastfeeding, newborn care, and danger signs before delivery.",
+      "point2": "Plan support from family after birth."
     }
   },
   "pnc": {
-    "contact_content": "Contact content placeholder",
     "breastfeeding_title": "Breastfeeding support",
-    "breastfeeding_placeholder": "Breastfeeding content placeholder",
     "contacts": {
       "contact1": "Contact 1 (within 24 hours)",
       "contact2": "Contact 2 (48–72 hours)",
       "contact3": "Contact 3 (7–14 days)",
       "contact4": "Contact 4 (6 weeks)"
+    },
+    "contact_body": {
+      "contact1": "Rest\n• Rest as much as you can. Ask family to help with chores.\n\nBleeding\n• Some bleeding is normal. Heavy bleeding is not. Please go to the health facility.",
+      "contact2": "Pain\n• Mild pain is normal. Severe pain is not normal.\n\nEating\n• Eat extra food and drink extra water every day.",
+      "contact3": "Cleanliness\n• Wash your hands and body area with clean water daily.\n\nCheck-up\n• See a health worker at day 3–4, day 7–14, and week 6.",
+      "contact4": "Family planning\n• Ask your health worker about spacing your next pregnancy.\n\nMood\n• Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
+    },
+    "breastfeeding_body": "Start early\n• Start breastfeeding within 1 hour of birth.\n\nOnly breastmilk\n• Give only breastmilk. No water, honey, or other food for 6 months.\n\nFeed often\n• Feed your baby whenever they want, day and night.\n\nGood position\n• Hold baby close, tummy to tummy, mouth open wide on the breast.\n\nEnough milk\n• Baby feeding well: wet nappies, good weight gain, calm after feeding.\n\nSore breasts\n• Painful or swollen breasts? See a health worker soon.\n\nBoth breasts\n• Offer both breasts at each feed.\n\nGet help\n• If feeding is hard, ask a health worker; don't stop on your own.",
+    "prep": {
+      "contact1": "Keep baby warm with skin-to-skin contact. Inform your health worker of any heavy bleeding, fever, or difficulty feeding.",
+      "contact2": "Ensure baby is breastfeeding well on demand. Keep the umbilical cord dry and check for any redness or discharge.",
+      "contact3": "Bring your and baby's health cards. Discuss your healing, postpartum rest, and baby's growth.",
+      "contact4": "Bring your health records. Discuss family planning options, routine vaccines, and your emotional wellbeing."
+    },
+    "start_early_title": "Start early",
+    "start_early": {
+      "point1": "Start breastfeeding within 1 hour of birth."
+    },
+    "only_breastmilk_title": "Only breastmilk",
+    "only_breastmilk": {
+      "point1": "Give only breastmilk. No water, honey, or other food for 6 months."
+    },
+    "feed_often_title": "Feed often",
+    "feed_often": {
+      "point1": "Feed your baby whenever they want, day and night."
+    },
+    "good_position_title": "Good position",
+    "good_position": {
+      "point1": "Hold baby close, tummy to tummy, mouth open wide on the breast."
+    },
+    "enough_milk_title": "Enough milk",
+    "enough_milk": {
+      "point1": "Baby feeding well: wet nappies, good weight gain, calm after feeding."
+    },
+    "sore_breasts_title": "Sore breasts",
+    "sore_breasts": {
+      "point1": "Painful or swollen breasts? See a health worker soon."
+    },
+    "both_breasts_title": "Both breasts",
+    "both_breasts": {
+      "point1": "Offer both breasts at each feed."
+    },
+    "get_help_title": "Get help",
+    "get_help": {
+      "point1": "If feeding is hard, ask a health worker; don’t stop on your own."
+    },
+    "rest_title": "Rest",
+    "rest": {
+      "point1": "Rest as much as you can. Ask family to help with chores."
+    },
+    "bleeding_title": "Bleeding",
+    "bleeding": {
+      "point1": "Some bleeding is normal. Heavy bleeding is not. Please go to the health facility."
+    },
+    "pain_title": "Pain",
+    "pain": {
+      "point1": "Mild pain is normal. Severe pain is not normal."
+    },
+    "eating_title": "Eating",
+    "eating": {
+      "point1": "Eat extra food and drink extra water every day."
+    },
+    "cleanliness_title": "Cleanliness",
+    "cleanliness": {
+      "point1": "Wash your hands and body area with clean water daily."
+    },
+    "checkup_title": "Check-up",
+    "checkup": {
+      "point1": "See a health worker at day 3–4, day 7–14, and week 6."
+    },
+    "family_planning_title": "Family planning",
+    "family_planning": {
+      "point1": "Ask your health worker about spacing your next pregnancy."
+    },
+    "mood_title": "Mood",
+    "mood": {
+      "point1": "Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
     }
   },
   "tt": {
@@ -223,25 +443,65 @@
     "date_unknown": "date unknown",
     "no_doses": "No doses recorded yet",
     "education_title": "About tetanus",
-    "education_placeholder": "Tetanus education content placeholder",
     "epi_card_title": "Your EPI card",
-    "epi_card_placeholder": "EPI card guidance placeholder",
     "status_not_asked": "Not set",
     "status_unknown": "History unknown",
     "status_complete": "Complete",
-    "status_in_progress": "In progress"
+    "status_in_progress": "In progress",
+    "about_body": "What tetanus is, and how it affects mothers and newborns\n• Tetanus is caused by a germ that can get into the body through a dirty cut or wound, even the cut made when a baby's cord is cut. It makes the body go very stiff and can kill if not treated fast in hospital.\n\nWhy newborns are especially at risk of tetanus\n• A newborn baby can get tetanus through the cord cut at birth. This can happen if the cord is cut with a dirty blade, or if things like ash, oil, mud, or cow dung are put on the cord instead of keeping it clean and dry.\n• Warning: If your baby cannot suck, becomes stiff, or has fits in the first month of life, please go to the hospital right away. This is an emergency.\n\nHow TT vaccination protects both the mother and the baby\n• The TT vaccine helps your body fight tetanus. When you get this vaccine during pregnancy, some of this protection passes to your baby before birth. This keeps your baby safe from tetanus in the first weeks of life. The vaccine is safe for you and your baby.\n\nWhy Bangladesh uses a 5-dose lifetime schedule\n• You need up to 5 TT doses in your whole life, not every pregnancy. Each dose adds more protection. Once you have had all 5, you and your future babies are protected. You will not need this vaccine again.\n• Note: How many tetanus vaccinations you need can be different for each woman. Your health worker will check your card and tell you which shot you need today. Just follow what your health worker tells you. You don't need to count the doses yourself.\n\nIf you have already had some TT doses before (previous pregnancy or as a teenager)\n• If you had TT doses before in an earlier pregnancy, at school, or at another clinic, that is good. The app will not guess this for you. Please tell your health worker and show your card if you have it. They will tell you exactly which dose you need next.\n\nMaternal immunisation\n• Take recommended vaccines during pregnancy to protect you and your baby.\n• Follow the schedule advised by your health worker.",
+    "epi_card_body": "Bring your EPI (Expanded Programme on Immunization) immunisation card\n• Please bring your EPI card to every ANC visit. Your health worker needs to see it to know how many doses you already had, and which dose you need next. If you cannot find your card, tell your health worker. They will help you.",
+    "prep": "",
+    "dose_title": "Tetanus dose {n} of {max}",
+    "dose_info": {
+      "dose1": "",
+      "dose2": "",
+      "dose3": "",
+      "dose4": "",
+      "dose5": ""
+    },
+    "what_is_tetanus_title": "What tetanus is, and how it affects mothers and newborns",
+    "what_is_tetanus": {
+      "point1": "Tetanus is caused by a germ that can get into the body through a dirty cut or wound, even the cut made when a baby’s cord is cut. It makes the body go very stiff and can kill if not treated fast in hospital."
+    },
+    "newborn_risk_title": "Why newborns are especially at risk of tetanus",
+    "newborn_risk": {
+      "point1": "A newborn baby can get tetanus through the cord cut at birth. This can happen if the cord is cut with a dirty blade, or if things like ash, oil, mud, or cow dung are put on the cord instead of keeping it clean and dry.",
+      "point2": "Warning: If your baby cannot suck, becomes stiff, or has fits in the first month of life, please go to the hospital right away. This is an emergency."
+    },
+    "tt_protection_title": "How TT vaccination protects both the mother and the baby",
+    "tt_protection": {
+      "point1": "The TT vaccine helps your body fight tetanus. When you get this vaccine during pregnancy, some of this protection passes to your baby before birth. This keeps your baby safe from tetanus in the first weeks of life. The vaccine is safe for you and your baby."
+    },
+    "five_dose_schedule_title": "Why Bangladesh uses a 5-dose lifetime schedule",
+    "five_dose_schedule": {
+      "point1": "You need up to 5 TT doses in your whole life, not every pregnancy. Each dose adds more protection. Once you have had all 5, you and your future babies are protected. You will not need this vaccine again.",
+      "point2": "Note: How many tetanus vaccinations you need can be different for each woman. Your health worker will check your card and tell you which shot you need today. Just follow what your health worker tells you. You don’t need to count the doses yourself."
+    },
+    "bring_epi_card_title": "Bring your EPI (Expanded Programme on Immunization) immunisation card",
+    "bring_epi_card": {
+      "point1": "Please bring your EPI card to every ANC visit. Your health worker needs to see it to know how many doses you already had, and which dose you need next. If you cannot find your card, tell your health worker. They will help you."
+    },
+    "previous_doses_title": "If you have already had some TT doses before (previous pregnancy or as a teenager)",
+    "previous_doses": {
+      "point1": "If you had TT doses before in an earlier pregnancy, at school, or at another clinic, that is good. The app will not guess this for you. Please tell your health worker and show your card if you have it. They will tell you exactly which dose you need next."
+    },
+    "bring_epi_card_banner": "Remember to bring your EPI card to your vaccination visit."
   },
   "nutrition": {
-    "page_title": "Nutrition",
     "section_title": "Nutrition",
-    "placeholder": "Nutrition content placeholder",
-    "content_placeholder": "Nutrition content placeholder",
     "topics": {
       "healthy_diet": "Healthy diet",
       "ifa": "Iron and folic acid",
       "calcium": "Calcium",
       "hydration": "Hydration and rest",
       "activity": "Physical activity"
+    },
+    "body": {
+      "healthy_diet": "Healthy diet\n• Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits).\n• Eat small, frequent meals if you feel nauseous.",
+      "ifa": "Iron and folic acid\n• Take daily iron-folic acid (IFA) tablets as advised by your health worker.\n• IFA helps prevent anaemia and supports your baby’s growth.",
+      "calcium": "Calcium supplementation\n• Take calcium tablets as recommended during pregnancy.\n• Calcium helps keep your bones and your baby’s bones healthy.",
+      "hydration": "Hydration and rest\n• Drink enough water and fluids every day, especially in hot weather.\n• Get enough rest and sleep when you can.",
+      "activity": "Physical activity\n• Move a little every day, such as walking or gentle stretching.\n• Rest when tired and stop if you feel pain, dizziness, breathing problems, or bleeding."
     }
   },
   "profile": {
@@ -255,7 +515,6 @@
     "data_section": "Data",
     "contacts_hint": "These numbers are used by the Emergency page. All data stays on your phone.",
     "contacts_number_placeholder": "Enter phone number",
-    "personal_info": "Personal information",
     "name_label": "Your name",
     "name_placeholder": "Enter your name",
     "age_label": "Age",
@@ -312,7 +571,6 @@
     "close_pregnancy_btn": "Close current pregnancy early",
     "close_confirm_title": "Close pregnancy?",
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
-    "settings_section": "Settings",
     "nav_mode_label": "Navigation style",
     "nav_mode_hint": "Developer option — app restarts to apply",
     "nav_home_bar": "Home button bar",
@@ -322,7 +580,6 @@
     "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
   },
   "history": {
-    "title": "Past pregnancy",
     "pregnancy_details": "Pregnancy details",
     "child_details": "Child details",
     "child_dob": "Date of birth",
@@ -349,7 +606,6 @@
     "q_edd_when": "When is your expected delivery date?",
     "q_estimate": "About how many months pregnant are you?",
     "estimate_hint": "This sets an estimated due date. You can correct it later in your Profile.",
-    "tt_title": "Tetanus vaccination",
     "q_tt_count": "Do you know how many doses you have had?",
     "done_title": "You are all set",
     "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
@@ -371,5 +627,33 @@
     "information_color": "Information",
     "profile_color": "Profile",
     "reset": "Reset"
+  },
+  "content": {
+    "empty": "Content coming soon."
+  },
+  "stage_nav": {
+    "title": "Information",
+    "switch_prompt": "Browse advice for other stages:",
+    "tab_anc": "Antenatal (ANC)",
+    "tab_pnc": "Postnatal (PNC)",
+    "current_badge": "Your current stage",
+    "return_current": "Back to current stage",
+    "anc_visit1_short": "Visit 1",
+    "anc_visit2_short": "Visit 2",
+    "anc_visit3_short": "Visit 3",
+    "anc_visit4_short": "Visit 4",
+    "pnc_contact1_short": "Contact 1",
+    "pnc_contact2_short": "Contact 2",
+    "pnc_contact3_short": "Contact 3",
+    "pnc_contact4_short": "Contact 4",
+    "timing_visit1": "Before 16 weeks",
+    "timing_visit2": "24–28 weeks",
+    "timing_visit3": "32 weeks",
+    "timing_visit4": "36 weeks",
+    "timing_contact1": "Within 24 hours",
+    "timing_contact2": "48–72 hours",
+    "timing_contact3": "7–14 days",
+    "timing_contact4": "6 weeks",
+    "topics_heading": "Care guidance for this stage"
   }
 }

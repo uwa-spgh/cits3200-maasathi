@@ -12,7 +12,9 @@ import InformationPage from '../views/InformationPage.vue';
 import AncPage from '../views/AncPage.vue';
 import AncTrimesterPage from '../views/AncTrimesterPage.vue';
 import PncPage from '../views/PncPage.vue';
+import PncBreastfeedingPage from '../views/PncBreastfeedingPage.vue';
 import VaccinationPage from '../views/VaccinationPage.vue';
+import VaccinationTetanusPage from '../views/VaccinationTetanusPage.vue';
 import DangerSignsPage from '../views/DangerSignsPage.vue';
 import NutritionPage from '../views/NutritionPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
@@ -39,7 +41,9 @@ const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/information/anc', name: 'Anc', component: AncPage },
   { path: '/information/anc/trimester/:trimester', name: 'AncTrimester', component: AncTrimesterPage },
   { path: '/information/pnc', name: 'Pnc', component: PncPage },
+  { path: '/information/pnc/breastfeeding', name: 'PncBreastfeeding', component: PncBreastfeedingPage },
   { path: '/information/vaccination', name: 'Vaccination', component: VaccinationPage },
+  { path: '/information/vaccination/tetanus', name: 'VaccinationTetanus', component: VaccinationTetanusPage },
   { path: '/information/danger-signs', name: 'DangerSigns', component: DangerSignsPage },
   { path: '/information/nutrition', name: 'Nutrition', component: NutritionPage },
   { path: '/profile', name: 'Profile', component: ProfilePage },
