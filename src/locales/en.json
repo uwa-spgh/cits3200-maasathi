@@ -221,13 +221,13 @@
       "visit4": "Visit 4 (36 weeks)"
     },
     "visit_body": {
-      "visit1": "",
-      "visit2": "",
-      "visit3": "",
-      "visit4": ""
+      "visit1": "Early ANC care\n• Start antenatal care early (before 12 weeks if possible).\n• Attend all scheduled ANC visits for you and your baby’s health.\n\nANC visits\n• Go for regular check-ups to monitor your health and your baby’s growth.\n• Keep your ANC card and follow health worker advice.\n\nDanger signs\n• Seek medical care immediately for heavy bleeding, severe abdominal pain, severe headache, fever, swelling, reduced baby movement, or difficulty breathing.",
+      "visit2": "Iron and folic acid\n• Take daily iron-folic acid (IFA) tablets as advised by your health worker.\n• IFA helps prevent anaemia and supports your baby’s growth.\n\nCalcium supplementation\n• Take calcium tablets as recommended during pregnancy.\n• Calcium helps keep your bones and your baby’s bones healthy.\n\nPre-eclampsia monitoring\n• Monitor for swelling and high blood pressure (pre-eclampsia).",
+      "visit3": "Birth preparedness\n• Plan where you will give birth and how you will reach the facility.\n• Save emergency contacts and keep necessary items ready.\n\nSkilled birth care\n• Giving birth with a skilled health worker helps keep mother and baby safe.\n• Go to a health facility when labour starts.\n\nMental wellbeing\n• Feeling worried or tired can happen during pregnancy.\n• Talk to someone you trust if you feel stressed, sad, or overwhelmed.",
+      "visit4": "Preparing for baby care\n• Learn about breastfeeding, newborn care, and danger signs before delivery.\n• Plan support from family after birth.\n\nAvoid harmful substances\n• Avoid alcohol, tobacco, and other harmful substances during pregnancy.\n• Avoid taking medicines without advice from a health worker.\n\nHygiene and infection prevention\n• Wash hands regularly and use safe drinking water.\n• Keep food clean and well cooked."
     },
     "tests_body": "",
-    "nutrition_body": "",
+    "nutrition_body": "Healthy diet\n• Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits).\n• Eat small, frequent meals if you feel nauseous.",
     "prep": {
       "visit1": "",
       "visit2": "",
@@ -244,12 +244,12 @@
       "contact4": "Contact 4 (6 weeks)"
     },
     "contact_body": {
-      "contact1": "",
-      "contact2": "",
-      "contact3": "",
-      "contact4": ""
+      "contact1": "Rest\n• Rest as much as you can. Ask family to help with chores.\n\nBleeding\n• Some bleeding is normal. Heavy bleeding is not. Please go to the health facility.",
+      "contact2": "Pain\n• Mild pain is normal. Severe pain is not normal.\n\nEating\n• Eat extra food and drink extra water every day.",
+      "contact3": "Cleanliness\n• Wash your hands and body area with clean water daily.\n\nCheck-up\n• See a health worker at day 3–4, day 7–14, and week 6.",
+      "contact4": "Family planning\n• Ask your health worker about spacing your next pregnancy.\n\nMood\n• Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
     },
-    "breastfeeding_body": "",
+    "breastfeeding_body": "Start early\n• Start breastfeeding within 1 hour of birth.\n\nOnly breastmilk\n• Give only breastmilk. No water, honey, or other food for 6 months.\n\nFeed often\n• Feed your baby whenever they want, day and night.\n\nGood position\n• Hold baby close, tummy to tummy, mouth open wide on the breast.\n\nEnough milk\n• Baby feeding well: wet nappies, good weight gain, calm after feeding.\n\nSore breasts\n• Painful or swollen breasts? See a health worker soon.\n\nBoth breasts\n• Offer both breasts at each feed.\n\nGet help\n• If feeding is hard, ask a health worker; don't stop on your own.",
     "prep": {
       "contact1": "",
       "contact2": "",
@@ -273,8 +273,8 @@
     "status_unknown": "History unknown",
     "status_complete": "Complete",
     "status_in_progress": "In progress",
-    "about_body": "",
-    "epi_card_body": "",
+    "about_body": "What tetanus is, and how it affects mothers and newborns\n• Tetanus is caused by a germ that can get into the body through a dirty cut or wound, even the cut made when a baby's cord is cut. It makes the body go very stiff and can kill if not treated fast in hospital.\n\nWhy newborns are especially at risk of tetanus\n• A newborn baby can get tetanus through the cord cut at birth. This can happen if the cord is cut with a dirty blade, or if things like ash, oil, mud, or cow dung are put on the cord instead of keeping it clean and dry.\n• Warning: If your baby cannot suck, becomes stiff, or has fits in the first month of life, please go to the hospital right away. This is an emergency.\n\nHow TT vaccination protects both the mother and the baby\n• The TT vaccine helps your body fight tetanus. When you get this vaccine during pregnancy, some of this protection passes to your baby before birth. This keeps your baby safe from tetanus in the first weeks of life. The vaccine is safe for you and your baby.\n\nWhy Bangladesh uses a 5-dose lifetime schedule\n• You need up to 5 TT doses in your whole life, not every pregnancy. Each dose adds more protection. Once you have had all 5, you and your future babies are protected. You will not need this vaccine again.\n• Note: How many tetanus vaccinations you need can be different for each woman. Your health worker will check your card and tell you which shot you need today. Just follow what your health worker tells you. You don't need to count the doses yourself.\n\nIf you have already had some TT doses before (previous pregnancy or as a teenager)\n• If you had TT doses before in an earlier pregnancy, at school, or at another clinic, that is good. The app will not guess this for you. Please tell your health worker and show your card if you have it. They will tell you exactly which dose you need next.\n\nMaternal immunisation\n• Take recommended vaccines during pregnancy to protect you and your baby.\n• Follow the schedule advised by your health worker.",
+    "epi_card_body": "Bring your EPI (Expanded Programme on Immunization) immunisation card\n• Please bring your EPI card to every ANC visit. Your health worker needs to see it to know how many doses you already had, and which dose you need next. If you cannot find your card, tell your health worker. They will help you.",
     "prep": ""
   },
   "nutrition": {
@@ -287,11 +287,11 @@
       "activity": "Physical activity"
     },
     "body": {
-      "healthy_diet": "",
-      "ifa": "",
-      "calcium": "",
-      "hydration": "",
-      "activity": ""
+      "healthy_diet": "Healthy diet\n• Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits).\n• Eat small, frequent meals if you feel nauseous.",
+      "ifa": "Iron and folic acid\n• Take daily iron-folic acid (IFA) tablets as advised by your health worker.\n• IFA helps prevent anaemia and supports your baby’s growth.",
+      "calcium": "Calcium supplementation\n• Take calcium tablets as recommended during pregnancy.\n• Calcium helps keep your bones and your baby’s bones healthy.",
+      "hydration": "Hydration and rest\n• Drink enough water and fluids every day, especially in hot weather.\n• Get enough rest and sleep when you can.",
+      "activity": "Physical activity\n• Move a little every day, such as walking or gentle stretching.\n• Rest when tired and stop if you feel pain, dizziness, breathing problems, or bleeding."
     }
   },
   "profile": {
