@@ -2,7 +2,7 @@
   <PageShell
     :title="$t('week_info.title')"
     :icon="calendarOutline"
-    color="green"
+    color="blue"
   >
     <div class="week-info">
       <div class="stage-card">
