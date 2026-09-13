@@ -142,11 +142,21 @@ onMounted(() => {
     observer.observe(trackEl.value);
   }
   trackEl.value?.addEventListener('scroll', onTrackScroll, { passive: true });
+  // Re-measure once everything (icons, fonts) has settled, in case the
+  // first pass ran before layout stabilised.
+  if (typeof window !== 'undefined') {
+    window.addEventListener('load', onTrackScroll, { once: true });
+    document.fonts?.ready.then(() => updateChevrons()).catch(() => undefined);
+    window.setTimeout(() => updateChevrons(), 600);
+  }
 });
 
 onUnmounted(() => {
   observer?.disconnect();
   trackEl.value?.removeEventListener('scroll', onTrackScroll);
+  if (typeof window !== 'undefined') {
+    window.removeEventListener('load', onTrackScroll);
+  }
 });
 
 watch(
