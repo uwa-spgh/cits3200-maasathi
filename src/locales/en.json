@@ -199,7 +199,8 @@
       "show_past": "Show past ({count})",
       "hide_past": "Hide past"
     },
-    "prep_title": "Before your visit"
+    "prep_title": "Before your visit",
+    "about_visit": "About this visit"
   },
   "information": {
     "title": "Information",

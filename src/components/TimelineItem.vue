@@ -23,6 +23,10 @@
             <p class="prep-title">{{ infoTitle }}</p>
             <ContentText :text="infoBody || ''" />
           </div>
+          <div v-if="articleKey" class="prep-box">
+            <p class="prep-title">{{ $t('timeline.about_visit') }}</p>
+            <ContentText :text="$t(articleKey) || $t('content.empty')" />
+          </div>
           <div v-if="prepKey" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
             <ContentText :text="$t(prepKey) || $t('content.empty')" />
@@ -117,6 +121,13 @@ const prepKey = computed<string | null>(() => {
   if (props.item.type === 'ANC') return `anc.prep.${props.item.ref}`;
   if (props.item.type === 'PNC') return `pnc.prep.${props.item.ref}`;
   if (props.item.type === 'TT') return 'tt.prep';
+  return null;
+});
+
+/** Visit article (Layla's content) — shown on ANC/PNC reminders, past or future. */
+const articleKey = computed<string | null>(() => {
+  if (props.item.type === 'ANC') return `anc.visit_body.${props.item.ref}`;
+  if (props.item.type === 'PNC') return `pnc.contact_body.${props.item.ref}`;
   return null;
 });
 
