@@ -275,7 +275,15 @@
     "status_in_progress": "চলমান",
     "about_body": "",
     "epi_card_body": "",
-    "prep": ""
+    "prep": "",
+    "dose_title": "টিটেনাস ডোজ {n} / {max}",
+    "dose_info": {
+      "dose1": "",
+      "dose2": "",
+      "dose3": "",
+      "dose4": "",
+      "dose5": ""
+    }
   },
   "nutrition": {
     "section_title": "পুষ্টি",

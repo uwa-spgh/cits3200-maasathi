@@ -113,6 +113,7 @@ All user-facing information lives in `src/locales/en.json` and `src/locales/bn.j
 *   `pnc.contact_body.*`, `pnc.breastfeeding_body` — postnatal articles.
 *   `tt.about_body`, `tt.epi_card_body` — tetanus education.
 *   `anc.prep.visit1..4`, `pnc.prep.contact1..4`, `tt.prep` — "before your visit" notes shown on upcoming reminders.
+*   `tt.dose_title`, `tt.dose_info.dose1..5` — dose-specific information shown when the TT reminder is opened.
 *   `week_info.body_stage`, `week_info.body_milestones` — This-Week articles.
 *   `danger_signs.*` — danger-sign titles and lists (already filled in).
 *   `home.cards.*` — home-screen card sentences and reminder templates (`{ordinal}` / `{date}` / `{week}` / `{day}` are filled in automatically — keep them in the text).

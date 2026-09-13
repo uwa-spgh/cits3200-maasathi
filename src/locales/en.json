@@ -275,7 +275,15 @@
     "status_in_progress": "In progress",
     "about_body": "What tetanus is, and how it affects mothers and newborns\n• Tetanus is caused by a germ that can get into the body through a dirty cut or wound, even the cut made when a baby's cord is cut. It makes the body go very stiff and can kill if not treated fast in hospital.\n\nWhy newborns are especially at risk of tetanus\n• A newborn baby can get tetanus through the cord cut at birth. This can happen if the cord is cut with a dirty blade, or if things like ash, oil, mud, or cow dung are put on the cord instead of keeping it clean and dry.\n• Warning: If your baby cannot suck, becomes stiff, or has fits in the first month of life, please go to the hospital right away. This is an emergency.\n\nHow TT vaccination protects both the mother and the baby\n• The TT vaccine helps your body fight tetanus. When you get this vaccine during pregnancy, some of this protection passes to your baby before birth. This keeps your baby safe from tetanus in the first weeks of life. The vaccine is safe for you and your baby.\n\nWhy Bangladesh uses a 5-dose lifetime schedule\n• You need up to 5 TT doses in your whole life, not every pregnancy. Each dose adds more protection. Once you have had all 5, you and your future babies are protected. You will not need this vaccine again.\n• Note: How many tetanus vaccinations you need can be different for each woman. Your health worker will check your card and tell you which shot you need today. Just follow what your health worker tells you. You don't need to count the doses yourself.\n\nIf you have already had some TT doses before (previous pregnancy or as a teenager)\n• If you had TT doses before in an earlier pregnancy, at school, or at another clinic, that is good. The app will not guess this for you. Please tell your health worker and show your card if you have it. They will tell you exactly which dose you need next.\n\nMaternal immunisation\n• Take recommended vaccines during pregnancy to protect you and your baby.\n• Follow the schedule advised by your health worker.",
     "epi_card_body": "Bring your EPI (Expanded Programme on Immunization) immunisation card\n• Please bring your EPI card to every ANC visit. Your health worker needs to see it to know how many doses you already had, and which dose you need next. If you cannot find your card, tell your health worker. They will help you.",
-    "prep": ""
+    "prep": "",
+    "dose_title": "Tetanus dose {n} of {max}",
+    "dose_info": {
+      "dose1": "",
+      "dose2": "",
+      "dose3": "",
+      "dose4": "",
+      "dose5": ""
+    }
   },
   "nutrition": {
     "section_title": "Nutrition",

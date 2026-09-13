@@ -14,6 +14,7 @@
       <TimelineList
         :items="upNext"
         :expanded-id="expandedId"
+        :info-for-item="infoForItem"
         @toggle="toggleExpand"
         @complete="onComplete"
         @undo="onUndo"
@@ -30,6 +31,7 @@
         v-if="showAllUpcoming"
         :items="upcomingRest"
         :expanded-id="expandedId"
+        :info-for-item="infoForItem"
         @toggle="toggleExpand"
         @complete="onComplete"
         @undo="onUndo"
@@ -47,6 +49,7 @@
         v-if="showPast"
         :items="pastItems"
         :expanded-id="expandedId"
+        :info-for-item="infoForItem"
         @toggle="toggleExpand"
         @complete="onComplete"
         @undo="onUndo"
@@ -62,21 +65,35 @@ import { timeOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import TimelineList from '../components/TimelineList.vue';
 import { useSchedule } from '../composables/useSchedule';
-import { useTt } from '../composables/useTt';
+import { useTt, TT_MAX_DOSES } from '../composables/useTt';
 import { usePregnancy } from '../composables/usePregnancy';
+import { useI18n } from 'vue-i18n';
 import type { ScheduleItem } from '../db/schemas';
+import type { ItemInfo } from '../components/TimelineList.vue';
 import { todayIso } from '../utils/date';
 
 const route = useRoute();
+const { t } = useI18n();
 const { activePregnancy } = usePregnancy();
 const { items, markCompleted, markUpcoming } = useSchedule();
-const { isUnknown } = useTt();
+const { isUnknown, nextDoseNumber } = useTt();
 
 const expandedId = ref<string | null>(null);
 const showPast = ref(false);
 const showAllUpcoming = ref(false);
 
 const ttNotice = computed(() => isUnknown.value && activePregnancy.value !== null);
+
+/** Dose-specific info for the TT reminder (locale: tt.dose_info.dose1..5). */
+function infoForItem(item: ScheduleItem): ItemInfo | null {
+  if (item.type !== 'TT') return null;
+  const n = nextDoseNumber.value;
+  if (n === null) return null;
+  return {
+    title: t('tt.dose_title', { n, max: TT_MAX_DOSES }),
+    body: t(`tt.dose_info.dose${n}`) || t('content.empty')
+  };
+}
 
 const upcomingAll = computed(() =>
   items.value

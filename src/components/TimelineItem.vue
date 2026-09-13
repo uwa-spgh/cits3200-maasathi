@@ -19,6 +19,10 @@
           />
         </div>
         <div v-if="expanded" class="item-detail">
+          <div v-if="infoTitle" class="prep-box">
+            <p class="prep-title">{{ infoTitle }}</p>
+            <ContentText :text="infoBody || ''" />
+          </div>
           <div v-if="prepKey" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
             <ContentText :text="$t(prepKey) || $t('content.empty')" />
@@ -70,10 +74,15 @@ const props = withDefaults(
     title: string;
     expanded?: boolean;
     isLast?: boolean;
+    /** Optional extra info box (e.g. dose-specific TT information). */
+    infoTitle?: string | null;
+    infoBody?: string | null;
   }>(),
   {
     expanded: false,
-    isLast: false
+    isLast: false,
+    infoTitle: null,
+    infoBody: null
   }
 );
 
