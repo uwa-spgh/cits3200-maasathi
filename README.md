@@ -114,7 +114,7 @@ All user-facing information lives in `src/locales/en.json` and `src/locales/bn.j
 *   `tt.about_body`, `tt.epi_card_body` — tetanus education.
 *   `anc.prep.visit1..4`, `pnc.prep.contact1..4`, `tt.prep` — "before your visit" notes shown on upcoming reminders.
 *   `tt.dose_title`, `tt.dose_info.dose1..5` — dose-specific information shown when the TT reminder is opened.
-*   `week_info.body_stage`, `week_info.body_milestones` — This-Week articles.
+*   `week_info.body_stage`, `week_info.body_milestones` — This-Week articles. `body_stage` auto-fills from the current visit/contact article unless the team writes an override; the home wellbeing card shows its opening excerpt.
 *   `danger_signs.*` — danger-sign titles and lists (already filled in).
 *   `home.cards.*` — home-screen card sentences and reminder templates (`{ordinal}` / `{date}` / `{week}` / `{day}` are filled in automatically — keep them in the text).
 *   `content.empty` — shown wherever a content value is still blank ("Content coming soon.").

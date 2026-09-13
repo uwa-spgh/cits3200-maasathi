@@ -74,6 +74,7 @@ import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import { formatDayMonthLong, todayIso } from '../utils/date';
+import { currentStageRef, excerpt } from '../utils/stageArticle';
 import type { ScheduleItem } from '../db/schemas';
 
 const ionRouter = useIonRouter();
@@ -169,8 +170,15 @@ function onRemindersTap(): void {
   ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
 }
 
-// ---- "How are you?" card: short placeholder until stage content lands ----
-const wellbeingBody = computed(() => t('home.cards.wellbeing_placeholder'));
+// ---- "How are you?" card: important info about the current stage ----
+const wellbeingBody = computed(() => {
+  const fallback = t('home.cards.wellbeing_placeholder');
+  if (!activePregnancy.value) return fallback;
+  const stage = currentStageRef(items.value, mode.value);
+  if (!stage) return fallback;
+  const key = stage.ns === 'pnc' ? `pnc.contact_body.${stage.ref}` : `anc.visit_body.${stage.ref}`;
+  return excerpt(t(key)) || fallback;
+});
 const nutritionBody = computed(() => t('home.cards.nutrition_body') || t('content.empty'));
 </script>
 
