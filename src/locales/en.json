@@ -12,7 +12,6 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "next": "Next",
-    "skip": "Skip for now",
     "not_set": "Not set",
     "yes": "Yes",
     "no": "No",
@@ -32,32 +31,11 @@
   "placeholder": {
     "hint": "Placeholder — content will be added here"
   },
-  "info_card": {
-    "title": "Current stage message",
-    "know_more": "Press to know more"
-  },
   "buttons": {
-    "emergency": "Emergency",
-    "reminders": "Reminders",
-    "information": "Information",
     "profile": "Profile"
   },
   "home": {
-    "status_anc": "Pregnancy · Week {week}",
-    "status_anc_unknown": "Pregnancy tracking",
-    "status_pnc": "After birth · Day {day}",
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
-    "info_anc": "Placeholder: your current-week message will appear here. You are in week {week} of your pregnancy.",
-    "info_anc_unknown": "Placeholder: add your LMP or due date in Profile to see week-based messages.",
-    "info_pnc": "Placeholder: your postnatal day {day} message will appear here.",
-    "journey": {
-      "next": "Next",
-      "danger": "Danger Signs",
-      "wellbeing": "Wellbeing Info",
-      "view_all": "View all",
-      "conceived": "Got pregnant",
-      "baby_due": "Baby due"
-    },
     "cards": {
       "reminder_title": "Reminder",
       "reminder_anc": "You have your {ordinal} ANC visit on {date}",
@@ -115,7 +93,6 @@
     }
   },
   "danger_signs": {
-    "page_title": "Danger signs",
     "section_title": "Danger signs — go to the health facility immediately",
     "newborn_title": "Newborn danger signs — go to the health facility immediately",
     "pregnancy": {
@@ -173,14 +150,10 @@
     }
   },
   "reminders": {
-    "title": "Reminders",
-    "today": "Today",
-    "upcoming": "Upcoming reminders",
-    "past": "Past reminders"
+    "title": "Reminders"
   },
   "timeline": {
     "empty": "No reminders here",
-    "detail_placeholder": "Placeholder — details about this appointment will appear here",
     "mark_completed": "Mark completed",
     "mark_upcoming": "Move back to upcoming",
     "due_today": "Due today",
@@ -192,7 +165,6 @@
     "overdue_1_day": "1 day overdue",
     "overdue_days": "{days} days overdue",
     "status_done": "Done",
-    "visit_details_title": "Visit record",
     "facility": "Facility / provider",
     "bp": "Blood pressure",
     "weight": "Weight (kg)",
@@ -217,60 +189,11 @@
     "tt": {
       "next": "Tetanus (TT) vaccination due"
     },
-    "progress": {
-      "week_of": "Week {week} of 40",
-      "trimester": "Trimester {n}",
-      "edd_today": "Due today",
-      "edd_in": "Due in {days} days",
-      "edd_past": "{days} days past due",
-      "pnc_day": "Day {day} after birth",
-      "pnc_week": "Week {n} of 6",
-      "you": "You are here"
-    },
-    "filter": {
-      "all": "All",
-      "now": "Now",
-      "upcoming": "Upcoming",
-      "past": "Past",
-      "now_empty": "Nothing needs your attention right now"
-    },
     "milestone": {
       "edd": "Expected date of delivery",
       "child_epi_start": "Child immunisation (EPI) module starts"
     },
     "journey": {
-      "you": "You are here",
-      "now": "NOW",
-      "today": "Today",
-      "recenter": "Jump back to today",
-      "focus_label": "Focus the timeline",
-      "focus_past": "Past",
-      "focus_now": "Now",
-      "focus_future": "Future",
-      "scrub_hint": "Drag the rail sideways · tap a dot to jump to that visit",
-      "eyebrow_anc": "Pregnancy journey",
-      "eyebrow_pnc": "After birth journey",
-      "anc_title": "Week {week}, day {day}",
-      "pnc_title": "Day {day} after birth",
-      "pnc_left": "{days} days of postnatal care left",
-      "pnc_done": "Postnatal care complete",
-      "edd_countdown": "{days} days until your due date",
-      "badge_weeks": "weeks",
-      "birth": "Birth",
-      "day42": "Day 42",
-      "lmp": "LMP",
-      "edd_short": "EDD",
-      "section_now": "Needs your attention now",
-      "section_future": "Coming up next",
-      "section_past": "Already done & past",
-      "section_all": "Your whole journey",
-      "now_sub": "{count} item(s) due or overdue",
-      "future_sub": "{count} upcoming item(s)",
-      "past_sub": "{count} past item(s)",
-      "all_sub": "{count} item(s) across your journey",
-      "all_sub_overdue": "{overdue} overdue — catch up soon",
-      "future_empty": "Nothing scheduled ahead — you're all caught up",
-      "past_empty": "Nothing in the past yet",
       "up_next": "Up next",
       "show_more": "Show {count} more",
       "show_past": "Show past ({count})",
@@ -290,9 +213,7 @@
   },
   "anc": {
     "trimester": "Trimester {n}",
-    "visit_content": "Visit content placeholder",
     "tests_title": "Tests usually done",
-    "tests_placeholder": "Tests placeholder",
     "visits": {
       "visit1": "Visit 1 (before 16 weeks)",
       "visit2": "Visit 2 (24–28 weeks)",
@@ -315,9 +236,7 @@
     }
   },
   "pnc": {
-    "contact_content": "Contact content placeholder",
     "breastfeeding_title": "Breastfeeding support",
-    "breastfeeding_placeholder": "Breastfeeding content placeholder",
     "contacts": {
       "contact1": "Contact 1 (within 24 hours)",
       "contact2": "Contact 2 (48–72 hours)",
@@ -349,9 +268,7 @@
     "date_unknown": "date unknown",
     "no_doses": "No doses recorded yet",
     "education_title": "About tetanus",
-    "education_placeholder": "Tetanus education content placeholder",
     "epi_card_title": "Your EPI card",
-    "epi_card_placeholder": "EPI card guidance placeholder",
     "status_not_asked": "Not set",
     "status_unknown": "History unknown",
     "status_complete": "Complete",
@@ -361,10 +278,7 @@
     "prep": ""
   },
   "nutrition": {
-    "page_title": "Nutrition",
     "section_title": "Nutrition",
-    "placeholder": "Nutrition content placeholder",
-    "content_placeholder": "Nutrition content placeholder",
     "topics": {
       "healthy_diet": "Healthy diet",
       "ifa": "Iron and folic acid",
@@ -391,7 +305,6 @@
     "data_section": "Data",
     "contacts_hint": "These numbers are used by the Emergency page. All data stays on your phone.",
     "contacts_number_placeholder": "Enter phone number",
-    "personal_info": "Personal information",
     "name_label": "Your name",
     "name_placeholder": "Enter your name",
     "age_label": "Age",
@@ -448,7 +361,6 @@
     "close_pregnancy_btn": "Close current pregnancy early",
     "close_confirm_title": "Close pregnancy?",
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
-    "settings_section": "Settings",
     "nav_mode_label": "Navigation style",
     "nav_mode_hint": "Developer option — app restarts to apply",
     "nav_home_bar": "Home button bar",
@@ -458,7 +370,6 @@
     "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
   },
   "history": {
-    "title": "Past pregnancy",
     "pregnancy_details": "Pregnancy details",
     "child_details": "Child details",
     "child_dob": "Date of birth",
@@ -485,7 +396,6 @@
     "q_edd_when": "When is your expected delivery date?",
     "q_estimate": "About how many months pregnant are you?",
     "estimate_hint": "This sets an estimated due date. You can correct it later in your Profile.",
-    "tt_title": "Tetanus vaccination",
     "q_tt_count": "Do you know how many doses you have had?",
     "done_title": "You are all set",
     "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
