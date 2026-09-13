@@ -24,8 +24,17 @@
             <ContentText :text="infoBody || ''" />
           </div>
           <div v-if="articleKey" class="prep-box">
-            <p class="prep-title">{{ $t(articleTitleKey) }}</p>
-            <ContentText :text="$t(articleKey) || $t('content.empty')" />
+            <button
+              v-if="collapsibleArticle"
+              class="prep-toggle"
+              @click="showArticle = !showArticle"
+              :aria-expanded="showArticle"
+            >
+              <span class="prep-title">{{ $t(articleTitleKey) }}</span>
+              <IonIcon :icon="showArticle ? chevronUpOutline : chevronDownOutline" />
+            </button>
+            <p v-else class="prep-title">{{ $t(articleTitleKey) }}</p>
+            <ContentText v-if="!collapsibleArticle || showArticle" :text="$t(articleKey) || $t('content.empty')" />
           </div>
           <div v-if="prepKey" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
@@ -59,12 +68,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import { IonButton, IonIcon } from '@ionic/vue';
 import {
   arrowUndoOutline,
   checkmarkCircle,
-  checkmarkOutline
+  checkmarkOutline,
+  chevronDownOutline,
+  chevronUpOutline
 } from 'ionicons/icons';
 import { useI18n } from 'vue-i18n';
 import ContentText from './ContentText.vue';
@@ -135,6 +146,10 @@ const articleKey = computed<string | null>(() => {
 const articleTitleKey = computed(() =>
   props.item.type === 'TT' ? 'timeline.about_vaccine' : 'timeline.about_visit'
 );
+
+/** The long vaccine article starts collapsed so the reminder stays compact. */
+const collapsibleArticle = computed(() => props.item.type === 'TT');
+const showArticle = ref(false);
 
 const dueLabel = computed(() => {
   if (props.item.status === 'completed') return translate('timeline.status_done');
@@ -341,6 +356,24 @@ const relativeLabel = computed(() => {
   font-size: 0.82rem;
   font-weight: 800;
   color: var(--color-card-text, #1a1a1a);
+}
+
+.prep-toggle {
+  border: none;
+  background: transparent;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0;
+  margin: 0 0 4px 0;
+  cursor: pointer;
+  color: var(--color-card-text, #1a1a1a);
+  font-size: 1rem;
+}
+
+.prep-toggle .prep-title {
+  margin: 0;
 }
 
 .action-btn {
