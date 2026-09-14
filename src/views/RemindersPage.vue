@@ -136,12 +136,12 @@ function toggleExpand(id: string): void {
 }
 
 async function onComplete(item: ScheduleItem): Promise<void> {
-  await markCompleted(item.id);
+  await markCompleted(item);
   expandedId.value = null;
 }
 
 async function onUndo(item: ScheduleItem): Promise<void> {
-  await markUpcoming(item.id);
+  await markUpcoming(item);
 }
 
 // Deep-link handling: if ?focus=<id> is provided, expand that item
