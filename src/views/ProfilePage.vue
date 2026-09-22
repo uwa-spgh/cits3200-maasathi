@@ -32,6 +32,12 @@
         <IonIcon :icon="chevronForwardOutline" class="chev" />
       </button>
 
+      <button class="menu-item" @click="router.push({ name: 'ProfilePlan' })">
+        <IonIcon :icon="bookmarkOutline" class="menu-icon" />
+        <span>{{ $t('profile.menu_birth_plan') }}</span>
+        <IonIcon :icon="chevronForwardOutline" class="chev" />
+      </button>
+
       <button class="menu-item" @click="router.push({ name: 'ProfileContacts' })">
         <IonIcon :icon="callOutline" class="menu-icon" />
         <span>{{ $t('profile.menu_contacts') }}</span>
@@ -75,6 +81,7 @@ import { useI18n } from 'vue-i18n';
 import { IonIcon } from '@ionic/vue';
 import {
   archiveOutline,
+  bookmarkOutline,
   callOutline,
   chevronForwardOutline,
   languageOutline,
