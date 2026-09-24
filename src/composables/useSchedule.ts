@@ -132,7 +132,6 @@ export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
       await scheduleItemReminders(
         item,
         t('notification.title'),
-        t(item.titleKey)
       );
     }
   }
@@ -171,7 +170,7 @@ async function markUpcoming(item: ScheduleItem): Promise<void> {
   item.completedAt = null;
   await scheduleRepo.upsertAll([{ ...item }]);
   if (item.dueDate >= todayIso()) {
-    await scheduleItemReminders(item, t('notification.title'), t(item.titleKey));
+    await scheduleItemReminders(item, t('notification.title'));
   }
   await load();
 }

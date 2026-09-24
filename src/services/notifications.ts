@@ -1,6 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications, type ScheduleOptions } from '@capacitor/local-notifications';
 import type { ScheduleItem } from '../db/schemas';
+import { t } from '../i18n';
 
 export const REMINDER_OFFSETS_DAYS = [7, 3, 1, 0] as const;
 
@@ -51,12 +52,12 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function scheduleItemReminders(
   item: ScheduleItem,
   title: string,
-  body: string
 ): Promise<void> {
   if (!Capacitor.isNativePlatform()) {
     console.info(`MaaSathi: would schedule reminders for ${item.type}/${item.ref}`);
     return;
   }
+
   const granted = await requestNotificationPermission();
   if (!granted) return;
 
@@ -68,6 +69,14 @@ export async function scheduleItemReminders(
   for (const offset of REMINDER_OFFSETS_DAYS) {
     const when = addDays(item.dueDate, -offset);
     if (when.getTime() < today.getTime() && !isSameDay(when, today)) continue;
+
+    let body = "";
+
+    if (item.type == "ANC") body += "Your first ANC visit is due " + "in 7 days"
+    if (item.type == "MILESTONE") body += "Your first ANC visit is due " + "in 7 days"
+    if (item.type == "PNC") body += "Your first PNC visit is due " + "in 7 days"
+    if (item.type == "TT") body += "Your first TT visit is due " + "in 7 days"
+
     schedule.notifications.push({
       id: reminderId(item, offset),
       title,
