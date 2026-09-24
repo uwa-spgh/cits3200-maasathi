@@ -61,11 +61,11 @@ export async function scheduleItemReminders(
 ): Promise<void> {
   if (!Capacitor.isNativePlatform()) {
     console.info(`MaaSathi: would schedule reminders for ${item.type}/${item.ref}`);
-    return;
+    //return;
   }
 
   const granted = await requestNotificationPermission();
-  if (!granted) return;
+  //if (!granted) return;
 
   const today = new Date();
   const schedule: ScheduleOptions = {
@@ -77,8 +77,9 @@ export async function scheduleItemReminders(
     if (when.getTime() < today.getTime() && !isSameDay(when, today)) continue;
 
     let body = '';
-    let body_time = t('timeline.in_days');
-    body_time = body_time.replace('{days}', String(offset))
+    let body_time = t('notification.in_days');
+
+    body_time = body_time.replace('#days', offset.toString())
     let n = visitNumber(item);
 
     if (offset == 1) body_time = t('timeline.today');
@@ -89,8 +90,8 @@ export async function scheduleItemReminders(
     if (item.type == 'PNC') body = t('notification.reminder_tt');
     if (item.type == 'TT') body = t('notification.reminder_edd');
 
-    body = body.replace('{ordinal}', t(`home.cards.ordinal_${n}`));
-    body = body.replace('{date}', body_time);
+    body = body.replace('#ordinal', t(`home.cards.ordinal_${n}`));
+    body = body.replace('#date', body_time);
 
     schedule.notifications.push({
       id: reminderId(item, offset),

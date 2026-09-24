@@ -27,10 +27,11 @@
   },
   "notification": {
     "title": "মা সাথী স্মারক",
-    "reminder_anc": "আপনার {ordinal} ANC ভিজিট {date}",
-    "reminder_pnc": "আপনার {ordinal} প্রসব-পরবর্তী যোগাযোগ {date}",
-    "reminder_tt": "{date} তারিখে আপনার টিটেনাস টিকা দেওয়ার সময়। সাথে আপনার ইপিআই কার্ড আনতে ভুলবেন না।",
-    "reminder_edd": "আপনার সম্ভাব্য প্রসবের তারিখ {date}"
+    "reminder_anc": "আপনার #ordinal ANC ভিজিট #date",
+    "reminder_pnc": "আপনার #ordinal প্রসব-পরবর্তী যোগাযোগ #date",
+    "reminder_tt": "#date তারিখে আপনার টিটেনাস টিকা দেওয়ার সময়। সাথে আপনার ইপিআই কার্ড আনতে ভুলবেন না।",
+    "reminder_edd": "আপনার সম্ভাব্য প্রসবের তারিখ #date",
+    "in_days": "#days দিনের মধ্যে"
   },
   "placeholder": {
     "hint": "স্থানধারক — এখানে তথ্য যোগ করা হবে"
