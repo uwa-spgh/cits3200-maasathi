@@ -26,7 +26,11 @@
     "profile": "Profile"
   },
   "notification": {
-    "title": "MaaSathi reminder"
+    "title": "MaaSathi reminder",
+    "reminder_anc": "Your {ordinal} ANC visit is {date}",
+    "reminder_pnc": "Your {ordinal} postnatal contact is {date}",
+    "reminder_tt": "Your tetanus vaccination is {date}. Remember to bring your EPI card.",
+    "reminder_edd": "Your expected delivery is {date}"
   },
   "placeholder": {
     "hint": "Placeholder — content will be added here"

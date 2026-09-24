@@ -79,10 +79,10 @@ export async function scheduleItemReminders(
     if (offset == 1) body_time = t('timeline.today');
     if (offset == 0) body_time = t('timeline.tomorrow');
 
-    if (item.type == 'ANC') body = "Your first ANC visit is " + body_time
-    if (item.type == 'MILESTONE') body = "Your first ANC visit is " + body_time
-    if (item.type == 'PNC') body = "Your first PNC visit is " + body_time
-    if (item.type == 'TT') body = "Your first TT visit is " + body_time
+    if (item.type == 'ANC') body = t('notification.reminder_anc', { ordinal: t(`home.cards.ordinal_${n}`), date: body_time})
+    if (item.type == 'MILESTONE') body = t('notification.reminder_pnc', { ordinal: t(`home.cards.ordinal_${n}`), date: body_time})
+    if (item.type == 'PNC') body = t('notification.reminder_tt', { date: body_time})
+    if (item.type == 'TT') body = t('notification.reminder_edd', { date: body_time})
 
     schedule.notifications.push({
       id: reminderId(item, offset),
