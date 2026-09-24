@@ -90,7 +90,8 @@ export async function scheduleItemReminders(
     if (item.type == 'PNC') body = t('notification.reminder_tt');
     if (item.type == 'TT') body = t('notification.reminder_edd');
 
-    body = body.replace('#ordinal', t(`home.cards.ordinal_${n}`));
+    if (n != null) body = body.replace('#ordinal', t(`home.cards.ordinal_${n}`))
+      else body = body.replace('#ordinal', "");
     body = body.replace('#date', body_time);
 
     schedule.notifications.push({
