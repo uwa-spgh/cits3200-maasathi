@@ -1,9 +1,7 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications, type ScheduleOptions } from '@capacitor/local-notifications';
 import type { ScheduleItem } from '../db/schemas';
-import { useI18n } from 'vue-i18n';
-import { visitNumber } from '../views/HomePage.vue'
-const { t, locale } = useI18n();
+import { t } from '../i18n';
 
 export const REMINDER_OFFSETS_DAYS = [7, 3, 1, 0] as const;
 
@@ -79,16 +77,20 @@ export async function scheduleItemReminders(
     if (when.getTime() < today.getTime() && !isSameDay(when, today)) continue;
 
     let body = '';
-    let body_time = t('timeline.in_days', {days : offset});
+    let body_time = t('timeline.in_days');
+    body_time = body_time.replace('{days}', String(offset))
     let n = visitNumber(item);
 
     if (offset == 1) body_time = t('timeline.today');
     if (offset == 0) body_time = t('timeline.tomorrow');
 
-    if (item.type == 'ANC') body = t('notification.reminder_anc', { ordinal: t(`home.cards.ordinal_${n}`), date: body_time})
-    if (item.type == 'MILESTONE') body = t('notification.reminder_pnc', { ordinal: t(`home.cards.ordinal_${n}`), date: body_time})
-    if (item.type == 'PNC') body = t('notification.reminder_tt', { date: body_time})
-    if (item.type == 'TT') body = t('notification.reminder_edd', { date: body_time})
+    if (item.type == 'ANC') body = t('notification.reminder_anc');
+    if (item.type == 'MILESTONE') body = t('notification.reminder_pnc');
+    if (item.type == 'PNC') body = t('notification.reminder_tt');
+    if (item.type == 'TT') body = t('notification.reminder_edd');
+
+    body = body.replace('{ordinal}', t(`home.cards.ordinal_${n}`));
+    body = body.replace('{date}', body_time);
 
     schedule.notifications.push({
       id: reminderId(item, offset),
