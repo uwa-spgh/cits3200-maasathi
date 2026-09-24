@@ -76,8 +76,8 @@ export async function scheduleItemReminders(
     let body_time = t('timeline.in_days', {days : offset});
     let n = visitNumber(item);
 
-    if (offset == 1) body_time = t('timeline.in_days', {days : offset});
-    if (offset == 0) body_time = t('timeline.in_days', {days : offset});
+    if (offset == 1) body_time = t('timeline.today');
+    if (offset == 0) body_time = t('timeline.tomorrow');
 
     if (item.type == 'ANC') body = "Your first ANC visit is " + body_time
     if (item.type == 'MILESTONE') body = "Your first ANC visit is " + body_time
