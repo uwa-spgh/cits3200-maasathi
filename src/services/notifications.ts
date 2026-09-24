@@ -1,7 +1,9 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications, type ScheduleOptions } from '@capacitor/local-notifications';
 import type { ScheduleItem } from '../db/schemas';
-import { t } from '../i18n';
+import { useI18n } from 'vue-i18n';
+import { visitNumber } from '../views/HomePage.vue'
+const { t, locale } = useI18n();
 
 export const REMINDER_OFFSETS_DAYS = [7, 3, 1, 0] as const;
 
@@ -70,12 +72,17 @@ export async function scheduleItemReminders(
     const when = addDays(item.dueDate, -offset);
     if (when.getTime() < today.getTime() && !isSameDay(when, today)) continue;
 
-    let body = "";
+    let body = '';
+    let body_time = t('timeline.in_days', {days : offset});
+    let n = visitNumber(item);
 
-    if (item.type == "ANC") body += "Your first ANC visit is due " + "in 7 days"
-    if (item.type == "MILESTONE") body += "Your first ANC visit is due " + "in 7 days"
-    if (item.type == "PNC") body += "Your first PNC visit is due " + "in 7 days"
-    if (item.type == "TT") body += "Your first TT visit is due " + "in 7 days"
+    if (offset == 1) body_time = t('timeline.in_days', {days : offset});
+    if (offset == 0) body_time = t('timeline.in_days', {days : offset});
+
+    if (item.type == 'ANC') body = "Your first ANC visit is " + body_time
+    if (item.type == 'MILESTONE') body = "Your first ANC visit is " + body_time
+    if (item.type == 'PNC') body = "Your first PNC visit is " + body_time
+    if (item.type == 'TT') body = "Your first TT visit is " + body_time
 
     schedule.notifications.push({
       id: reminderId(item, offset),

@@ -139,7 +139,7 @@ function openEvent(id: string): void {
   ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
 
-function visitNumber(item: ScheduleItem | null): number | null {
+export function visitNumber(item: ScheduleItem | null): number | null {
   if (!item) return null;
   const match = item.ref.match(/(\d+)$/);
   return match ? Number(match[1]) : null;
