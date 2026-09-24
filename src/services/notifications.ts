@@ -9,6 +9,12 @@ export const REMINDER_OFFSETS_DAYS = [7, 3, 1, 0] as const;
 
 const NOTIFICATION_HOUR = 9;
 
+export function visitNumber(item: ScheduleItem | null): number | null {
+  if (!item) return null;
+  const match = item.ref.match(/(\d+)$/);
+  return match ? Number(match[1]) : null;
+}
+
 function reminderId(item: ScheduleItem, offsetDays: number): number {
   let hash = 0;
   const basis = `${item.pregnancyId}|${item.type}|${item.ref}|${offsetDays}`;
