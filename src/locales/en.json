@@ -26,7 +26,12 @@
     "profile": "Profile"
   },
   "notification": {
-    "title": "MaaSathi reminder"
+    "title": "MaaSathi reminder",
+    "reminder_anc": "Your #ordinal ANC visit is #date",
+    "reminder_pnc": "Your #ordinal postnatal contact is #date",
+    "reminder_tt": "Your tetanus vaccination is #date. Remember to bring your EPI card.",
+    "reminder_edd": "Your expected delivery is #date",
+    "in_days":"in #days days"
   },
   "placeholder": {
     "hint": "Placeholder — content will be added here"
@@ -177,7 +182,9 @@
     "mark_completed": "Mark completed",
     "mark_upcoming": "Move back to upcoming",
     "due_today": "Due today",
+    "today": "today",
     "due_tomorrow": "Due tomorrow",
+    "tomorrow": "tomorrow",
     "due_in_days": "In {days} days",
     "in_days": "in {days} days",
     "ago_1_day": "1 day ago",
