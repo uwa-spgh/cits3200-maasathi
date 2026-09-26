@@ -61,11 +61,11 @@ export async function scheduleItemReminders(
 ): Promise<void> {
   if (!Capacitor.isNativePlatform()) {
     console.info(`MaaSathi: would schedule reminders for ${item.type}/${item.ref}`);
-    //return;
+    return;
   }
 
   const granted = await requestNotificationPermission();
-  //if (!granted) return;
+  if (!granted) return;
 
   const today = new Date();
   const schedule: ScheduleOptions = {
@@ -132,5 +132,8 @@ export async function cancelAllReminders(items: ScheduleItem[]): Promise<void> {
 
 export async function forceCancelAllReminders(): Promise<void> {
   const pending = await LocalNotifications.getPending();
-  await LocalNotifications.cancel(pending);
+  if (pending.notifications.length > 0) {
+    await LocalNotifications.cancel(pending);
+  }
+  await LocalNotifications.removeAllDeliveredNotifications();
 }

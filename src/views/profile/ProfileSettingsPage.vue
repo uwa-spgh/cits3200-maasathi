@@ -80,10 +80,10 @@ async function confirmReset(): Promise<void> {
         text: t('common.confirm'),
         role: 'destructive',
         handler: () => {
-          void clearAllData().then(() => {
+          void clearAllData().then(async () => {
             try {
               localStorage.clear();
-              forceCancelAllReminders;
+              await forceCancelAllReminders();
             } catch (e) {
               console.error('reset failed', e);
             }
