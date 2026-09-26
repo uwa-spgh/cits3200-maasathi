@@ -129,3 +129,8 @@ export async function cancelAllReminders(items: ScheduleItem[]): Promise<void> {
     await cancelItemReminders(item);
   }
 }
+
+export async function forceCancelAllReminders(): Promise<void> {
+  const pending = await LocalNotifications.getPending();
+  await LocalNotifications.cancel(pending);
+}
