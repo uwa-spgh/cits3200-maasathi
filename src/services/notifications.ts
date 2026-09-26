@@ -82,8 +82,8 @@ export async function scheduleItemReminders(
     body_time = body_time.replace('#days', offset.toString())
     let n = visitNumber(item);
 
-    if (offset == 1) body_time = t('timeline.today');
-    if (offset == 0) body_time = t('timeline.tomorrow');
+    if (offset == 1) body_time = t('timeline.tomorrow');
+    if (offset == 0) body_time = t('timeline.today');
 
     if (item.type == 'ANC') body = t('notification.reminder_anc');
     if (item.type == 'MILESTONE') body = t('notification.reminder_pnc');
