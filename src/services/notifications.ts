@@ -135,5 +135,4 @@ export async function forceCancelAllReminders(): Promise<void> {
   if (pending.notifications.length > 0) {
     await LocalNotifications.cancel(pending);
   }
-  await LocalNotifications.removeAllDeliveredNotifications();
 }
