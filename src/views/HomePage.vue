@@ -103,6 +103,7 @@ import { useUser } from '../composables/useUser';
 import type { ScheduleItem } from '../db/schemas';
 import { formatDayMonthLong, todayIso } from '../utils/date';
 import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { visitNumber } from '../services/notifications';
 
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
@@ -153,11 +154,7 @@ function openEvent(id: string): void {
   ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
 
-function visitNumber(item: ScheduleItem | null): number | null {
-  if (!item) return null;
-  const match = item.ref.match(/(\d+)$/);
-  return match ? Number(match[1]) : null;
-}
+
 
 const reminderBadge = computed<string | null>(() => {
   const n = visitNumber(shownEvent.value);

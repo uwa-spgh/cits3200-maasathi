@@ -1,10 +1,17 @@
 import { Capacitor } from '@capacitor/core';
 import { LocalNotifications, type ScheduleOptions } from '@capacitor/local-notifications';
 import type { ScheduleItem } from '../db/schemas';
+import { t } from '../i18n';
 
 export const REMINDER_OFFSETS_DAYS = [7, 3, 1, 0] as const;
 
 const NOTIFICATION_HOUR = 9;
+
+export function visitNumber(item: ScheduleItem | null): number | null {
+  if (!item) return null;
+  const match = item.ref.match(/(\d+)$/);
+  return match ? Number(match[1]) : null;
+}
 
 function reminderId(item: ScheduleItem, offsetDays: number): number {
   let hash = 0;
@@ -51,12 +58,12 @@ export async function requestNotificationPermission(): Promise<boolean> {
 export async function scheduleItemReminders(
   item: ScheduleItem,
   title: string,
-  body: string
 ): Promise<void> {
   if (!Capacitor.isNativePlatform()) {
     console.info(`MaaSathi: would schedule reminders for ${item.type}/${item.ref}`);
     return;
   }
+
   const granted = await requestNotificationPermission();
   if (!granted) return;
 
@@ -68,6 +75,25 @@ export async function scheduleItemReminders(
   for (const offset of REMINDER_OFFSETS_DAYS) {
     const when = addDays(item.dueDate, -offset);
     if (when.getTime() < today.getTime() && !isSameDay(when, today)) continue;
+
+    let body = '';
+    let body_time = t('notification.in_days');
+
+    body_time = body_time.replace('#days', offset.toString())
+    let n = visitNumber(item);
+
+    if (offset == 1) body_time = t('timeline.tomorrow');
+    if (offset == 0) body_time = t('timeline.today');
+
+    if (item.type == 'ANC') body = t('notification.reminder_anc');
+    if (item.type == 'MILESTONE') body = t('notification.reminder_pnc');
+    if (item.type == 'PNC') body = t('notification.reminder_tt');
+    if (item.type == 'TT') body = t('notification.reminder_edd');
+
+    if (n != null) body = body.replace('#ordinal', t(`home.cards.ordinal_${n}`))
+      else body = body.replace('#ordinal', "");
+    body = body.replace('#date', body_time);
+
     schedule.notifications.push({
       id: reminderId(item, offset),
       title,
@@ -101,5 +127,12 @@ export async function cancelItemReminders(item: ScheduleItem): Promise<void> {
 export async function cancelAllReminders(items: ScheduleItem[]): Promise<void> {
   for (const item of items) {
     await cancelItemReminders(item);
+  }
+}
+
+export async function forceCancelAllReminders(): Promise<void> {
+  const pending = await LocalNotifications.getPending();
+  if (pending.notifications.length > 0) {
+    await LocalNotifications.cancel(pending);
   }
 }
