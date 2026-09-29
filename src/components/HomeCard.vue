@@ -40,6 +40,14 @@
         <span>{{ listenLabel }}</span>
       </button>
     </div>
+    <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
+      <span
+        v-for="i in dotCount"
+        :key="i"
+        class="dot"
+        :class="{ active: i - 1 === activeDotIndex }"
+      />
+    </div>
   </div>
 </template>
 
@@ -61,6 +69,8 @@ defineProps<{
   cornerArrowLabel?: string;
   listenLabel?: string | null;
   learnMoreLabel?: string | null;
+  dotCount?: number;
+  activeDotIndex?: number;
 }>();
 
 defineEmits<{
@@ -234,4 +244,29 @@ defineEmits<{
 .accent-blue .pill-btn { background: var(--color-profile-bg, #33a1de); }
 .accent-green .pill-btn { background: var(--color-information-bg, #7bc62d); }
 .accent-red .pill-btn { background: var(--color-emergency-bg, #ff5c5c); color: #fff; }
+
+.dot-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.dot.active {
+  transform: scale(1.3);
+}
+
+.accent-yellow .dot.active { background: var(--color-reminders-bg, #f6c945); }
+.accent-blue .dot.active { background: var(--color-profile-bg, #33a1de); }
+.accent-green .dot.active { background: var(--color-information-bg, #7bc62d); }
+.accent-red .dot.active { background: var(--color-emergency-bg, #ff5c5c); }
 </style>

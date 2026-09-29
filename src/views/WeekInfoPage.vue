@@ -266,6 +266,7 @@ function listen(text: string): void {
   margin-bottom: 6px;
   color: #374151;
   font-size: 0.92rem;
+  white-space: pre-line;
 }
 
 .point-list li:last-child {

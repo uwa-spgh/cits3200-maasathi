@@ -12,26 +12,25 @@ export interface NowTopic {
 /** Stage topics without nutrition (nutrition is kept separate in the Nutrition section) */
 export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
   'ANC:visit1': [
-    { ns: 'anc', key: 'early_care', points: 2 },
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
+    { ns: 'anc', key: 'healthy_diet', points: 2 },
     { ns: 'anc', key: 'hydration_rest', points: 2 }
   ],
   'ANC:visit2': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
     { ns: 'anc', key: 'calcium_supplementation', points: 2 },
-    { ns: 'anc', key: 'pre_eclampsia_monitoring', points: 1 }
+    { ns: 'anc', key: 'pre_eclampsia_monitoring', points: 4 }
   ],
   'ANC:visit3': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
     { ns: 'anc', key: 'calcium_supplementation', points: 2 },
-    { ns: 'anc', key: 'birth_preparedness', points: 2 },
     { ns: 'anc', key: 'mental_wellbeing', points: 2 }
   ],
   'ANC:visit4': [
     { ns: 'anc', key: 'preparing_baby_care', points: 2 },
     { ns: 'anc', key: 'skilled_birth_care', points: 2 },
-    { ns: 'anc', key: 'avoid_harmful_substances', points: 2 },
-    { ns: 'anc', key: 'hygiene_infection_prevention', points: 2 }
+    { ns: 'anc', key: 'signs_of_labour', points: 5 },
+    { ns: 'anc', key: 'labour_go_to_facility', points: 12 }
   ],
   'PNC:contact1': [
     { ns: 'pnc', key: 'rest', points: 1 },
@@ -39,23 +38,18 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
     { ns: 'pnc', key: 'breastfeeding', points: 0, route: 'PncBreastfeeding' }
   ],
   'PNC:contact2': [
-    { ns: 'pnc', key: 'pain', points: 1 },
-    { ns: 'pnc', key: 'cleanliness', points: 1 },
     { ns: 'pnc', key: 'mental_wellbeing', points: 1 },
     { ns: 'pnc', key: 'family_planning', points: 1 },
-    { ns: 'pnc', key: 'feeding', points: 1 },
-    { ns: 'pnc', key: 'baby_growth', points: 1 },
-    { ns: 'pnc', key: 'cord_healing', points: 2 }
+    { ns: 'pnc', key: 'cord_healing', points: 10 }
   ],
   'PNC:contact3': [
-    { ns: 'pnc', key: 'cleanliness', points: 1 },
-    { ns: 'pnc', key: 'checkup', points: 1 },
-    { ns: 'pnc', key: 'mood', points: 1 }
+    { ns: 'pnc', key: 'routine_care', points: 0, route: 'PncRoutineCare' },
+    { ns: 'pnc', key: 'vaccines_after_birth', points: 6 },
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9 }
   ],
   'PNC:contact4': [
-    { ns: 'pnc', key: 'checkup', points: 1 },
-    { ns: 'pnc', key: 'family_planning', points: 1 },
-    { ns: 'pnc', key: 'mood', points: 1 }
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9 },
+    { ns: 'pnc', key: 'family_planning', points: 1 }
   ]
 };
 

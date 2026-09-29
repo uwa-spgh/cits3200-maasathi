@@ -21,9 +21,7 @@
           </button>
           <ExpandableCard
             v-else
-            :ref="(el) => setTopicCardRef(topic, el)"
             :title="$t(`${topic.ns}.${topic.key}_title`)"
-            :start-open="`${topic.ns}.${topic.key}` === targetTopic"
           >
             <ul class="sign-list">
               <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
@@ -50,9 +48,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, watch } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useIonRouter } from '@ionic/vue';
-import { useRoute } from 'vue-router';
 import { IonIcon } from '@ionic/vue';
 import {
   chevronForwardOutline,
@@ -63,10 +60,9 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { currentStageRef, STAGE_NOW_TOPICS, type NowTopic } from '../utils/stageArticle';
+import { currentStageRef, STAGE_NOW_TOPICS } from '../utils/stageArticle';
 
 const ionRouter = useIonRouter();
-const route = useRoute();
 const { mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 
@@ -80,33 +76,6 @@ const nowTopics = computed(() => {
   if (!currentStage.value) return [];
   return STAGE_NOW_TOPICS[currentStage.value.stageKey] ?? [];
 });
-
-/** Set via ?topic=ns.key (e.g. from the Home page's rotating "know more" link)
- *  to auto-expand and scroll to that specific card. */
-const targetTopic = computed(() => {
-  const q = route.query.topic;
-  return typeof q === 'string' ? q : null;
-});
-
-const topicCardEls = new Map<string, { $el?: Element } | null>();
-function setTopicCardRef(topic: NowTopic, el: { $el?: Element } | null): void {
-  topicCardEls.set(`${topic.ns}.${topic.key}`, el);
-}
-
-let scrolledToTarget = false;
-watch(
-  nowTopics,
-  async () => {
-    if (scrolledToTarget || !targetTopic.value) return;
-    await nextTick();
-    const el = topicCardEls.get(targetTopic.value)?.$el;
-    if (el instanceof Element) {
-      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      scrolledToTarget = true;
-    }
-  },
-  { immediate: true }
-);
 
 const topics = computed(() => {
   const base = [
@@ -163,6 +132,10 @@ const topics = computed(() => {
   gap: 6px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
+}
+
+.sign-list li {
+  white-space: pre-line;
 }
 
 .browse-section {

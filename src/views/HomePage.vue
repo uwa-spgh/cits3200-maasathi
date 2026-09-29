@@ -61,6 +61,8 @@
           :corner-arrow-label="$t('home.cards.now_next')"
           :listen-label="$t('home.cards.listen')"
           :learn-more-label="$t('home.cards.learn_more')"
+          :dot-count="nowTopics.length"
+          :active-dot-index="nowIndex"
           @open="onNowLearnMore"
           @listen="listen(nowExcerpt)"
           @learn-more="onNowLearnMore"
@@ -281,6 +283,7 @@ const nowExcerpt = computed(() => {
   const topic = activeNowTopic.value;
   if (!topic) return '';
   if (topic.key === 'breastfeeding') return t('pnc.start_early.point1');
+  if (topic.key === 'routine_care') return t('pnc.routine_care_blurb');
   if (topic.route) return excerpt(t(`${topic.ns}.${topic.key}_body`));
   return t(`${topic.ns}.${topic.key}.point1`);
 });
@@ -295,7 +298,8 @@ function onNowLearnMore(): void {
     go(topic.route);
     return;
   }
-  ionRouter.push({ name: 'Information', query: { topic: `${topic.ns}.${topic.key}` } });
+  const routeName = topic.ns === 'pnc' ? 'Pnc' : 'Anc';
+  ionRouter.push({ name: routeName, query: { topic: topic.key } });
 }
 </script>
 
