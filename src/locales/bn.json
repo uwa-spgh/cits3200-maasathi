@@ -26,7 +26,12 @@
     "profile": "প্রোফাইল"
   },
   "notification": {
-    "title": "মা সাথী স্মারক"
+    "title": "মা সাথী স্মারক",
+    "reminder_anc": "আপনার #ordinal ANC ভিজিট #date",
+    "reminder_pnc": "আপনার #ordinal প্রসব-পরবর্তী যোগাযোগ #date",
+    "reminder_tt": "#date তারিখে আপনার টিটেনাস টিকা দেওয়ার সময়। সাথে আপনার ইপিআই কার্ড আনতে ভুলবেন না।",
+    "reminder_edd": "আপনার সম্ভাব্য প্রসবের তারিখ #date",
+    "in_days": "#days দিনের মধ্যে"
   },
   "placeholder": {
     "hint": "স্থানধারক — এখানে তথ্য যোগ করা হবে"
@@ -177,7 +182,9 @@
     "mark_completed": "সম্পন্ন চিহ্নিত করুন",
     "mark_upcoming": "আসন্ন হিসেবে চিহ্নিত করুন",
     "due_today": "আজ নির্ধারিত",
+    "today": "আজ",
     "due_tomorrow": "আগামীকাল নির্ধারিত",
+    "tomorrow": "আগামীকাল",
     "due_in_days": "{days} দিন বাকি",
     "facility": "স্বাস্থ্যকেন্দ্র / সেবাদাতা",
     "bp": "রক্তচাপ",
