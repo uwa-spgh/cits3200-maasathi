@@ -10,15 +10,26 @@
           <IonIcon :icon="sparklesOutline" class="now-icon" />
           <h2 class="now-title">{{ $t('information.now_title') }}</h2>
         </div>
-        <ExpandableCard
-          v-for="topic in nowTopics"
-          :key="`${topic.ns}.${topic.key}`"
-          :title="$t(`${topic.ns}.${topic.key}_title`)"
-        >
-          <ul class="sign-list">
-            <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
-          </ul>
-        </ExpandableCard>
+        <template v-for="topic in nowTopics" :key="`${topic.ns}.${topic.key}`">
+          <button
+            v-if="topic.route"
+            class="topic-btn now-link-btn"
+            @click="ionRouter.push({ name: topic.route })"
+          >
+            <span>{{ $t(`${topic.ns}.${topic.key}_title`) }}</span>
+            <IonIcon :icon="chevronForwardOutline" class="arrow-icon" />
+          </button>
+          <ExpandableCard
+            v-else
+            :ref="(el) => setTopicCardRef(topic, el)"
+            :title="$t(`${topic.ns}.${topic.key}_title`)"
+            :start-open="`${topic.ns}.${topic.key}` === targetTopic"
+          >
+            <ul class="sign-list">
+              <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
+            </ul>
+          </ExpandableCard>
+        </template>
       </section>
 
       <section class="browse-section">
@@ -39,8 +50,9 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, nextTick, onMounted, watch } from 'vue';
 import { useIonRouter } from '@ionic/vue';
+import { useRoute } from 'vue-router';
 import { IonIcon } from '@ionic/vue';
 import {
   chevronForwardOutline,
@@ -51,9 +63,10 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { currentStageRef, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { currentStageRef, STAGE_NOW_TOPICS, type NowTopic } from '../utils/stageArticle';
 
 const ionRouter = useIonRouter();
+const route = useRoute();
 const { mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 
@@ -68,9 +81,37 @@ const nowTopics = computed(() => {
   return STAGE_NOW_TOPICS[currentStage.value.stageKey] ?? [];
 });
 
+/** Set via ?topic=ns.key (e.g. from the Home page's rotating "know more" link)
+ *  to auto-expand and scroll to that specific card. */
+const targetTopic = computed(() => {
+  const q = route.query.topic;
+  return typeof q === 'string' ? q : null;
+});
+
+const topicCardEls = new Map<string, { $el?: Element } | null>();
+function setTopicCardRef(topic: NowTopic, el: { $el?: Element } | null): void {
+  topicCardEls.set(`${topic.ns}.${topic.key}`, el);
+}
+
+let scrolledToTarget = false;
+watch(
+  nowTopics,
+  async () => {
+    if (scrolledToTarget || !targetTopic.value) return;
+    await nextTick();
+    const el = topicCardEls.get(targetTopic.value)?.$el;
+    if (el instanceof Element) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      scrolledToTarget = true;
+    }
+  },
+  { immediate: true }
+);
+
 const topics = computed(() => {
   const base = [
     { key: 'anc', route: 'Anc' },
+    { key: 'breastfeeding', route: 'PncBreastfeeding' },
     { key: 'pnc', route: 'Pnc' },
     { key: 'nutrition', route: 'Nutrition' },
     { key: 'vaccination', route: 'Vaccination' },

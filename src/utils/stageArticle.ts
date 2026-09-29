@@ -3,7 +3,10 @@ import type { CareMode, ScheduleItem } from '../db/schemas';
 export interface NowTopic {
   ns: 'anc' | 'pnc';
   key: string;
+  /** Bullet points to show inline, keyed `${ns}.${key}.point${n}`. Unused when `route` is set. */
   points: number;
+  /** When set, this topic links out to a full info page instead of showing inline bullet points. */
+  route?: string;
 }
 
 /** Stage topics without nutrition (nutrition is kept separate in the Nutrition section) */
@@ -32,11 +35,17 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
   ],
   'PNC:contact1': [
     { ns: 'pnc', key: 'rest', points: 1 },
-    { ns: 'pnc', key: 'bleeding', points: 1 }
+    { ns: 'pnc', key: 'bleeding', points: 1 },
+    { ns: 'pnc', key: 'breastfeeding', points: 0, route: 'PncBreastfeeding' }
   ],
   'PNC:contact2': [
     { ns: 'pnc', key: 'pain', points: 1 },
-    { ns: 'pnc', key: 'cleanliness', points: 1 }
+    { ns: 'pnc', key: 'cleanliness', points: 1 },
+    { ns: 'pnc', key: 'mental_wellbeing', points: 1 },
+    { ns: 'pnc', key: 'family_planning', points: 1 },
+    { ns: 'pnc', key: 'feeding', points: 1 },
+    { ns: 'pnc', key: 'baby_growth', points: 1 },
+    { ns: 'pnc', key: 'cord_healing', points: 2 }
   ],
   'PNC:contact3': [
     { ns: 'pnc', key: 'cleanliness', points: 1 },
@@ -116,7 +125,6 @@ export function getStageSurfacedContent(
 ): {
   stageKey: string | null;
   wellbeingBody: string;
-  nutritionBody: string;
   dangerBody: string;
 } {
   const stage = currentStageRef(items, mode);
@@ -124,7 +132,6 @@ export function getStageSurfacedContent(
     return {
       stageKey: null,
       wellbeingBody: t('home.cards.wellbeing_placeholder'),
-      nutritionBody: t('home.cards.nutrition_body') || t('content.empty'),
       dangerBody: t('home.cards.danger_generic_body')
     };
   }
@@ -141,16 +148,9 @@ export function getStageSurfacedContent(
     excerpt(t(`${ns}.visit_body.${ref}`)) ||
     t('home.cards.wellbeing_placeholder');
 
-  // 2. Nutrition: stage-specific nutrition tip or general nutrition body
-  const stageNutritionKey = ns === 'pnc' ? 'home.cards.nutrition_pnc' : `home.cards.nutrition_anc_${ref}`;
-  const nutritionBody =
-    t(stageNutritionKey) ||
-    t('home.cards.nutrition_body') ||
-    t('content.empty');
-
-  // 3. Danger: stage-specific danger flags
+  // 2. Danger: stage-specific danger flags
   const stageDangerKey = ns === 'pnc' ? 'home.cards.danger_pnc_body' : 'home.cards.danger_anc_body';
   const dangerBody = t(stageDangerKey) || t('home.cards.danger_generic_body');
 
-  return { stageKey, wellbeingBody, nutritionBody, dangerBody };
+  return { stageKey, wellbeingBody, dangerBody };
 }

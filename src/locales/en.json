@@ -48,11 +48,12 @@
       "ordinal_3": "third",
       "ordinal_4": "fourth",
       "wellbeing_title": "Information",
-      "nutrition_title": "Remember to eat well and move!",
-      "nutrition_body": "",
       "listen": "Listen",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "now_placeholder": "Nothing new to know right now.",
+      "now_prev": "Previous",
+      "now_next": "Next",
       "danger_title": "Danger signs to watch",
       "danger_anc_body": "Go to a health facility immediately for heavy bleeding, severe headache, blurred vision, sudden swelling, high fever, or reduced baby movement.",
       "danger_pnc_body": "Go to a health facility immediately for heavy postpartum bleeding, high fever, foul discharge, or if your newborn cannot feed or feels cold.",
@@ -64,12 +65,7 @@
       "stage_pnc_contact1": "Rest as much as possible. Check for normal bleeding and start exclusive breastfeeding within the first hour of birth.",
       "stage_pnc_contact2": "Feed your baby on demand day and night. Keep the umbilical cord clean and dry, and watch for any signs of fever or pain.",
       "stage_pnc_contact3": "Keep your body clean and attend your 1–2 week checkup. Rest when tired and reach out to family if you feel overwhelmed.",
-      "stage_pnc_contact4": "Attend your 6-week postnatal checkup. Discuss family planning and talk with your health worker about your physical and emotional recovery.",
-      "nutrition_anc_visit1": "Eat balanced local foods like rice, dal, vegetables, eggs, and fish. Take iron tablets with water, not tea.",
-      "nutrition_anc_visit2": "Calcium is essential now: eat dairy, leafy greens, or small fish with bones. Take calcium tablets at a different time from iron.",
-      "nutrition_anc_visit3": "Eat small, nutritious meals and drink clean fluids throughout the day. Rest on your side to support blood flow to baby.",
-      "nutrition_anc_visit4": "Maintain easily digestible, high-energy foods and stay well hydrated. Light daily walking helps prepare for labour.",
-      "nutrition_pnc": "Drink extra water every time you breastfeed and eat nutrient-rich foods to replenish your body and support healthy milk production."
+      "stage_pnc_contact4": "Attend your 6-week postnatal checkup. Discuss family planning and talk with your health worker about your physical and emotional recovery."
     },
     "rail": {
       "scroll_back": "Scroll timeline back",
@@ -239,7 +235,8 @@
       "pnc": "Postnatal care (PNC)",
       "danger_signs": "Danger signs",
       "nutrition": "Nutrition",
-      "vaccination": "Vaccination"
+      "vaccination": "Vaccination",
+      "breastfeeding": "Breastfeeding support"
     },
     "now_title": "What to know right now",
     "browse_title": "Browse all topics"
@@ -430,6 +427,23 @@
     "mood_title": "Mood",
     "mood": {
       "point1": "Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
+    },
+    "mental_wellbeing_title": "Mental wellbeing",
+    "mental_wellbeing": {
+      "point1": "Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
+    },
+    "feeding_title": "Feeding",
+    "feeding": {
+      "point1": "Coming soon"
+    },
+    "baby_growth_title": "Baby growth",
+    "baby_growth": {
+      "point1": "Coming soon"
+    },
+    "cord_healing_title": "Cord healing",
+    "cord_healing": {
+      "point1": "Keep the umbilical cord clean and dry.",
+      "point2": "Do not put anything on the baby's umbilical cord unless advised by a health worker."
     }
   },
   "tt": {
