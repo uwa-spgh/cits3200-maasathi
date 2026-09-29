@@ -394,6 +394,7 @@ async function finish(): Promise<void> {
   border-radius: 999px;
   font-size: 0.8rem;
   align-self: center;
+  opacity: 0.80;
 }
 
 .done-icon {
