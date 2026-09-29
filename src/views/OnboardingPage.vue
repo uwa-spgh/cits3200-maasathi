@@ -351,14 +351,15 @@ async function finish(): Promise<void> {
   color: var(--color-card-text, #1a1a1a);
   border-radius: 999px;
   padding: 14px 20px;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease;
 }
 
 .answer-btn:active {
   transform: scale(0.97);
+  background-color: #33a1de;
 }
 
 .answer-btn:disabled {
@@ -371,10 +372,13 @@ async function finish(): Promise<void> {
 }
 
 .answer-btn.subtle {
-  border-color: transparent;
-  background: transparent;
-  opacity: 0.75;
-  font-size: 0.9rem;
+  border: 0;
+  width: auto;
+  background: var(--color-app-bg, #fbf7f5);
+  color: var(--color-card-text, #1a1a1a);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  align-self: center;
 }
 
 .done-icon {
