@@ -9,20 +9,7 @@
 import {
   chevronBackCircle,
   chevronForwardCircle,
-  happyOutline,
-  heartOutline,
-  home,
-  homeOutline,
-  informationCircleOutline,
-  nutritionOutline,
-  personOutline,
-  pulseOutline,
   shieldCheckmarkOutline,
-  timeOutline,
-  volumeHighOutline,
-  walkOutline,
-  warningOutline,
-  waterOutline
 } from 'ionicons/icons';
 
 import calender from '../assets/icons/calendar_month_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
@@ -34,33 +21,54 @@ import syringe from '../assets/icons/syringe_96dp_000000_FILL0_wght400_GRAD0_ops
 import vaccineDoses from '../assets/icons/vaccines_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
 import wavingHand from '../assets/icons/waving_hand_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
 
+import heartOutline from '../assets/icons/favorite_64dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import healthCheck from '../assets/icons/stethoscope_64dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import water from '../assets/icons/water_drop_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import walk from '../assets/icons/directions_walk_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import nutrition from '../assets/icons/nutrition_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import clock from '../assets/icons/schedule_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import smile from '../assets/icons/sentiment_satisfied_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import home from '../assets/icons/home_64dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
+import info from '../assets/icons/info_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import profile from '../assets/icons/person_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import listen from '../assets/icons/volume_up_64dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
+import warning from '../assets/icons/warning_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+
+
 export const homeIcons = {
   /** Timeline rail scroll controls */
   railBack: chevronBackCircle,
   railForward: chevronForwardCircle,
+
   /** Timeline node states */
   nodeAction: shieldCheckmarkOutline,
+
   /** Timeline node per event type — shown inside every circle */
-  nodeAnc: pulseOutline,
-  nodePnc: homeOutline,
-  nodeTt: shieldCheckmarkOutline,
+  nodeAnc: healthCheck,
+  nodePnc: healthCheck,
+  nodeTt: syringe,
   nodeMilestone: heartOutline,
+
   /** Reminder card: title icon + large graphic */
-  reminderTitle: timeOutline,
-  reminderGraphic: pulseOutline,
+  reminderTitle: clock,
+  reminderGraphic: healthCheck,
+
   /** "How are you?" card title icon */
-  wellbeingTitle: happyOutline,
+  wellbeingTitle: smile,
+
   /** Nutrition card: title icon + large graphic (runner + food) */
-  nutritionTitle: waterOutline,
-  nutritionGraphicMain: walkOutline,
-  nutritionGraphicSecondary: nutritionOutline,
+  nutritionTitle: water,
+  nutritionGraphicMain: walk,
+  nutritionGraphicSecondary: nutrition,
+
   /** Buttons */
-  listen: volumeHighOutline,
-  learnMore: informationCircleOutline,
+  listen: listen,
+  learnMore: info,
+
   /** Bottom navigation */
-  navProfile: personOutline,
+  navProfile: profile,
   navHome: home,
-  navDanger: warningOutline
+  navDanger: warning
 } as const;
 
 export const onBoardingIcons = {
