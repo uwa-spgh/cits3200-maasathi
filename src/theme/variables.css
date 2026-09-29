@@ -20,7 +20,7 @@
 
 @font-face {
   font-family: "PublicSans";
-  src: url("../font/PublicSans-VariableFont_wght.ttf")
+  src: url("../assets/font/PublicSans-VariableFont_wght.ttf")
 }
 
 html, body, #app {

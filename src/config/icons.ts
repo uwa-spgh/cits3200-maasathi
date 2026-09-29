@@ -25,6 +25,15 @@ import {
   waterOutline
 } from 'ionicons/icons';
 
+import calender from '../assets/icons/calendar_month_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import childFace from '../assets/icons/child_care_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import clockWthreeDots from '../assets/icons/chronic_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import pen from '../assets/icons/ink_pen_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import menstrualHealth from '../assets/icons/menstrual_health_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import syringe from '../assets/icons/syringe_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import vaccineDoses from '../assets/icons/vaccines_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import wavingHand from '../assets/icons/waving_hand_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+
 export const homeIcons = {
   /** Timeline rail scroll controls */
   railBack: chevronBackCircle,
@@ -52,6 +61,18 @@ export const homeIcons = {
   navProfile: personOutline,
   navHome: home,
   navDanger: warningOutline
+} as const;
+
+export const onBoardingIcons = {
+  /* icons for the onboarding page */
+  calender: calender,
+  childFace: childFace,
+  clockWthreeDots: clockWthreeDots,
+  pen: pen,
+  menstrualHealth: menstrualHealth,
+  syringe: syringe,
+  vaccineDoses: vaccineDoses,
+  wavingHand: wavingHand
 } as const;
 
 export type HomeIconKey = keyof typeof homeIcons;
