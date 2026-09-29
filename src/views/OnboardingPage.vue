@@ -10,7 +10,9 @@
 
         <!-- Language -->
         <section v-if="step === 'language'" class="step-card">
-          <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
+          <h1 class="step-title">{{ $t('onboarding.welcome_title') }}
+            <IonIcon :icon="heartCircleOutline" class="icon" />
+          </h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
           <LanguageSwitcher class="language-picker" />
           <button class="answer-btn primary" @click="advance('name')">
@@ -96,7 +98,9 @@
 
         <!-- Q: TT ever -->
         <section v-else-if="step === 'tt_ever'" class="step-card">
-          <h1 class="step-title">{{ $t('profile.tt_question') }}</h1>
+          <h1 class="step-title">{{ $t('profile.tt_question') }}
+            <IonIcon :icon="heartCircleOutline" class="icon" />
+          </h1>
           <button class="answer-btn" @click="advance('tt_count_known')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('never')">{{ $t('common.no') }}</button>
           <button class="answer-btn subtle" @click="setTtAndFinish('unknown')">
@@ -320,11 +324,22 @@ async function finish(): Promise<void> {
   gap: 14px;
 }
 
+.icon {
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  flex-grow: 0;
+}
+
 .step-title {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
   margin: 0;
   font-size: 1.35rem;
   font-weight: 800;
   color: var(--color-card-text, #1a1a1a);
+  gap: 4px
 }
 
 .step-text {
