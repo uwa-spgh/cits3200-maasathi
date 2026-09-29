@@ -385,18 +385,21 @@ async function finish(): Promise<void> {
 
 .count-chips {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 10px;
+  justify-content: center; /* Centers the columns inside the container */
+  justify-items: center;   /* Centers the content inside each individual cell */
 }
 
 .count-chip {
-  height: 48px;
-  width: 48px;
+  height: 48px; 
+  width: 48px; 
   border-radius: 50%;
   border: 2px solid rgba(0, 0, 0, 0.2);
   background: var(--color-app-bg, #fbf7f5);
   color: var(--color-card-text, #1a1a1a);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 800;
   cursor: pointer;
 }
