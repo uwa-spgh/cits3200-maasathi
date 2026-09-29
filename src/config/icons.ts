@@ -21,7 +21,7 @@ import syringe from '../assets/icons/syringe_96dp_000000_FILL0_wght400_GRAD0_ops
 import vaccineDoses from '../assets/icons/vaccines_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
 import wavingHand from '../assets/icons/waving_hand_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
 
-import heartOutline from '../assets/icons/favorite_64dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import heartOutline from '../assets/icons/favorite_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
 import healthCheck from '../assets/icons/stethoscope_64dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
 import water from '../assets/icons/water_drop_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
 import walk from '../assets/icons/directions_walk_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
