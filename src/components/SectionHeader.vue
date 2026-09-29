@@ -62,7 +62,9 @@ void props;
   display: flex;
   align-items: center;
   gap: 10px;
-  padding: 10px 16px 6px 16px;
+  /* Custom IonHeader content does not receive Ionic's iOS safe-area
+     padding automatically. Keep navigation below the status bar/notch. */
+  padding: calc(10px + var(--ion-safe-area-top, 0px)) 16px 6px 16px;
 }
 
 .back-btn {
