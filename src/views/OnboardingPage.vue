@@ -10,6 +10,7 @@
 
         <!-- Language -->
         <section v-if="step === 'language'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
           <LanguageSwitcher class="language-picker" />
@@ -20,6 +21,7 @@
 
         <!-- Name -->
         <section v-else-if="step === 'name'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.name_title') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput
@@ -36,6 +38,7 @@
 
         <!-- Q: LMP known? -->
         <section v-else-if="step === 'lmp_known'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp') }}</h1>
           <button class="answer-btn" @click="advance('lmp_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('edd_known')">{{ $t('common.no') }}</button>
@@ -43,6 +46,7 @@
 
         <!-- A: LMP date -->
         <section v-else-if="step === 'lmp_date'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp_when') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput v-model="lmp" type="date" @ionInput="onLmpInput" />
@@ -54,6 +58,7 @@
 
         <!-- Q: EDD known -->
         <section v-else-if="step === 'edd_known'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd') }}</h1>
           <button class="answer-btn" @click="advance('edd_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('estimate')">{{ $t('common.no') }}</button>
@@ -61,6 +66,7 @@
 
         <!-- A: EDD date -->
         <section v-else-if="step === 'edd_date'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd_when') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput v-model="edd" type="date" @ionInput="onEddInput" />
@@ -72,6 +78,7 @@
 
         <!-- Q: estimate months pregnant -->
         <section v-else-if="step === 'estimate'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_estimate') }}</h1>
           <div class="count-chips">
             <button
@@ -107,6 +114,7 @@
 
         <!-- Q: TT count known -->
         <section v-else-if="step === 'tt_count_known'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_tt_count') }}</h1>
           <button class="answer-btn" @click="advance('tt_details')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('unknown')">{{ $t('common.no') }}</button>
@@ -114,6 +122,7 @@
 
         <!-- A: TT details -->
         <section v-else-if="step === 'tt_details'" class="step-card">
+          <IonIcon :icon="heartCircleOutline" class="step-icon" />
           <h1 class="step-title">{{ $t('profile.tt_dose_count_label') }}</h1>
           <div class="count-chips">
             <button
@@ -324,7 +333,7 @@ async function finish(): Promise<void> {
 .step-icon {
   align-items: center;
   width: 100%;
-  height: 64px;
+  height: 96px;
   flex-shrink: 0;
   flex-grow: 0;
 }
