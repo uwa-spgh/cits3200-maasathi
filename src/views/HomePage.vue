@@ -1,164 +1,309 @@
 <template>
   <IonPage>
-    <IonHeader class="ion-no-border">
-      <IonToolbar class="custom-toolbar">
-        <IonTitle class="app-title">{{ $t('app.title') }}</IonTitle>
-        <IonButtons slot="end">
-          <LanguageSwitcher />
-        </IonButtons>
-      </IonToolbar>
+    <IonHeader class="home-header ion-no-border">
+      <div class="header-inner">
+        <p class="brand-tag">MaaSathi app</p>
+        <h1 class="greeting">
+          {{ $t('greeting', { name: userName || $t('home.default_name') }) }}
+        </h1>
+      </div>
     </IonHeader>
 
-    <IonContent class="home-content ion-padding">
+    <IonContent class="home-content">
       <div class="content-wrapper">
-        <!-- Header Greeting -->
-        <div class="greeting-container">
-          <h1 class="greeting-text">
-            {{ $t('greeting', { name: userName && userName.trim() ? userName : $t('user_default') }) }}
-          </h1>
-          <p v-if="statusChip" class="status-chip">{{ statusChip }}</p>
-        </div>
+        <!-- Horizontal visual timeline rail -->
+        <HomeTimelineRail
+          :items="items"
+          :current-id="shownEvent?.id ?? null"
+          @select="openEvent"
+        />
 
-        <!-- Information Card (Placeholders for dynamic data) -->
-        <div class="info-card">
-          <p class="info-intro">{{ $t('info_card.title') }}</p>
-          <p class="info-body">
-            {{ infoMessage }}
-          </p>
-          <button class="know-more-btn" @click="go('WeekInfo')">
-            <IonIcon :icon="informationCircleOutline" class="btn-icon" />
-            <span>{{ $t('info_card.know_more') }}</span>
-          </button>
-        </div>
+        <!-- High-level glanceable cards -->
+        <HomeCard
+          accent="yellow"
+          :title="$t('home.cards.reminder_title')"
+          :title-icon="homeIcons.reminderTitle"
+          :body="reminderBody"
+          :badge="reminderBadge"
+          :graphic-icon="homeIcons.reminderGraphic"
+          :listen-label="$t('home.cards.listen')"
+          :learn-more-label="$t('home.cards.learn_more')"
+          @open="onRemindersTap"
+          @listen="listen(reminderBody)"
+          @learn-more="onRemindersTap"
+        />
 
-        <!-- 2x2 Grid of Main Action Tiles -->
-        <div class="action-grid">
-          <!-- Emergency Button -->
-          <button
-            class="tile-btn emergency-tile"
-            @click="go('Emergency')"
-            :aria-label="$t('buttons.emergency')"
-          >
-            <IonIcon :icon="warningOutline" class="tile-icon" />
-            <span class="tile-label">{{ $t('buttons.emergency') }}</span>
-          </button>
+        <HomeCard
+          accent="blue"
+          :title="$t('home.cards.wellbeing_title')"
+          :title-icon="homeIcons.wellbeingTitle"
+          :body="wellbeingBody"
+          :listen-label="$t('home.cards.listen')"
+          :learn-more-label="$t('home.cards.learn_more')"
+          @open="onInformationTap"
+          @listen="listen(wellbeingBody)"
+          @learn-more="onInformationTap"
+        />
 
-          <!-- Reminders Button -->
-          <button
-            class="tile-btn reminders-tile"
-            @click="go('Reminders')"
-            :aria-label="$t('buttons.reminders')"
-          >
-            <IonIcon :icon="timeOutline" class="tile-icon" />
-            <span class="tile-label">{{ $t('buttons.reminders') }}</span>
-          </button>
-
-          <!-- Information Button -->
-          <button
-            class="tile-btn information-tile"
-            @click="go('Information')"
-            :aria-label="$t('buttons.information')"
-          >
-            <IonIcon :icon="informationCircleOutline" class="tile-icon" />
-            <span class="tile-label">{{ $t('buttons.information') }}</span>
-          </button>
-
-          <!-- Profile Button -->
-          <button
-            class="tile-btn profile-tile"
-            @click="go('Profile')"
-            :aria-label="$t('buttons.profile')"
-          >
-            <IonIcon :icon="personOutline" class="tile-icon" />
-            <span class="tile-label">{{ $t('buttons.profile') }}</span>
-          </button>
-        </div>
+        <!--
+          "What to know right now" rotating widget — pick ONE rotation
+          method in the <script> below (search "ROTATION METHOD"). METHOD 3
+          is active: a single corner arrow on the card advances to the next
+          topic (see the `corner-arrow-*` props below and the `HomeCard`
+          corner-arrow-btn styling for the look).
+        -->
+        <HomeCard
+          accent="green"
+          :title="nowTitle"
+          :title-icon="homeIcons.nowTitle"
+          :body="nowExcerpt"
+          :corner-arrow-icon="nowTopics.length > 1 ? homeIcons.nowNext : null"
+          :corner-arrow-label="$t('home.cards.now_next')"
+          :listen-label="$t('home.cards.listen')"
+          :learn-more-label="$t('home.cards.learn_more')"
+          :dot-count="nowTopics.length"
+          :active-dot-index="nowIndex"
+          @open="onNowLearnMore"
+          @listen="listen(nowExcerpt)"
+          @learn-more="onNowLearnMore"
+          @corner-arrow="nowNext"
+        />
       </div>
     </IonContent>
 
-    <IonFooter v-if="isHomeBar" class="ion-no-border">
-      <HomeBarFooter />
+    <IonFooter class="nav-footer ion-no-border">
+      <BottomNav active="home" @navigate="go" />
     </IonFooter>
   </IonPage>
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
   IonContent,
   IonFooter,
   IonHeader,
-  IonIcon,
-  IonButtons,
   IonPage,
-  IonTitle,
-  IonToolbar
+  onIonViewWillLeave,
+  useIonRouter
 } from '@ionic/vue';
+// Only needed by ROTATION METHOD 2 (leave-page/app rotation) below — safe to
+// leave imported even if that method is disabled.
+import { App as CapApp } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
-import {
-  informationCircleOutline,
-  personOutline,
-  timeOutline,
-  warningOutline
-} from 'ionicons/icons';
-
-import LanguageSwitcher from '../components/LanguageSwitcher.vue';
-import HomeBarFooter from '../components/HomeBarFooter.vue';
-import { useUser } from '../composables/useUser';
+import BottomNav from '../components/BottomNav.vue';
+import HomeCard from '../components/HomeCard.vue';
+import HomeTimelineRail from '../components/HomeTimelineRail.vue';
+import { homeIcons } from '../config/icons';
+import { NOW_WIDGET_ROTATE_MS } from '../config/app';
 import { usePregnancy } from '../composables/usePregnancy';
-import { getNavMode } from '../config/app';
-import { useIonRouter } from '@ionic/vue';
+import { useSchedule } from '../composables/useSchedule';
+import { useSpeech } from '../composables/useSpeech';
+import { useTt } from '../composables/useTt';
+import { useUser } from '../composables/useUser';
+import type { ScheduleItem } from '../db/schemas';
+import { formatDayMonthLong, todayIso } from '../utils/date';
+import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { visitNumber } from '../services/notifications';
 
 const ionRouter = useIonRouter();
-const { t } = useI18n();
+const { t, locale } = useI18n();
 const { userName } = useUser();
-const { activePregnancy, mode, currentWeek, postpartumDay } = usePregnancy();
+const { activePregnancy, mode } = usePregnancy();
+const { items, load: loadSchedule } = useSchedule();
+const { load: loadTt } = useTt();
+const { speak } = useSpeech();
 
-const isHomeBar = computed(() => getNavMode() === 'homeBar');
+onMounted(() => {
+  void loadSchedule();
+  void loadTt();
+});
 
 function go(routeName: string): void {
   ionRouter.push({ name: routeName });
 }
 
-const statusChip = computed(() => {
-  if (!activePregnancy.value) return '';
-  if (mode.value === 'ANC') {
-    const week = currentWeek.value;
-    return week !== null ? t('home.status_anc', { week }) : t('home.status_anc_unknown');
-  }
-  const day = postpartumDay.value;
-  return day !== null ? t('home.status_pnc', { day }) : '';
+function listen(text: string): void {
+  speak(text, locale.value);
+}
+
+// ---- Reminder card: the next thing needing attention ----
+const nextEvent = computed<ScheduleItem | null>(() => {
+  const today = todayIso();
+  const upcoming = items.value
+    .filter((i) => i.status !== 'completed' && i.dueDate >= today)
+    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  if (upcoming.length > 0) return upcoming[0] ?? null;
+  return (
+    items.value
+      .filter((i) => i.status !== 'completed')
+      .sort((a, b) => a.dueDate.localeCompare(b.dueDate))[0] ?? null
+  );
 });
 
-const infoMessage = computed(() => {
-  if (!activePregnancy.value) {
-    return t('home.no_pregnancy');
-  }
-  if (mode.value === 'ANC') {
-    const week = currentWeek.value;
-    return week !== null
-      ? t('home.info_anc', { week })
-      : t('home.info_anc_unknown');
-  }
-  const day = postpartumDay.value;
-  return t('home.info_pnc', { day });
+// The reminder card always shows the next thing needing attention.
+const shownEvent = computed<ScheduleItem | null>(() => {
+  if (!activePregnancy.value) return null;
+  return nextEvent.value;
 });
+
+function openEvent(id: string): void {
+  if (id === 'tt-action') {
+    go('VaccinationTetanus');
+    return;
+  }
+  ionRouter.push({ name: 'Reminders', query: { focus: id } });
+}
+
+
+
+const reminderBadge = computed<string | null>(() => {
+  const n = visitNumber(shownEvent.value);
+  return n !== null && shownEvent.value?.status !== 'completed' ? `#${n}` : null;
+});
+
+const reminderBody = computed(() => {
+  const e = shownEvent.value;
+  if (!e) return t('home.no_pregnancy');
+  const date = formatDayMonthLong(e.dueDate, locale.value);
+  const n = visitNumber(e);
+  if (e.type === 'ANC' && n !== null) {
+    return t('home.cards.reminder_anc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+  }
+  if (e.type === 'PNC' && n !== null) {
+    return t('home.cards.reminder_pnc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+  }
+  if (e.type === 'TT') return t('home.cards.reminder_tt', { date });
+  if (e.ref === 'edd') return t('home.cards.reminder_edd', { date });
+  return t('home.cards.reminder_generic', { title: t(e.titleKey), date });
+});
+
+/**
+ * Tapping the reminder card or "Learn more" on it takes the user to the Reminders section,
+ * focusing on that upcoming visit item in the timeline.
+ */
+function onRemindersTap(): void {
+  if (!activePregnancy.value) {
+    go('Profile');
+    return;
+  }
+  const id = shownEvent.value?.id;
+  ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
+}
+
+/**
+ * Tapping the Information card opens Layla's comprehensive information page for the current mode.
+ */
+function onInformationTap(): void {
+  if (mode.value === 'PNC') {
+    go('Pnc');
+  } else {
+    go('Anc');
+  }
+}
+
+// ---- Surfaced Stage Content: Wellbeing ----
+const surfaced = computed(() => getStageSurfacedContent(items.value, mode.value, t));
+const wellbeingBody = computed(() => surfaced.value.wellbeingBody);
+
+// ---- "What to know right now" rotating widget ----
+const nowTopics = computed(() => {
+  const stage = currentStageRef(items.value, mode.value);
+  return stage ? STAGE_NOW_TOPICS[stage.stageKey] ?? [] : [];
+});
+
+const nowIndex = ref(0);
+
+/** Move to the next/previous slide, wrapping around. Shared by whichever
+ *  rotation method below is active. */
+function nowAdvance(step: number): void {
+  const len = nowTopics.value.length;
+  if (len === 0) return;
+  nowIndex.value = (nowIndex.value + step + len) % len;
+}
+
+// Always jump back to the first slide when the underlying topic list
+// changes (e.g. moving from one ANC visit to the next).
+watch(nowTopics, () => {
+  nowIndex.value = 0;
+});
+
+
+// METHOD 1: auto-rotate on a timer 
+/*
+let nowTimer: ReturnType<typeof setInterval> | null = null;
+
+function stopNowRotation(): void {
+  if (nowTimer !== null) {
+    clearInterval(nowTimer);
+    nowTimer = null;
+  }
+}
+
+function startNowRotation(): void {
+  stopNowRotation();
+  if (nowTopics.value.length <= 1) return;
+  nowTimer = setInterval(() => nowAdvance(1), NOW_WIDGET_ROTATE_MS);
+}
+
+watch(nowTopics, startNowRotation, { immediate: true });
+onUnmounted(stopNowRotation);
+*/
+
+// METHOD 2: advance once each time you leave the Home page
+/*
+onIonViewWillLeave(() => nowAdvance(1));
+
+let appStateHandle: PluginListenerHandle | null = null;
+onMounted(async () => {
+  appStateHandle = await CapApp.addListener('appStateChange', ({ isActive }) => {
+    if (!isActive) nowAdvance(1);
+  });
+});
+onUnmounted(() => {
+  void appStateHandle?.remove();
+});
+*/
+
+// METHOD 3: manual navigation via a corner arrow button
+
+function nowNext(): void {
+  nowAdvance(1);
+}
+
+const activeNowTopic = computed(() => nowTopics.value[nowIndex.value] ?? null);
+
+const nowTitle = computed(() => {
+  const topic = activeNowTopic.value;
+  return topic ? t(`${topic.ns}.${topic.key}_title`) : t('home.cards.now_placeholder');
+});
+
+const nowExcerpt = computed(() => {
+  const topic = activeNowTopic.value;
+  if (!topic) return '';
+  if (topic.key === 'breastfeeding') return t('pnc.start_early.point1');
+  if (topic.key === 'routine_care') return t('pnc.routine_care_blurb');
+  if (topic.route) return excerpt(t(`${topic.ns}.${topic.key}_body`));
+  return t(`${topic.ns}.${topic.key}.point1`);
+});
+
+function onNowLearnMore(): void {
+  const topic = activeNowTopic.value;
+  if (!topic) {
+    go('Information');
+    return;
+  }
+  if (topic.route) {
+    go(topic.route);
+    return;
+  }
+  const routeName = topic.ns === 'pnc' ? 'Pnc' : 'Anc';
+  ionRouter.push({ name: routeName, query: { topic: topic.key } });
+}
 </script>
 
 <style scoped>
-.custom-toolbar {
-  --background: transparent;
-  --color: var(--color-card-text, #1a1a1a);
-  --border-width: 0;
-  padding-left: 8px;
-  padding-right: 8px;
-}
-
-.app-title {
-  font-weight: 700;
-  font-size: 1.25rem;
-}
-
 .home-content {
   --background: var(--color-app-bg, #fbf7f5);
 }
@@ -166,155 +311,40 @@ const infoMessage = computed(() => {
 .content-wrapper {
   max-width: 480px;
   margin: 0 auto;
+  padding: 12px 16px 24px 16px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 24px;
-  padding-top: 10px;
-  padding-bottom: 20px;
+  gap: 16px;
 }
 
-/* Greeting */
-.greeting-container {
-  width: 100%;
-  text-align: center;
-  margin-top: 8px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
+.home-header {
+  background: var(--color-app-bg, #fbf7f5);
+  padding: 24px 20px 8px 20px;
 }
 
-.greeting-text {
-  font-size: 2.2rem;
-  font-weight: 800;
-  color: var(--color-card-text, #111111);
-  margin: 0;
-  letter-spacing: -0.5px;
+.header-inner {
+  max-width: 480px;
+  margin: 0 auto;
 }
 
-.status-chip {
-  align-self: center;
-  margin: 0;
-  background-color: var(--color-card-bg, #eaeaea);
-  color: var(--color-card-text, #1a1a1a);
+.brand-tag {
   font-size: 0.85rem;
   font-weight: 700;
-  border-radius: 999px;
-  padding: 6px 14px;
+  color: #8c8c8c;
+  margin: 0 0 4px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
 }
 
-/* Info Card */
-.info-card {
-  width: 100%;
-  background-color: var(--color-card-bg, #eaeaea);
-  color: var(--color-card-text, #1a1a1a);
-  border-radius: 28px;
-  padding: 24px 20px 20px 20px;
-  text-align: center;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transition: background-color 0.3s ease, color 0.3s ease;
+.greeting {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: #1a1a1a;
+  margin: 0;
 }
 
-.info-intro {
-  font-size: 1.05rem;
-  font-weight: 700;
-  margin: 0 0 12px 0;
-  line-height: 1.35;
-}
-
-.info-body {
-  font-size: 0.95rem;
-  font-weight: 600;
-  line-height: 1.45;
-  margin: 0 0 20px 0;
-  color: inherit;
-  opacity: 0.9;
-}
-
-.know-more-btn {
-  background-color: var(--color-btn-more-bg, #7bc62d);
-  color: var(--color-btn-more-text, #000000);
-  border: none;
-  border-radius: 24px;
-  padding: 10px 20px;
-  font-size: 0.95rem;
-  font-weight: 700;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  cursor: pointer;
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-  transition: transform 0.15s ease, filter 0.15s ease, background-color 0.3s ease;
-}
-
-.know-more-btn:active {
-  transform: scale(0.97);
-}
-
-.btn-icon {
-  font-size: 1.25rem;
-}
-
-/* 2x2 Grid of Action Buttons */
-.action-grid {
-  width: 100%;
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 18px;
-  margin-top: 4px;
-}
-
-.tile-btn {
-  border: none;
-  border-radius: 28px;
-  aspect-ratio: 1.15;
-  padding: 16px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.3s ease, color 0.3s ease;
-}
-
-.tile-btn:active {
-  transform: scale(0.96);
-  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.15);
-}
-
-.tile-icon {
-  font-size: 3rem;
-}
-
-.tile-label {
-  font-size: 1.1rem;
-  font-weight: 700;
-}
-
-/* Tile Dynamic Colors */
-.emergency-tile {
-  background-color: var(--color-emergency-bg, #ff5c5c);
-  color: var(--color-emergency-text, #000000);
-}
-
-.reminders-tile {
-  background-color: var(--color-reminders-bg, #f6c945);
-  color: var(--color-reminders-text, #000000);
-}
-
-.information-tile {
-  background-color: var(--color-information-bg, #7bc62d);
-  color: var(--color-information-text, #000000);
-}
-
-.profile-tile {
-  background-color: var(--color-profile-bg, #33a1de);
-  color: var(--color-profile-text, #000000);
+.nav-footer {
+  background: var(--color-app-bg, #fbf7f5);
+  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
 }
 </style>

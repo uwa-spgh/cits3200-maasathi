@@ -7,6 +7,8 @@
       :title="resolveTitle(item)"
       :expanded="expandedId === item.id"
       :is-last="idx === items.length - 1"
+      :info-title="resolveInfo(item)?.title ?? null"
+      :info-body="resolveInfo(item)?.body ?? null"
       @select="$emit('toggle', $event.id)"
       @complete="$emit('complete', $event)"
       @undo="$emit('undo', $event)"
@@ -20,9 +22,15 @@ import TimelineItem from './TimelineItem.vue';
 import type { ScheduleItem } from '../db/schemas';
 import { t } from '../i18n';
 
-defineProps<{
+export interface ItemInfo {
+  title: string;
+  body: string;
+}
+
+const props = defineProps<{
   items: ScheduleItem[];
   expandedId?: string | null;
+  infoForItem?: ((item: ScheduleItem) => ItemInfo | null) | null;
 }>();
 
 defineEmits<{
@@ -33,6 +41,10 @@ defineEmits<{
 
 function resolveTitle(item: ScheduleItem): string {
   return t(item.titleKey);
+}
+
+function resolveInfo(item: ScheduleItem): ItemInfo | null {
+  return props.infoForItem?.(item) ?? null;
 }
 </script>
 

@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="profile"
     :title="$t('profile.title')"
     :breadcrumb="$t('profile.menu_settings')"
     :icon="personOutline"
@@ -63,6 +64,7 @@ import LanguageSwitcher from '../../components/LanguageSwitcher.vue';
 import ThemeCustomizerModal from '../../components/ThemeCustomizerModal.vue';
 import { clearAllData } from '../../db/database';
 import { getNavMode, setNavMode } from '../../config/app';
+import { forceCancelAllReminders } from '../../services/notifications.js';
 
 const { t } = useI18n();
 
@@ -78,9 +80,10 @@ async function confirmReset(): Promise<void> {
         text: t('common.confirm'),
         role: 'destructive',
         handler: () => {
-          void clearAllData().then(() => {
+          void clearAllData().then(async () => {
             try {
               localStorage.clear();
+              await forceCancelAllReminders();
             } catch (e) {
               console.error('reset failed', e);
             }

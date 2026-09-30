@@ -77,6 +77,41 @@ export function formatDate(iso: string | null | undefined, locale = 'en'): strin
   });
 }
 
+/** "31 Feb" / "৩১ ফেব্রু" — short day+month, no year. */
+export function formatDayMonthShort(iso: string, locale = 'en'): string {
+  const [y, m, d] = iso.split('-').map((n) => Number(n));
+  const date = new Date(y, (m ?? 1) - 1, d ?? 1);
+  return date.toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-GB', {
+    day: 'numeric',
+    month: 'short'
+  });
+}
+
+/** "31st of February" (en) / "৩১ ফেব্রুয়ারি" (bn) — built from Intl parts, no hardcoded words. */
+export function formatDayMonthLong(iso: string, locale = 'en'): string {
+  const [y, m, d] = iso.split('-').map((n) => Number(n));
+  const date = new Date(y, (m ?? 1) - 1, d ?? 1);
+  if (locale === 'bn') {
+    return date.toLocaleDateString('bn-BD', { day: 'numeric', month: 'long' });
+  }
+  const month = date.toLocaleDateString('en-GB', { month: 'long' });
+  return `${d ?? 1}${ordinalSuffix(d ?? 1)} of ${month}`;
+}
+
+function ordinalSuffix(day: number): string {
+  if (day >= 11 && day <= 13) return 'th';
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }
+}
+
 /**
  * Bangladesh's national 4-visit focused ANC schedule. Visit 1 has no week
  * target here: the guideline is "before 16 weeks, as early as possible", so

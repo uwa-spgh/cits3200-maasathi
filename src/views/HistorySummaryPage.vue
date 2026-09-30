@@ -1,5 +1,6 @@
 <template>
   <PageShell
+    nav="profile"
     :title="$t('profile.title')"
     :breadcrumb="`${$t('profile.menu_history')} · ${summary?.deliveryDisplay ?? $t('profile.history_item')}`"
     :icon="personOutline"

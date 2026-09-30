@@ -11,7 +11,7 @@
         :key="visit"
         :title="$t(`anc.visits.${visit}`)"
       >
-        <PlaceholderBox :title="$t('anc.visit_content')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t(`anc.visit_body.${visit}`) || $t('content.empty')" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('danger_signs.section_title')">
@@ -21,11 +21,11 @@
       </ExpandableCard>
 
       <ExpandableCard :title="$t('nutrition.section_title')">
-        <PlaceholderBox :title="$t('nutrition.placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t('anc.nutrition_body') || $t('content.empty')" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('anc.tests_title')">
-        <PlaceholderBox :title="$t('anc.tests_placeholder')" :hint="$t('placeholder.hint')" />
+        <ContentText :text="$t('anc.tests_body') || $t('content.empty')" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -37,7 +37,7 @@ import { useI18n } from 'vue-i18n';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import PlaceholderBox from '../components/PlaceholderBox.vue';
+import ContentText from '../components/ContentText.vue';
 
 const props = defineProps<{ trimester?: string }>();
 

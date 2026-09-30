@@ -1,9 +1,10 @@
 <template>
   <PageShell
+    nav="danger"
     :title="$t('information.title')"
     :breadcrumb="$t('information.topics.danger_signs')"
     :icon="informationCircleOutline"
-    color="green"
+    color="red"
   >
     <div class="danger-signs-page">
       <ExpandableCard
