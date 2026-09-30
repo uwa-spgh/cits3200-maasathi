@@ -45,18 +45,28 @@
           @learn-more="onInformationTap"
         />
 
+        <!--
+          "What to know right now" rotating widget — pick ONE rotation
+          method in the <script> below (search "ROTATION METHOD"). METHOD 3
+          is active: a single corner arrow on the card advances to the next
+          topic (see the `corner-arrow-*` props below and the `HomeCard`
+          corner-arrow-btn styling for the look).
+        -->
         <HomeCard
           accent="green"
-          :title="$t('home.cards.nutrition_title')"
-          :title-icon="homeIcons.nutritionTitle"
-          :body="nutritionBody"
-          :graphic-icon="homeIcons.nutritionGraphicMain"
-          :graphic-icon-secondary="homeIcons.nutritionGraphicSecondary"
+          :title="nowTitle"
+          :title-icon="homeIcons.nowTitle"
+          :body="nowExcerpt"
+          :corner-arrow-icon="nowTopics.length > 1 ? homeIcons.nowNext : null"
+          :corner-arrow-label="$t('home.cards.now_next')"
           :listen-label="$t('home.cards.listen')"
           :learn-more-label="$t('home.cards.learn_more')"
-          @open="go('Nutrition')"
-          @listen="listen(nutritionBody)"
-          @learn-more="go('Nutrition')"
+          :dot-count="nowTopics.length"
+          :active-dot-index="nowIndex"
+          @open="onNowLearnMore"
+          @listen="listen(nowExcerpt)"
+          @learn-more="onNowLearnMore"
+          @corner-arrow="nowNext"
         />
       </div>
     </IonContent>
@@ -68,19 +78,25 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
 import {
   IonContent,
   IonFooter,
   IonHeader,
   IonPage,
+  onIonViewWillLeave,
   useIonRouter
 } from '@ionic/vue';
+// Only needed by ROTATION METHOD 2 (leave-page/app rotation) below — safe to
+// leave imported even if that method is disabled.
+import { App as CapApp } from '@capacitor/app';
+import type { PluginListenerHandle } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import BottomNav from '../components/BottomNav.vue';
 import HomeCard from '../components/HomeCard.vue';
 import HomeTimelineRail from '../components/HomeTimelineRail.vue';
 import { homeIcons } from '../config/icons';
+import { NOW_WIDGET_ROTATE_MS } from '../config/app';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { useSpeech } from '../composables/useSpeech';
@@ -88,8 +104,8 @@ import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import type { ScheduleItem } from '../db/schemas';
 import { formatDayMonthLong, todayIso } from '../utils/date';
-import { getStageSurfacedContent } from '../utils/stageArticle';
-import { visitNumber } from '../services/notifications.js';
+import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { visitNumber } from '../services/notifications';
 
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
@@ -187,10 +203,104 @@ function onInformationTap(): void {
   }
 }
 
-// ---- Surfaced Stage Content: Wellbeing & Nutrition ----
+// ---- Surfaced Stage Content: Wellbeing ----
 const surfaced = computed(() => getStageSurfacedContent(items.value, mode.value, t));
 const wellbeingBody = computed(() => surfaced.value.wellbeingBody);
-const nutritionBody = computed(() => surfaced.value.nutritionBody);
+
+// ---- "What to know right now" rotating widget ----
+const nowTopics = computed(() => {
+  const stage = currentStageRef(items.value, mode.value);
+  return stage ? STAGE_NOW_TOPICS[stage.stageKey] ?? [] : [];
+});
+
+const nowIndex = ref(0);
+
+/** Move to the next/previous slide, wrapping around. Shared by whichever
+ *  rotation method below is active. */
+function nowAdvance(step: number): void {
+  const len = nowTopics.value.length;
+  if (len === 0) return;
+  nowIndex.value = (nowIndex.value + step + len) % len;
+}
+
+// Always jump back to the first slide when the underlying topic list
+// changes (e.g. moving from one ANC visit to the next).
+watch(nowTopics, () => {
+  nowIndex.value = 0;
+});
+
+
+// METHOD 1: auto-rotate on a timer 
+/*
+let nowTimer: ReturnType<typeof setInterval> | null = null;
+
+function stopNowRotation(): void {
+  if (nowTimer !== null) {
+    clearInterval(nowTimer);
+    nowTimer = null;
+  }
+}
+
+function startNowRotation(): void {
+  stopNowRotation();
+  if (nowTopics.value.length <= 1) return;
+  nowTimer = setInterval(() => nowAdvance(1), NOW_WIDGET_ROTATE_MS);
+}
+
+watch(nowTopics, startNowRotation, { immediate: true });
+onUnmounted(stopNowRotation);
+*/
+
+// METHOD 2: advance once each time you leave the Home page
+/*
+onIonViewWillLeave(() => nowAdvance(1));
+
+let appStateHandle: PluginListenerHandle | null = null;
+onMounted(async () => {
+  appStateHandle = await CapApp.addListener('appStateChange', ({ isActive }) => {
+    if (!isActive) nowAdvance(1);
+  });
+});
+onUnmounted(() => {
+  void appStateHandle?.remove();
+});
+*/
+
+// METHOD 3: manual navigation via a corner arrow button
+
+function nowNext(): void {
+  nowAdvance(1);
+}
+
+const activeNowTopic = computed(() => nowTopics.value[nowIndex.value] ?? null);
+
+const nowTitle = computed(() => {
+  const topic = activeNowTopic.value;
+  return topic ? t(`${topic.ns}.${topic.key}_title`) : t('home.cards.now_placeholder');
+});
+
+const nowExcerpt = computed(() => {
+  const topic = activeNowTopic.value;
+  if (!topic) return '';
+  if (topic.key === 'breastfeeding') return t('pnc.start_early.point1');
+  if (topic.key === 'routine_care') return t('pnc.routine_care_blurb');
+  if (topic.route) return excerpt(t(`${topic.ns}.${topic.key}_body`));
+  return t(`${topic.ns}.${topic.key}.point1`);
+});
+
+function onNowLearnMore(): void {
+  const topic = activeNowTopic.value;
+  if (!topic) {
+    go('Information');
+    return;
+  }
+  if (topic.route) {
+    go(topic.route);
+    return;
+  }
+  const routeName = topic.ns === 'pnc' ? 'Pnc' : 'Anc';
+  ionRouter.push({ name: routeName, query: { topic: topic.key } });
+}
 </script>
 
 <style scoped>

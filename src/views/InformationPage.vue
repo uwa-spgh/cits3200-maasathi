@@ -10,15 +10,24 @@
           <IonIcon :icon="sparklesOutline" class="now-icon" />
           <h2 class="now-title">{{ $t('information.now_title') }}</h2>
         </div>
-        <ExpandableCard
-          v-for="topic in nowTopics"
-          :key="`${topic.ns}.${topic.key}`"
-          :title="$t(`${topic.ns}.${topic.key}_title`)"
-        >
-          <ul class="sign-list">
-            <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
-          </ul>
-        </ExpandableCard>
+        <template v-for="topic in nowTopics" :key="`${topic.ns}.${topic.key}`">
+          <button
+            v-if="topic.route"
+            class="topic-btn now-link-btn"
+            @click="ionRouter.push({ name: topic.route })"
+          >
+            <span>{{ $t(`${topic.ns}.${topic.key}_title`) }}</span>
+            <IonIcon :icon="chevronForwardOutline" class="arrow-icon" />
+          </button>
+          <ExpandableCard
+            v-else
+            :title="$t(`${topic.ns}.${topic.key}_title`)"
+          >
+            <ul class="sign-list">
+              <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
+            </ul>
+          </ExpandableCard>
+        </template>
       </section>
 
       <section class="browse-section">
@@ -71,6 +80,7 @@ const nowTopics = computed(() => {
 const topics = computed(() => {
   const base = [
     { key: 'anc', route: 'Anc' },
+    { key: 'breastfeeding', route: 'PncBreastfeeding' },
     { key: 'pnc', route: 'Pnc' },
     { key: 'nutrition', route: 'Nutrition' },
     { key: 'vaccination', route: 'Vaccination' },
@@ -122,6 +132,10 @@ const topics = computed(() => {
   gap: 6px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
+}
+
+.sign-list li {
+  white-space: pre-line;
 }
 
 .browse-section {

@@ -15,12 +15,12 @@ import { ref } from 'vue';
 import { IonIcon } from '@ionic/vue';
 import { chevronDownOutline, chevronUpOutline } from 'ionicons/icons';
 
-defineProps<{
+const props = defineProps<{
   title: string;
   startOpen?: boolean;
 }>();
 
-const isOpen = ref(false);
+const isOpen = ref(props.startOpen ?? false);
 
 function toggle(): void {
   isOpen.value = !isOpen.value;

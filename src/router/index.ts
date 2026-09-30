@@ -13,6 +13,7 @@ import AncPage from '../views/AncPage.vue';
 import AncTrimesterPage from '../views/AncTrimesterPage.vue';
 import PncPage from '../views/PncPage.vue';
 import PncBreastfeedingPage from '../views/PncBreastfeedingPage.vue';
+import PncRoutineCarePage from '../views/PncRoutineCarePage.vue';
 import VaccinationPage from '../views/VaccinationPage.vue';
 import VaccinationTetanusPage from '../views/VaccinationTetanusPage.vue';
 import DangerSignsPage from '../views/DangerSignsPage.vue';
@@ -43,6 +44,7 @@ const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/information/anc/trimester/:trimester', name: 'AncTrimester', component: AncTrimesterPage },
   { path: '/information/pnc', name: 'Pnc', component: PncPage },
   { path: '/information/pnc/breastfeeding', name: 'PncBreastfeeding', component: PncBreastfeedingPage },
+  { path: '/information/pnc/routine-care', name: 'PncRoutineCare', component: PncRoutineCarePage },
   { path: '/information/vaccination', name: 'Vaccination', component: VaccinationPage },
   { path: '/information/vaccination/tetanus', name: 'VaccinationTetanus', component: VaccinationTetanusPage },
   { path: '/information/danger-signs', name: 'DangerSigns', component: DangerSignsPage },

@@ -7,6 +7,7 @@
  * exports (each resolves to an SVG path string for `<IonIcon>`).
  */
 import {
+  bookOutline,
   chevronBackCircle,
   chevronForwardCircle,
   happyOutline,
@@ -14,15 +15,13 @@ import {
   home,
   homeOutline,
   informationCircleOutline,
-  nutritionOutline,
   personOutline,
+  playOutline,
   pulseOutline,
   shieldCheckmarkOutline,
   timeOutline,
   volumeHighOutline,
-  walkOutline,
-  warningOutline,
-  waterOutline
+  warningOutline
 } from 'ionicons/icons';
 
 export const homeIcons = {
@@ -41,10 +40,9 @@ export const homeIcons = {
   reminderGraphic: pulseOutline,
   /** "How are you?" card title icon */
   wellbeingTitle: happyOutline,
-  /** Nutrition card: title icon + large graphic (runner + food) */
-  nutritionTitle: waterOutline,
-  nutritionGraphicMain: walkOutline,
-  nutritionGraphicSecondary: nutritionOutline,
+  /** "What to know right now" rotating card: title icon + corner next-arrow */
+  nowTitle: bookOutline,
+  nowNext: playOutline,
   /** Buttons */
   listen: volumeHighOutline,
   learnMore: informationCircleOutline,

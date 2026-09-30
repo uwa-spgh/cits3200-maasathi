@@ -30,17 +30,23 @@
       <section v-if="stageTopics.length" class="stage-topics-section">
         <h3 class="topics-heading">{{ $t('stage_nav.topics_heading') }}</h3>
 
-        <ExpandableCard
-          v-for="topic in stageTopics"
-          :key="`${topic.ns}.${topic.key}`"
-          :title="$t(`${topic.ns}.${topic.key}_title`)"
-        >
-          <ul class="point-list">
-            <li v-for="n in topic.points" :key="n">
-              {{ $t(`${topic.ns}.${topic.key}.point${n}`) }}
-            </li>
-          </ul>
-        </ExpandableCard>
+        <template v-for="topic in stageTopics" :key="`${topic.ns}.${topic.key}`">
+          <button
+            v-if="topic.route"
+            class="topic-link-btn"
+            @click="ionRouter.push({ name: topic.route })"
+          >
+            <span>{{ $t(`${topic.ns}.${topic.key}_title`) }}</span>
+            <IonIcon :icon="chevronForwardOutline" />
+          </button>
+          <ExpandableCard v-else :title="$t(`${topic.ns}.${topic.key}_title`)">
+            <ul class="point-list">
+              <li v-for="n in topic.points" :key="n">
+                {{ $t(`${topic.ns}.${topic.key}.point${n}`) }}
+              </li>
+            </ul>
+          </ExpandableCard>
+        </template>
       </section>
 
       <!-- Fallback if no topic cards mapped for this stage -->
@@ -54,8 +60,8 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { IonIcon } from '@ionic/vue';
-import { informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
+import { IonIcon, useIonRouter } from '@ionic/vue';
+import { chevronForwardOutline, informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ContentText from '../components/ContentText.vue';
@@ -66,6 +72,7 @@ import { currentStageRef, getStageSummary, STAGE_NOW_TOPICS } from '../utils/sta
 import { useI18n } from 'vue-i18n';
 
 const route = useRoute();
+const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { activePregnancy, mode, currentWeek, postpartumDay } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
@@ -259,9 +266,30 @@ function listen(text: string): void {
   margin-bottom: 6px;
   color: #374151;
   font-size: 0.92rem;
+  white-space: pre-line;
 }
 
 .point-list li:last-child {
   margin-bottom: 0;
+}
+
+.topic-link-btn {
+  background-color: #fff;
+  color: var(--color-card-text, #1a1a1a);
+  border: 1.5px solid rgba(43, 123, 196, 0.2);
+  border-radius: 20px;
+  padding: 14px 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 3px 10px rgba(43, 123, 196, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+}
+
+.topic-link-btn:active {
+  transform: scale(0.98);
 }
 </style>
