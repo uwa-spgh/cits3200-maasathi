@@ -33,7 +33,8 @@ import info from '../assets/icons/info_64dp_000000_FILL0_wght700_GRAD0_opsz48.sv
 import profile from '../assets/icons/person_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
 import listen from '../assets/icons/volume_up_64dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
 import warning from '../assets/icons/warning_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
-
+import book from '../assets/icons/import_contacts_20dp_000000_FILL0_wght700_GRAD0_opsz20.svg';
+import play from '../assets/icons/play_arrow_96dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
 
 export const homeIcons = {
   /** Timeline rail scroll controls */
@@ -60,6 +61,10 @@ export const homeIcons = {
   nutritionTitle: water,
   nutritionGraphicMain: walk,
   nutritionGraphicSecondary: nutrition,
+
+  /** "What to know right now" rotating card: title icon + corner next-arrow */
+  nowTitle: book,
+  nowNext: play,
 
   /** Buttons */
   listen: listen,
