@@ -56,6 +56,9 @@ void props;
   display: flex;
   flex-direction: column;
   background: transparent;
+  /* Clear the status bar / Dynamic Island. No ion-toolbar wraps this header, so
+     Ionic's built-in safe-area padding does not apply. Resolves to 0 on Android. */
+  padding-top: var(--ion-safe-area-top, 0px);
 }
 
 .section-header {

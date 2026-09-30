@@ -319,7 +319,8 @@ function onNowLearnMore(): void {
 
 .home-header {
   background: var(--color-app-bg, #fbf7f5);
-  padding: 24px 20px 8px 20px;
+  /* Clear the status bar / Dynamic Island; see SectionHeader.vue. */
+  padding: calc(24px + var(--ion-safe-area-top, 0px)) 20px 8px 20px;
 }
 
 .header-inner {

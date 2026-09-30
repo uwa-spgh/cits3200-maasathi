@@ -3,3 +3,11 @@ dist
 .DS_Store
 playwright-report
 test-results
+
+# iOS build artefacts (Capacitor 8 uses Swift Package Manager, no Pods dir)
+ios/build
+ios/DerivedData
+**/xcuserdata/
+*.xcuserstate
+.DS_Store
+
