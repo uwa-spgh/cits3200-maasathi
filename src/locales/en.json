@@ -53,11 +53,12 @@
       "ordinal_3": "third",
       "ordinal_4": "fourth",
       "wellbeing_title": "Information",
-      "nutrition_title": "Remember to eat well and move!",
-      "nutrition_body": "",
       "listen": "Listen",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "now_placeholder": "Nothing new to know right now.",
+      "now_prev": "Previous",
+      "now_next": "Next",
       "danger_title": "Danger signs to watch",
       "danger_anc_body": "Go to a health facility immediately for heavy bleeding, severe headache, blurred vision, sudden swelling, high fever, or reduced baby movement.",
       "danger_pnc_body": "Go to a health facility immediately for heavy postpartum bleeding, high fever, foul discharge, or if your newborn cannot feed or feels cold.",
@@ -69,12 +70,7 @@
       "stage_pnc_contact1": "Rest as much as possible. Check for normal bleeding and start exclusive breastfeeding within the first hour of birth.",
       "stage_pnc_contact2": "Feed your baby on demand day and night. Keep the umbilical cord clean and dry, and watch for any signs of fever or pain.",
       "stage_pnc_contact3": "Keep your body clean and attend your 1–2 week checkup. Rest when tired and reach out to family if you feel overwhelmed.",
-      "stage_pnc_contact4": "Attend your 6-week postnatal checkup. Discuss family planning and talk with your health worker about your physical and emotional recovery.",
-      "nutrition_anc_visit1": "Eat balanced local foods like rice, dal, vegetables, eggs, and fish. Take iron tablets with water, not tea.",
-      "nutrition_anc_visit2": "Calcium is essential now: eat dairy, leafy greens, or small fish with bones. Take calcium tablets at a different time from iron.",
-      "nutrition_anc_visit3": "Eat small, nutritious meals and drink clean fluids throughout the day. Rest on your side to support blood flow to baby.",
-      "nutrition_anc_visit4": "Maintain easily digestible, high-energy foods and stay well hydrated. Light daily walking helps prepare for labour.",
-      "nutrition_pnc": "Drink extra water every time you breastfeed and eat nutrient-rich foods to replenish your body and support healthy milk production."
+      "stage_pnc_contact4": "Attend your 6-week postnatal checkup. Discuss family planning and talk with your health worker about your physical and emotional recovery."
     },
     "rail": {
       "scroll_back": "Scroll timeline back",
@@ -246,7 +242,8 @@
       "pnc": "Postnatal care (PNC)",
       "danger_signs": "Danger signs",
       "nutrition": "Nutrition",
-      "vaccination": "Vaccination"
+      "vaccination": "Vaccination",
+      "breastfeeding": "Breastfeeding support"
     },
     "now_title": "What to know right now",
     "browse_title": "Browse all topics"
@@ -318,19 +315,46 @@
     "danger_signs_note": {
       "point1": "Seek medical care immediately for heavy bleeding, severe abdominal pain, severe headache, fever, swelling, reduced baby movement, or difficulty breathing."
     },
-    "pre_eclampsia_monitoring_title": "Pre-eclampsia monitoring",
+    "pre_eclampsia_monitoring_title": "Swelling and high blood pressure",
     "pre_eclampsia_monitoring": {
-      "point1": "Monitor for swelling and high blood pressure (pre-eclampsia)."
+      "point1": "Know the warning signs. High blood pressure during pregnancy can be dangerous. Have your blood pressure checked at your ANC visits.",
+      "point2": "Some swelling of the feet can happen during pregnancy. Sudden or severe swelling of your face or hands can be a warning sign.",
+      "point3": "Get medical help quickly if you have:\n• a very bad headache\n• blurred vision or seeing spots\n• severe pain in your upper belly\n• sudden swelling of your face or hands\n• trouble breathing\n• feeling very unwell",
+      "point4": "Do not wait for your next ANC visit if you have these signs."
     },
     "birth_preparedness_title": "Birth preparedness",
     "birth_preparedness": {
       "point1": "Plan where you will give birth and how you will reach the facility.",
       "point2": "Save emergency contacts and keep necessary items ready."
     },
+    "birth_preparedness_plan_link": "Go to your Birth Plan for more guidance",
     "skilled_birth_care_title": "Skilled birth care",
     "skilled_birth_care": {
       "point1": "Giving birth with a skilled health worker helps keep mother and baby safe.",
       "point2": "Go to a health facility when labour starts."
+    },
+    "signs_of_labour_title": "Signs of labour",
+    "signs_of_labour": {
+      "point1": "Regular stomach tightening or pain that comes and goes and becomes stronger over time.",
+      "point2": "Lower back pain or cramps.",
+      "point3": "A small amount of blood-mixed mucus coming out from the vagina (\"show\").",
+      "point4": "Water leaking from the vagina (the baby's water breaking).",
+      "point5": "Feeling more pressure in the lower abdomen or feeling that the baby is moving down."
+    },
+    "labour_go_to_facility_title": "Go to health facility when",
+    "labour_go_to_facility": {
+      "point1": "Labour pain starts and becomes regular or stronger.",
+      "point2": "Water breaks or fluid starts leaking from the vagina.",
+      "point3": "There is any bleeding from the vagina.",
+      "point4": "Labour pain continues for more than 12 hours without delivery.",
+      "point5": "You have severe stomach pain.",
+      "point6": "You have fits or convulsions.",
+      "point7": "You have severe headache or blurred vision.",
+      "point8": "You have fever.",
+      "point9": "You feel very weak, dizzy, or have difficulty breathing.",
+      "point10": "Your hands, feet, or face become suddenly swollen.",
+      "point11": "Your baby's movements decrease or stop.",
+      "point12": "A healthcare provider advises you to come to the facility."
     },
     "maternal_immunisation_title": "Maternal immunisation",
     "maternal_immunisation": {
@@ -437,6 +461,79 @@
     "mood_title": "Mood",
     "mood": {
       "point1": "Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
+    },
+    "mental_wellbeing_title": "Mental wellbeing",
+    "mental_wellbeing": {
+      "point1": "Feeling sad or worried after birth is common. If it continues or gets worse, please speak to a health professional."
+    },
+    "cord_healing_title": "Cord healing",
+    "cord_healing": {
+      "point1": "Your baby's umbilical cord needs time to dry and heal after birth.",
+      "point2": "Keep the cord clean and dry.",
+      "point3": "Wash your hands with soap and clean water before touching the cord or your baby.",
+      "point4": "Keep the cord outside the diaper so it stays clean and dry.",
+      "point5": "Let the cord dry and fall off naturally. Do not pull it off, even when it is almost detached.",
+      "point6": "Do not put oil, powder, ash, turmeric, or other substances on the cord unless advised by a health professional.",
+      "point7": "A small amount of drying or a little blood when the cord separates can happen.",
+      "point8": "Keep checking the cord while it heals.",
+      "point9": "If the area becomes very red or swollen, has pus or a bad smell, or your baby develops a fever or becomes very unwell, seek medical help promptly.",
+      "point10": "With simple clean and dry care, your baby's cord can heal safely."
+    },
+    "routine_care_title": "Routine care",
+    "routine_care_blurb": "Simple daily care to keep your baby warm, fed, clean, and safe.",
+    "keep_baby_warm_title": "Keep your baby warm",
+    "keep_baby_warm": {
+      "point1": "Keep your baby close to you.",
+      "point2": "Use skin-to-skin contact to keep your baby warm.",
+      "point3": "Dress your baby appropriately for the weather.",
+      "point4": "Keep your baby away from cold air and smoke."
+    },
+    "routine_breastfeed_title": "Breastfeed your baby",
+    "routine_breastfeed": {
+      "point1": "Start breastfeeding within 1 hour of birth.",
+      "point2": "Give only breastmilk for the first 6 months.",
+      "point3": "Breastfeed whenever your baby is hungry, during the day and night.",
+      "point4": "Do not give water, honey or other foods during the first 6 months."
+    },
+    "keep_baby_clean_title": "Keep your baby clean",
+    "keep_baby_clean": {
+      "point1": "Wash your hands before touching or feeding your baby.",
+      "point2": "Keep the umbilical cord clean and dry.",
+      "point3": "Do not put anything on the baby's umbilical cord unless advised by a health worker.",
+      "point4": "Keep your baby's clothes and sleeping area clean."
+    },
+    "keep_baby_safe_title": "Keep your baby safe",
+    "keep_baby_safe": {
+      "point1": "Always place your baby on their back to sleep.",
+      "point2": "Keep the baby's sleeping area free from pillows, blankets and other objects that may cover the baby's face.",
+      "point3": "Keep your baby away from smoke and harmful substances."
+    },
+    "baby_checkups_title": "Take your baby for check-ups",
+    "baby_checkups": {
+      "point1": "Take your baby for newborn check-ups as advised.",
+      "point2": "Follow the recommended vaccination schedule.",
+      "point3": "Ask your health worker if you have concerns about feeding, growth or development."
+    },
+    "vaccines_after_birth_title": "Vaccines just after birth",
+    "vaccines_after_birth": {
+      "point1": "Vaccines help protect your newborn from serious diseases.",
+      "point2": "Ask your health worker which vaccines your baby should receive soon after birth.",
+      "point3": "Take your baby for the recommended birth vaccines before leaving the health facility, when advised.",
+      "point4": "Keep your baby's vaccination card safe. It helps you remember which vaccines your baby has received and which are due next.",
+      "point5": "Do not worry if your baby receives more than one vaccine at a visit. Each vaccine helps protect your baby from different diseases.",
+      "point6": "Giving your baby vaccines on time is a simple and important way to protect their health."
+    },
+    "childhood_immunisation_title": "Childhood immunisation",
+    "childhood_immunisation": {
+      "point1": "Your baby needs vaccines from birth and throughout childhood.",
+      "point2": "Vaccines protect children from serious diseases and help them grow up healthy.",
+      "point3": "Follow the vaccination schedule given by your health worker or vaccination centre.",
+      "point4": "Try not to miss any vaccine date. Put the next vaccination date in your phone or calendar as a reminder.",
+      "point5": "Keep the vaccination card safe and take it with you whenever your child receives a vaccine.",
+      "point6": "If your child misses a vaccine, do not give up. Talk to your health worker about when your child can receive the missed dose.",
+      "point7": "Your child may have mild soreness, swelling, or fever after some vaccines. These reactions are usually short-lived; ask your health worker what to do if you are concerned.",
+      "point8": "Even if your child looks healthy, vaccines are still important because they help prevent diseases before your child is exposed to them.",
+      "point9": "Every vaccine is another step towards a healthier childhood. Keep your child's vaccines up to date."
     }
   },
   "tt": {

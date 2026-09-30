@@ -7,6 +7,7 @@
  * exports (each resolves to an SVG path string for `<IonIcon>`).
  */
 import {
+  bookOutline,
   chevronBackCircle,
   chevronForwardCircle,
   shieldCheckmarkOutline,

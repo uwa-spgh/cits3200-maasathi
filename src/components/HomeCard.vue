@@ -1,17 +1,25 @@
 <template>
   <div class="home-card" :class="`accent-${accent}`" @click="$emit('open')">
     <div class="card-top">
-      <div class="card-heading">
+      <div class="card-heading" :class="{ 'make-room-for-arrow': cornerArrowIcon }">
         <span class="title-row">
           <IonIcon :icon="titleIcon" class="title-icon" />
           <strong>{{ title }}</strong>
         </span>
         <p class="card-body">{{ body }}</p>
       </div>
-      <div v-if="badge || graphicIcon" class="card-graphic">
+      <div v-if="badge || graphicIcon || cornerArrowIcon" class="card-graphic">
         <span v-if="badge" class="card-badge">{{ badge }}</span>
         <IonIcon v-if="graphicIcon" :icon="graphicIcon" class="graphic-icon" />
         <IonIcon v-if="graphicIconSecondary" :icon="graphicIconSecondary" class="graphic-icon small" />
+        <button
+          v-if="cornerArrowIcon"
+          class="corner-arrow-btn"
+          :aria-label="cornerArrowLabel"
+          @click.stop="$emit('cornerArrow')"
+        >
+          <IonIcon :icon="cornerArrowIcon" />
+        </button>
       </div>
     </div>
     <div v-if="listenLabel || learnMoreLabel" class="card-actions" :class="{ split: listenLabel && learnMoreLabel }">
@@ -32,6 +40,14 @@
         <span>{{ listenLabel }}</span>
       </button>
     </div>
+    <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
+      <span
+        v-for="i in dotCount"
+        :key="i"
+        class="dot"
+        :class="{ active: i - 1 === activeDotIndex }"
+      />
+    </div>
   </div>
 </template>
 
@@ -49,19 +65,25 @@ defineProps<{
   badge?: string | null;
   graphicIcon?: string | null;
   graphicIconSecondary?: string | null;
+  cornerArrowIcon?: string | null;
+  cornerArrowLabel?: string;
   listenLabel?: string | null;
   learnMoreLabel?: string | null;
+  dotCount?: number;
+  activeDotIndex?: number;
 }>();
 
 defineEmits<{
   (e: 'open'): void;
   (e: 'listen'): void;
   (e: 'learnMore'): void;
+  (e: 'cornerArrow'): void;
 }>();
 </script>
 
 <style scoped>
 .home-card {
+  position: relative;
   width: 100%;
   background: #fff;
   border-radius: 20px;
@@ -91,12 +113,24 @@ defineEmits<{
   min-width: 0;
 }
 
+.card-heading.make-room-for-arrow {
+  padding-right: 40px;
+}
+
 .title-row {
   display: flex;
   align-items: center;
   gap: 7px;
   font-size: 1rem;
   color: var(--color-card-text, #1a1a1a);
+}
+
+.title-row strong {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .title-icon {
@@ -114,6 +148,11 @@ defineEmits<{
   font-weight: 600;
   line-height: 1.4;
   color: var(--color-card-text, #1a1a1a);
+  min-height: calc(1.4em * 3);
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 
 .card-graphic {
@@ -138,6 +177,37 @@ defineEmits<{
   margin-left: -6px;
   align-self: flex-end;
 }
+
+.corner-arrow-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 50%;
+  background: var(--color-information-bg, #7bc62d);
+  color: #fff;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.05rem;
+  cursor: pointer;
+}
+
+.corner-arrow-btn ion-icon {
+  margin-left: 2px;
+}
+
+.corner-arrow-btn:active {
+  transform: scale(0.92);
+}
+
+.accent-yellow .corner-arrow-btn { background: var(--color-reminders-bg, #f6c945); }
+.accent-blue .corner-arrow-btn { background: var(--color-profile-bg, #33a1de); }
+.accent-green .corner-arrow-btn { background: var(--color-information-bg, #7bc62d); }
+.accent-red .corner-arrow-btn { background: var(--color-emergency-bg, #ff5c5c); }
 
 .card-actions {
   display: flex;
@@ -174,4 +244,29 @@ defineEmits<{
 .accent-blue .pill-btn { background: var(--color-profile-bg, #33a1de); }
 .accent-green .pill-btn { background: var(--color-information-bg, #7bc62d); }
 .accent-red .pill-btn { background: var(--color-emergency-bg, #ff5c5c); color: #fff; }
+
+.dot-indicator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+  margin-top: 10px;
+}
+
+.dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.15);
+  transition: background-color 0.15s ease, transform 0.15s ease;
+}
+
+.dot.active {
+  transform: scale(1.3);
+}
+
+.accent-yellow .dot.active { background: var(--color-reminders-bg, #f6c945); }
+.accent-blue .dot.active { background: var(--color-profile-bg, #33a1de); }
+.accent-green .dot.active { background: var(--color-information-bg, #7bc62d); }
+.accent-red .dot.active { background: var(--color-emergency-bg, #ff5c5c); }
 </style>

@@ -3,50 +3,53 @@ import type { CareMode, ScheduleItem } from '../db/schemas';
 export interface NowTopic {
   ns: 'anc' | 'pnc';
   key: string;
+  /** Bullet points to show inline, keyed `${ns}.${key}.point${n}`. Unused when `route` is set. */
   points: number;
+  /** When set, this topic links out to a full info page instead of showing inline bullet points. */
+  route?: string;
 }
 
 /** Stage topics without nutrition (nutrition is kept separate in the Nutrition section) */
 export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
   'ANC:visit1': [
-    { ns: 'anc', key: 'early_care', points: 2 },
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
+    { ns: 'anc', key: 'healthy_diet', points: 2 },
     { ns: 'anc', key: 'hydration_rest', points: 2 }
   ],
   'ANC:visit2': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
     { ns: 'anc', key: 'calcium_supplementation', points: 2 },
-    { ns: 'anc', key: 'pre_eclampsia_monitoring', points: 1 }
+    { ns: 'anc', key: 'pre_eclampsia_monitoring', points: 4 }
   ],
   'ANC:visit3': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
     { ns: 'anc', key: 'calcium_supplementation', points: 2 },
-    { ns: 'anc', key: 'birth_preparedness', points: 2 },
     { ns: 'anc', key: 'mental_wellbeing', points: 2 }
   ],
   'ANC:visit4': [
     { ns: 'anc', key: 'preparing_baby_care', points: 2 },
     { ns: 'anc', key: 'skilled_birth_care', points: 2 },
-    { ns: 'anc', key: 'avoid_harmful_substances', points: 2 },
-    { ns: 'anc', key: 'hygiene_infection_prevention', points: 2 }
+    { ns: 'anc', key: 'signs_of_labour', points: 5 },
+    { ns: 'anc', key: 'labour_go_to_facility', points: 12 }
   ],
   'PNC:contact1': [
     { ns: 'pnc', key: 'rest', points: 1 },
-    { ns: 'pnc', key: 'bleeding', points: 1 }
+    { ns: 'pnc', key: 'bleeding', points: 1 },
+    { ns: 'pnc', key: 'breastfeeding', points: 0, route: 'PncBreastfeeding' }
   ],
   'PNC:contact2': [
-    { ns: 'pnc', key: 'pain', points: 1 },
-    { ns: 'pnc', key: 'cleanliness', points: 1 }
+    { ns: 'pnc', key: 'mental_wellbeing', points: 1 },
+    { ns: 'pnc', key: 'family_planning', points: 1 },
+    { ns: 'pnc', key: 'cord_healing', points: 10 }
   ],
   'PNC:contact3': [
-    { ns: 'pnc', key: 'cleanliness', points: 1 },
-    { ns: 'pnc', key: 'checkup', points: 1 },
-    { ns: 'pnc', key: 'mood', points: 1 }
+    { ns: 'pnc', key: 'routine_care', points: 0, route: 'PncRoutineCare' },
+    { ns: 'pnc', key: 'vaccines_after_birth', points: 6 },
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9 }
   ],
   'PNC:contact4': [
-    { ns: 'pnc', key: 'checkup', points: 1 },
-    { ns: 'pnc', key: 'family_planning', points: 1 },
-    { ns: 'pnc', key: 'mood', points: 1 }
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9 },
+    { ns: 'pnc', key: 'family_planning', points: 1 }
   ]
 };
 
@@ -116,7 +119,6 @@ export function getStageSurfacedContent(
 ): {
   stageKey: string | null;
   wellbeingBody: string;
-  nutritionBody: string;
   dangerBody: string;
 } {
   const stage = currentStageRef(items, mode);
@@ -124,7 +126,6 @@ export function getStageSurfacedContent(
     return {
       stageKey: null,
       wellbeingBody: t('home.cards.wellbeing_placeholder'),
-      nutritionBody: t('home.cards.nutrition_body') || t('content.empty'),
       dangerBody: t('home.cards.danger_generic_body')
     };
   }
@@ -141,16 +142,9 @@ export function getStageSurfacedContent(
     excerpt(t(`${ns}.visit_body.${ref}`)) ||
     t('home.cards.wellbeing_placeholder');
 
-  // 2. Nutrition: stage-specific nutrition tip or general nutrition body
-  const stageNutritionKey = ns === 'pnc' ? 'home.cards.nutrition_pnc' : `home.cards.nutrition_anc_${ref}`;
-  const nutritionBody =
-    t(stageNutritionKey) ||
-    t('home.cards.nutrition_body') ||
-    t('content.empty');
-
-  // 3. Danger: stage-specific danger flags
+  // 2. Danger: stage-specific danger flags
   const stageDangerKey = ns === 'pnc' ? 'home.cards.danger_pnc_body' : 'home.cards.danger_anc_body';
   const dangerBody = t(stageDangerKey) || t('home.cards.danger_generic_body');
 
-  return { stageKey, wellbeingBody, nutritionBody, dangerBody };
+  return { stageKey, wellbeingBody, dangerBody };
 }

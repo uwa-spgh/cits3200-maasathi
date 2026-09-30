@@ -9,11 +9,21 @@
       <ExpandableCard
         v-for="topic in infoTopics"
         :key="topic.key"
+        :ref="(el) => setTopicCardRef(topic.key, el)"
         :title="$t(`anc.${topic.key}_title`)"
+        :start-open="topic.key === targetTopic"
       >
         <ul class="sign-list">
           <li v-for="n in topic.points" :key="n">{{ $t(`anc.${topic.key}.point${n}`) }}</li>
         </ul>
+        <button
+          v-if="topic.key === 'birth_preparedness'"
+          class="birth-plan-link-btn"
+          @click.stop="ionRouter.push({ name: 'ProfilePlan' })"
+        >
+          <span>{{ $t('anc.birth_preparedness_plan_link') }}</span>
+          <IonIcon :icon="chevronForwardOutline" class="arrow-icon" />
+        </button>
         <button class="topic-listen-btn" @click.stop="listenTopic(topic)">
           <IonIcon :icon="volumeMediumOutline" />
           <span>{{ $t('home.cards.listen') }}</span>
@@ -24,15 +34,40 @@
 </template>
 
 <script setup lang="ts">
-import { IonIcon } from '@ionic/vue';
-import { informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
+import { computed, nextTick, onMounted } from 'vue';
+import { useRoute } from 'vue-router';
+import { IonIcon, useIonRouter } from '@ionic/vue';
+import { chevronForwardOutline, informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
 import { useI18n } from 'vue-i18n';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import { useSpeech } from '../composables/useSpeech';
 
+const route = useRoute();
+const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { speak } = useSpeech();
+
+/** Set via ?topic=key (e.g. from the Home page's "What to know right now"
+ *  widget) to auto-expand and scroll to that specific card. */
+const targetTopic = computed(() => {
+  const q = route.query.topic;
+  return typeof q === 'string' ? q : null;
+});
+
+const topicCardEls = new Map<string, { $el?: Element } | null>();
+function setTopicCardRef(key: string, el: { $el?: Element } | null): void {
+  topicCardEls.set(key, el);
+}
+
+onMounted(async () => {
+  if (!targetTopic.value) return;
+  await nextTick();
+  const el = topicCardEls.get(targetTopic.value)?.$el;
+  if (el instanceof Element) {
+    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  }
+});
 
 interface Topic {
   key: string;
@@ -45,12 +80,15 @@ const infoTopics: Topic[] = [
   { key: 'anc_visits', points: 2 },
   { key: 'iron_folic_acid', points: 2 },
   { key: 'calcium_supplementation', points: 2 },
+  { key: 'pre_eclampsia_monitoring', points: 4 },
   { key: 'physical_activity', points: 2 },
   { key: 'hydration_rest', points: 2 },
   { key: 'mental_wellbeing', points: 2 },
   { key: 'danger_signs_note', points: 1 },
   { key: 'birth_preparedness', points: 2 },
   { key: 'skilled_birth_care', points: 2 },
+  { key: 'signs_of_labour', points: 5 },
+  { key: 'labour_go_to_facility', points: 12 },
   { key: 'maternal_immunisation', points: 2 },
   { key: 'avoid_harmful_substances', points: 2 },
   { key: 'hygiene_infection_prevention', points: 2 },
@@ -85,6 +123,10 @@ function listenTopic(topic: Topic): void {
   line-height: 1.45;
 }
 
+.sign-list li {
+  white-space: pre-line;
+}
+
 .topic-listen-btn {
   display: inline-flex;
   align-items: center;
@@ -102,5 +144,31 @@ function listenTopic(topic: Topic): void {
 
 .topic-listen-btn:active {
   background: #e2e8f0;
+}
+
+.birth-plan-link-btn {
+  background-color: #fff;
+  color: var(--color-card-text, #1a1a1a);
+  border: 1.5px solid rgba(43, 123, 196, 0.3);
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 0.86rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
+  margin-bottom: 10px;
+}
+
+.birth-plan-link-btn:active {
+  transform: scale(0.98);
+}
+
+.birth-plan-link-btn .arrow-icon {
+  font-size: 1.1rem;
+  opacity: 0.6;
+  flex-shrink: 0;
 }
 </style>
