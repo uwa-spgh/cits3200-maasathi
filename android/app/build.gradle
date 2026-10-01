@@ -1,5 +1,71 @@
 apply plugin: 'com.android.application'
 
+/**
+ * Release signing and versioning are supplied from outside the build so the same
+ * gradle file works on a laptop and in CI, and so no secret is ever committed.
+ *
+ * Each value is read from a gradle property first (`-Pname=...`, or
+ * `~/.gradle/gradle.properties`) and then from the environment, which is how the
+ * GitHub Actions workflow passes them. See docs/RELEASING.md.
+ *
+ * With nothing supplied the release build is simply left unsigned, producing
+ * app-release-unsigned.apk — so `assembleRelease` keeps working for anyone who
+ * has not set up a keystore yet.
+ */
+def signingValue = { String gradleKey, String envKey ->
+    def fromProperty = project.findProperty(gradleKey)
+    if (fromProperty != null && !fromProperty.toString().isBlank()) return fromProperty.toString()
+    def fromEnv = System.getenv(envKey)
+    if (fromEnv != null && !fromEnv.isBlank()) return fromEnv
+    return null
+}
+
+def keystoreFile = signingValue('maasathiKeystore', 'MAASATHI_KEYSTORE')
+def signingStorePassword = signingValue('maasathiKeystorePassword', 'MAASATHI_KEYSTORE_PASSWORD')
+def signingKeyAlias = signingValue('maasathiKeyAlias', 'MAASATHI_KEY_ALIAS')
+def signingKeyPassword = signingValue('maasathiKeyPassword', 'MAASATHI_KEY_PASSWORD')
+
+/**
+ * Resolve the keystore path. A bare relative path is resolved from the `android/`
+ * directory (the project root), NOT from android/app/ — otherwise a path that
+ * looks right silently resolves to nothing and the build quietly emits an
+ * unsigned APK. Absolute paths are used as-is.
+ */
+def releaseKeystore = null
+if (keystoreFile != null) {
+    def asGiven = file(keystoreFile)
+    def fromProjectRoot = rootProject.file(keystoreFile)
+    if (asGiven.exists()) {
+        releaseKeystore = asGiven
+    } else if (fromProjectRoot.exists()) {
+        releaseKeystore = fromProjectRoot
+    } else {
+        releaseKeystore = fromProjectRoot   // report the documented location in the warning
+    }
+}
+
+def hasReleaseSigning = releaseKeystore != null &&
+        releaseKeystore.exists() &&
+        signingStorePassword != null && signingKeyAlias != null && signingKeyPassword != null
+
+if (hasReleaseSigning) {
+    logger.lifecycle("MaaSathi: release builds WILL be signed with '${signingKeyAlias}' from ${releaseKeystore.absolutePath}")
+} else if (keystoreFile != null) {
+    logger.warn("MaaSathi: signing was requested but is incomplete — the release build will be UNSIGNED.\n" +
+            "  keystore path : ${keystoreFile}  (looked in ${releaseKeystore.absolutePath})\n" +
+            "  file exists   : ${releaseKeystore.exists()}\n" +
+            "  storePassword : ${signingStorePassword != null}\n" +
+            "  keyAlias      : ${signingKeyAlias != null}\n" +
+            "  keyPassword   : ${signingKeyPassword != null}\n" +
+            "  See docs/RELEASING.md")
+}
+
+// versionCode/versionName default to the values below so a plain `./gradlew
+// assembleRelease` still works; CI overrides them from the release tag, because
+// Android refuses to install an update whose versionCode is not higher.
+def appVersionCode = (project.findProperty('maasathiVersionCode') ?: System.getenv('MAASATHI_VERSION_CODE') ?: '1').toString().toInteger()
+def appVersionName = (project.findProperty('maasathiVersionName') ?: System.getenv('MAASATHI_VERSION_NAME') ?: '1.0').toString()
+
 android {
     namespace = "com.maasathi.app"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -7,8 +73,8 @@ android {
         applicationId "com.maasathi.app"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
@@ -16,8 +82,37 @@ android {
             ignoreAssetsPattern = '!.svn:!.git:!.ds_store:!*.scc:.*:!CVS:!thumbs.db:!picasa.ini:!*~'
         }
     }
+    signingConfigs {
+        if (hasReleaseSigning) {
+            release {
+                storeFile releaseKeystore
+                storePassword signingStorePassword
+                keyAlias signingKeyAlias
+                keyPassword signingKeyPassword
+                // minSdk is 24, so the legacy JAR (v1) scheme is unnecessary.
+                // v2 + v3 are what Android 7+ actually verifies.
+                enableV1Signing false
+                enableV2Signing true
+                enableV3Signing true
+            }
+        }
+    }
     buildTypes {
+        debug {
+            // Give debug builds their own applicationId so they install
+            // alongside a real release instead of colliding with it. Android
+            // refuses to install an update signed by a different key, so without
+            // this a developer's debug build locks them out of the release they
+            // installed, and installing the release over the debug build fails
+            // with INSTALL_FAILED_UPDATE_INCOMPATIBLE. A separate id also keeps
+            // debug SQLite data away from real data.
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
+            if (hasReleaseSigning) {
+                signingConfig signingConfigs.release
+            }
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }

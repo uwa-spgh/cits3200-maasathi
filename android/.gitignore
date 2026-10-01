@@ -57,6 +57,13 @@ captures/
 #*.jks
 #*.keystore
 
+# Release signing material — never commit these. The keystore IS the app's
+# identity: sign an update with a different key and users cannot upgrade without
+# uninstalling first, which deletes their SQLite data. Keep the real file out of
+# the repo and in CI secrets only.
+*.jks
+*.keystore
+
 # External native build folder generated in Android Studio 2.2 and later
 .externalNativeBuild
 .cxx/

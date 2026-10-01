@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Adaptive icon background for DEBUG builds only. The release build uses the
+  white defined in src/main/res/values/ic_launcher_background.xml.
+
+  Combined with the .debug applicationId this makes it obvious at a glance which
+  copy is on the phone, so nobody installs a debug build over their real data by
+  accident.
+-->
+<resources>
+    <color name="ic_launcher_background">#00695C</color>
+</resources>
