@@ -70,6 +70,15 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 ### Create your signing key — once, ever
 
+The fastest way, which also checks it cannot be committed and prints the exact
+`base64` incantation for your platform:
+
+```bash
+./scripts/setup-release-signing.sh
+```
+
+Or by hand:
+
 ```bash
 cd android
 keytool -genkeypair -v \
@@ -161,6 +170,37 @@ Open the release page, download the `.apk`, tap it. Android asks you to allow in
 source the first time. Nothing else is needed — no store, no account.
 
 Minimum device: **Android 7.0 (API 24)**, which is the project's `minSdkVersion`.
+
+### Debug builds and release builds coexist
+
+Debug builds carry an `applicationIdSuffix` of `.debug`, so they install as
+`com.maasathi.app.debug` alongside a real release rather than colliding with it:
+
+| | applicationId | Label | Icon background |
+|---|---|---|---|
+| release | `com.maasathi.app` | MaaSathi | white |
+| debug | `com.maasathi.app.debug` | MaaSathi (debug) | teal |
+
+This is what stops the most common packaging mistake. Android refuses to install an update signed
+by a different key, so with a shared applicationId a developer's debug build locks them out of the
+release they installed, and installing the release back over the debug build fails with
+`INSTALL_FAILED_UPDATE_INCOMPATIBLE`. Separate ids also keep debug SQLite data away from real data.
+
+For a team, this means: **install the signed release APK from the GitHub Release page.** Nobody
+needs the keystore.
+
+What changed for existing developers: a debug build is now a *different app*, so the first run
+after this change starts from onboarding again and the old debug data is not carried over. Nothing
+is lost, it stays under the old applicationId until you uninstall it.
+
+### Never hand out a throwaway-signed release
+
+Android ties updates to a signing key per applicationId. If anyone installs a build signed with a
+different key, **nobody holding that copy can ever receive a properly signed update** — they must
+uninstall, which deletes the app's SQLite data, including every pregnancy record and reminder.
+
+So: do not produce a "quick test release" with a scratch key. Either use a debug build (separate
+applicationId, disposable), or let CI produce the signed release from a tag.
 
 ### Google Play, if you ever want it
 

@@ -98,6 +98,17 @@ android {
         }
     }
     buildTypes {
+        debug {
+            // Give debug builds their own applicationId so they install
+            // alongside a real release instead of colliding with it. Android
+            // refuses to install an update signed by a different key, so without
+            // this a developer's debug build locks them out of the release they
+            // installed, and installing the release over the debug build fails
+            // with INSTALL_FAILED_UPDATE_INCOMPATIBLE. A separate id also keeps
+            // debug SQLite data away from real data.
+            applicationIdSuffix ".debug"
+            versionNameSuffix "-debug"
+        }
         release {
             if (hasReleaseSigning) {
                 signingConfig signingConfigs.release
