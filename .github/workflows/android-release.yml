@@ -1,7 +1,18 @@
 name: Android release
 
-# Tag a commit v1.2.3 and this builds a signed APK, verifies it, runs the web test
-# suite as a gate, and attaches the APK to a GitHub Release.
+# Two channels, both producing a signed, installable APK:
+#
+#   NIGHTLY  automatic, one per day, tagged nightly-YYYY-MM-DD, always a prerelease.
+#            A rehearsal of the real thing: same applicationId, same signing key,
+#            so a tester on a nightly can move onto a real release without losing
+#            their data.
+#
+#   RELEASE  deliberate. Either push a v* tag, or trigger this workflow by hand
+#            and give a tag. Also a prerelease by default, so nothing is ever
+#            published as "Latest" until you untick the box.
+#
+# Both verify the APK is really signed and 16 KB aligned, and run the Playwright
+# suite as a gate, before anything reaches a release page.
 #
 # Required repository secrets (Settings > Secrets and variables > Actions):
 #   ANDROID_KEYSTORE_BASE64   base64 of release.keystore  (`base64 -w0 release.keystore`)
@@ -17,7 +28,26 @@ on:
   push:
     tags:
       - 'v*'
+      - 'nightly*'
   workflow_dispatch:
+    inputs:
+      tag:
+        description: 'Release tag to publish, e.g. v1.0.0 or v1.0.0-rc.1'
+        required: true
+        default: 'v0.1.0'
+      prerelease:
+        description: 'Keep as a prerelease. Untick only when you want a real release.'
+        required: false
+        default: true
+        type: boolean
+  schedule:
+    # 02:17 UTC daily. GitHub cron is UTC, and deliberately off the hour because
+    # everyone schedules :00 and the queue is throttled.
+    #
+    # Scheduled workflows only run for workflow files on the default branch, and
+    # GitHub disables them on public repositories after 60 days without activity.
+    # If nightlies simply stop, check that before suspecting the build.
+    - cron: '17 2 * * *'
 
 permissions:
   contents: write
@@ -45,21 +75,80 @@ jobs:
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4
 
-      # Derived from the tag so versionCode always increases, which Android
-      # requires for an update to be accepted. v1.2.3 -> 10203.
-      - name: Derive version from tag
+      # versionCode must strictly increase or Android refuses the update. One
+      # counter is shared by both channels, which is the whole difficulty, so the
+      # scheme deliberately puts every tagged release above every nightly:
+      #
+      #   nightly-YYYY-MM-DD   -> YYYYMMDD                  e.g. 20261001
+      #   vMAJOR.MINOR.PATCH-N -> 100000000 + M*10000+m*100+p-(100-N)
+      #   vMAJOR.MINOR.PATCH   -> 100000000 + M*10000+m*100+p
+      #
+      # Consequences worth knowing:
+      #  - a tester on a nightly can always move onto a real release, which is the
+      #    direction that matters, because every release outranks every nightly;
+      #  - but a tester who installs a real release can no longer install
+      #    nightlies, because those sit lower. That is deliberate: they are on a
+      #    release and should not be pulled back onto unstable builds. Use the
+      #    debug build (a separate applicationId) if you want unstable alongside;
+      #  - the prerelease subtraction makes rc.1 < rc.2 < final rather than
+      #    putting release candidates above the final.
+      - name: Derive version, tag and channel
         id: version
+        env:
+          INPUT_TAG: ${{ inputs.tag }}
+          INPUT_PRERELEASE: ${{ inputs.prerelease }}
         run: |
           set -euo pipefail
-          tag="${GITHUB_REF_NAME}"
-          if [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+) ]]; then
+          today="$(date -u +%Y-%m-%d)"
+
+          case "${{ github.event_name }}" in
+            schedule)
+              tag="nightly-${today}"
+              prerelease=true
+              ;;
+            workflow_dispatch)
+              tag="$INPUT_TAG"
+              prerelease="$INPUT_PRERELEASE"
+              ;;
+            *)
+              tag="$GITHUB_REF_NAME"
+              # Everything is a prerelease until someone deliberately unticks the
+              # box on a manual run. A tag push is still a prerelease, so the only
+              # route to a real release is workflow_dispatch with prerelease off.
+              prerelease=true
+              ;;
+          esac
+
+          # A bare `nightly` tag means today's nightly, so the dated tag shape is
+          # the only one that ever reaches a release page.
+          if [[ "$tag" == "nightly" ]]; then
+            tag="nightly-${today}"
+          fi
+
+          if [[ "$tag" == nightly* ]]; then
+            version_name="$tag"
+            version_code="$(date -u +%Y%m%d)"
+          elif [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            version_name="${BASH_REMATCH[1]}.${BASH_REMATCH[2]}.${BASH_REMATCH[3]}"
+            version_code="$(( 100000000 + BASH_REMATCH[1] * 10000 + BASH_REMATCH[2] * 100 + BASH_REMATCH[3] ))"
+          elif [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)-(rc|beta|alpha)\.([0-9]+)$ ]]; then
             major="${BASH_REMATCH[1]}"; minor="${BASH_REMATCH[2]}"; patch="${BASH_REMATCH[3]}"
-            echo "name=${major}.${minor}.${patch}" >> "$GITHUB_OUTPUT"
-            echo "code=$(( major * 10000 + minor * 100 + patch ))" >> "$GITHUB_OUTPUT"
+            stage="${BASH_REMATCH[4]}"; n="${BASH_REMATCH[5]}"
+            version_name="${major}.${minor}.${patch}-${stage}.${n}"
+            version_code="$(( 100000000 + major * 10000 + minor * 100 + patch - (100 - n) ))"
           else
-            echo "::error::tag '${tag}' is not vMAJOR.MINOR.PATCH, cannot derive a version"
+            echo "::error::tag '${tag}' is not nightly-YYYY-MM-DD, vMAJOR.MINOR.PATCH or vMAJOR.MINOR.PATCH-rc.N"
             exit 1
           fi
+
+          {
+            echo "tag=$tag"
+            echo "name=$version_name"
+            echo "code=$version_code"
+            echo "prerelease=$prerelease"
+          } >> "$GITHUB_OUTPUT"
+
+          echo "channel_tag=$tag versionName=$version_name versionCode=$version_code prerelease=$prerelease"
 
       - name: Install dependencies
         run: npm ci
@@ -103,7 +192,7 @@ jobs:
         run: |
           set -euo pipefail
           apk=app/build/outputs/apk/release/app-release.apk
-          test -f "$apk" || { echo "::error::unsigned or missing APK: $apk"; exit 1; }
+          test -f "$apk" || { echo "::error::missing APK: $apk"; exit 1; }
           # An incomplete signing config leaves the build succeeding but emits
           # app-release-unsigned.apk, which would ship an uninstallable file.
           test ! -f app/build/outputs/apk/release/app-release-unsigned.apk \
@@ -116,7 +205,7 @@ jobs:
           "$build_tools/zipalign" -c -P 16 -v 4 "$apk"
           "$build_tools/aapt2" dump badging "$apk" | grep -E "^package|minSdkVersion|targetSdkVersion"
 
-      - name: Run web test suite as a release gate
+      - name: Run web test suite as a gate
         run: |
           set -euo pipefail
           PW_BROWSER=playwright npx playwright install --with-deps chromium
@@ -141,23 +230,44 @@ jobs:
           if-no-files-found: error
 
       - name: Publish GitHub Release
-        if: startsWith(github.ref, 'refs/tags/')
+        if: success() && steps.collect.outputs.name != ''
         env:
           GH_TOKEN: ${{ github.token }}
-          TAG: ${{ github.ref_name }}
+          TAG: ${{ steps.version.outputs.tag }}
+          VERSION: ${{ steps.version.outputs.name }}
+          PRERELEASE: ${{ steps.version.outputs.prerelease }}
           ASSET: ${{ steps.collect.outputs.name }}
         run: |
           set -euo pipefail
-          cat > notes.md <<'MD'
-          ## MaaSathi $TAG (Android)
 
-          Install `*.apk` on a device with Android 7.0 (API 24) or newer.
-          Android will ask you to allow installs from this source the first time.
+          flags=(--title "MaaSathi $VERSION (Android)")
+          if [[ "$PRERELEASE" == "true" ]]; then
+            flags+=(--prerelease)
+          fi
 
-          Requires JDK 21 and an Android SDK with platform 36 to build from source.
-          See `docs/RELEASING.md`.
-          MD
-          gh release create "$TAG" \
-            --title "MaaSathi $TAG (Android)" \
-            --notes-file notes.md \
-            "dist-artifact/$ASSET"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            # A rerun on the same day, or a re-push of the same tag. Replace the
+            # asset rather than failing, and leave the existing prerelease state
+            # alone so a nightly stays a nightly.
+            gh release upload "$TAG" "dist-artifact/$ASSET" --clobber
+            echo "Updated existing release $TAG"
+          else
+            if [[ "$TAG" == nightly* ]]; then
+              notes="Nightly build for $VERSION. Unstable, for testing only.
+
+              A tester on a nightly can install any later real release directly.
+              Once you install a real release, nightlies will no longer install
+              over it — use the debug build if you want unstable alongside."
+            else
+              notes="## MaaSathi $VERSION (Android)
+
+              Install the \`*.apk\` on a device with Android 7.0 (API 24) or newer.
+              Android will ask you to allow installs from this source the first time.
+
+              Built with JDK 21 and an Android SDK with platform 36. See
+              \`docs/RELEASING.md\` for how to build and sign it yourself."
+            fi
+            gh release create "$TAG" "${flags[@]}" --target "$GITHUB_SHA" \
+              --notes "$notes" "dist-artifact/$ASSET"
+            echo "Published $TAG${PRERELEASE:+ (prerelease)}"
+          fi

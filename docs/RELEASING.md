@@ -134,16 +134,15 @@ maasathiKeyPassword=...
 ### Publishing with GitHub Actions
 
 `.github/workflows/android-release.yml` builds, verifies, tests, and publishes automatically.
-Push a tag:
+Either trigger it by hand from the Actions tab, or push a tag:
 
 ```bash
 git tag v1.0.0
 git push origin v1.0.0
 ```
 
-The workflow derives `versionName` from the tag and computes a `versionCode` that always
-increases (`v1.2.3` → `10203`), because Android refuses to install an update whose `versionCode`
-is not higher. It then:
+It derives `versionName` from the tag and computes a `versionCode` that always increases, because
+Android refuses to install an update whose `versionCode` is not higher. It then:
 
 1. restores the keystore from secrets,
 2. builds `assembleRelease`,
@@ -163,6 +162,65 @@ Add these under **Settings → Secrets and variables → Actions**:
 | `ANDROID_KEYSTORE_PASSWORD` | the store password |
 | `ANDROID_KEY_ALIAS` | `maasathi` |
 | `ANDROID_KEY_PASSWORD` | the key password |
+
+### Release channels
+
+There are two, both producing a signed, installable APK with the same `applicationId` and the
+same signing key.
+
+| | Nightly | Release |
+|---|---|---|
+| How | automatic, 02:17 UTC daily | deliberate: manual trigger, or a `v*` tag |
+| Tag | `nightly-YYYY-MM-DD` | `v1.0.0`, `v1.0.0-rc.1` |
+| Marked prerelease | **always** | **by default** |
+| Who tests it | people who want today's build | people installing something to keep |
+
+Everything is a prerelease until you untick the box on a manual run, so nothing is ever published
+as GitHub's "Latest" release by accident.
+
+```bash
+# trigger a release by hand: Actions > Android release > Run workflow
+#   tag        = v1.0.0
+#   prerelease = leave ticked for now, untick when you mean it
+```
+
+### Why nightlies cannot install over a release
+
+Android keeps one monotonically increasing `versionCode` per `applicationId`. The two channels
+share that single counter, so **it is impossible for both to install over each other in both
+directions.** The scheme puts every tagged release above every nightly:
+
+| tag | versionCode |
+|---|---|
+| `nightly-2026-10-01` | `20261001` |
+| `v1.0.0-rc.1` | `100009901` |
+| `v1.0.0` | `100010000` |
+| `v1.0.1` | `100010001` |
+
+Which gives:
+
+- **nightly → release works.** This is the direction that matters: every tester who took a
+  nightly can install the real release without uninstalling and losing their data.
+- **release → nightly does not work.** Once someone installs a release, nightlies will not install
+  over it. That is deliberate — they are on a release and should not be pulled back onto unstable
+  builds. If you want unstable alongside a release, use the [debug
+  channel](#debug-builds-and-release-builds-coexist), which has its own applicationId and
+  coexists.
+- `rc.1 < rc.2 < final`, because the prerelease number is subtracted rather than added.
+
+If you would rather have release → nightly work instead, the bands have to be swapped, and you
+lose nightly → release, which strands testers on nightlies. The workflow comments explain where
+to change it.
+
+### Nightly gotchas
+
+- Scheduled workflows only run for workflow files on the **default branch**, so nightlies do
+  nothing until this branch is merged to `main`.
+- GitHub **disables scheduled workflows on public repositories after 60 days without activity.**
+  If nightlies simply stop, check that before suspecting the build.
+- One dated release per night, so the releases page gains ~365 entries a year. Use its search, or
+  the CI run history, rather than scrolling.
+- A rerun on the same day reuses the same tag and replaces the APK rather than failing.
 
 ### How a tester installs it
 
