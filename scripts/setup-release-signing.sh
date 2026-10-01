@@ -58,21 +58,26 @@ else
 fi
 
 say "Certificate fingerprint"
-# Informational only, so never fail the run here — but do not report success we
-# did not get either. With the password in the environment we can print it;
-# otherwise keytool needs an interactive prompt and we just show the command.
-KEY_LIST_ARGS=(-list -v -keystore "$KEYSTORE" -alias "$ALIAS")
+# Informational only, so this must never block. keytool -list prompts for the
+# store password on stderr and waits forever when it has no way to get one, so
+# it is only ever called when the password is already known. Anything else, and
+# we print the command instead of running it. stdin is closed as a backstop so a
+# future edit cannot reintroduce a silent hang.
 if [[ -n "${MAASATHI_KEYSTORE_PASSWORD:-}" ]]; then
-  KEY_LIST_ARGS+=(-storepass "$MAASATHI_KEYSTORE_PASSWORD")
-fi
-KEY_DETAILS="$(keytool "${KEY_LIST_ARGS[@]}" 2>/dev/null || true)"
-if grep -qi "sha" <<<"$KEY_DETAILS"; then
-  grep -iE "sha-?256|sha-?1" <<<"$KEY_DETAILS"
-  echo "  Keep this. If you ever regenerate a key, this line is how you tell them apart."
+  KEY_DETAILS="$(keytool -list -v -keystore "$KEYSTORE" -alias "$ALIAS" \
+                   -storepass "$MAASATHI_KEYSTORE_PASSWORD" </dev/null 2>/dev/null || true)"
+  if grep -qi "sha" <<<"$KEY_DETAILS"; then
+    grep -iE "sha-?256|sha-?1" <<<"$KEY_DETAILS"
+    echo "  Keep this. If you ever regenerate a key, this line is how you tell them apart."
+  else
+    echo "  Could not read it. Run:"
+    echo "    keytool -list -v -keystore $KEYSTORE -alias $ALIAS"
+  fi
 else
-  echo "  Could not read it without prompting for the store password. Run:"
+  echo "  Not printed automatically, because reading it would prompt for the store"
+  echo "  password. To get it:"
   echo "    keytool -list -v -keystore $KEYSTORE -alias $ALIAS"
-  echo "  Keep the fingerprint. It is how you tell two keys apart later."
+  echo "  Keep the SHA-256 line. It is how you tell two keys apart later."
 fi
 
 say "Is it ignored by git?"
