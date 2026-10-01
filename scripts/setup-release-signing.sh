@@ -19,6 +19,13 @@ KEYSTORE_DIR="$REPO_ROOT/android/keystore"
 KEYSTORE="$KEYSTORE_DIR/release.keystore"
 ALIAS="${MAASATHI_KEY_ALIAS:-maasathi}"
 
+# The distinguished name is metadata baked into the certificate. Nothing in
+# Android reads it and no authority issues or checks it, so it is supplied here
+# rather than prompted for: keytool's interactive version re-asks the whole DN
+# block every time the confirmation is not answered with yes, which is a
+# confusing loop to sit through. Override with MAASATHI_DN if you want your own.
+DN="${MAASATHI_DN:-CN=MaaSathi, OU=CITS3200, O=University of Western Australia, L=Perth, ST=Western Australia, C=AU}"
+
 say() { printf '\n== %s\n' "$1"; }
 
 command -v keytool >/dev/null || { echo "keytool not found. Install a JDK 17+ and put its bin/ on PATH."; exit 1; }
@@ -29,10 +36,13 @@ if [[ -f "$KEYSTORE" ]]; then
 else
   say "Generating $KEYSTORE (alias: $ALIAS)"
   say "Choose a store password and a key password. Record them now, and keep the file backed up."
+  echo "  distinguished name: $DN"
+  echo "  (metadata only — nothing in Android reads it. Override with MAASATHI_DN.)"
   mkdir -p "$KEYSTORE_DIR"
   keytool -genkeypair -v \
     -keystore "$KEYSTORE" \
     -alias "$ALIAS" \
+    -dname "$DN" \
     -keyalg RSA -keysize 2048 -validity 10000
 
   # keytool can exit 0 without writing anything — notably when it cannot prompt
