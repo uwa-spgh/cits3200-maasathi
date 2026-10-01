@@ -165,52 +165,64 @@ Add these under **Settings → Secrets and variables → Actions**:
 
 ### Release channels
 
-There are two, both producing a signed, installable APK with the same `applicationId` and the
+Two channels, both producing a signed, installable APK with the same `applicationId` and the
 same signing key.
 
 | | Nightly | Release |
 |---|---|---|
-| How | automatic, 02:17 UTC daily | deliberate: manual trigger, or a `v*` tag |
-| Tag | `nightly-YYYY-MM-DD` | `v1.0.0`, `v1.0.0-rc.1` |
-| Marked prerelease | **always** | **by default** |
-| Who tests it | people who want today's build | people installing something to keep |
+| How | automatic, 02:17 UTC daily | manual trigger, or a `v*` tag pushed |
+| Tag | `v1.0.1-nightly-2026-10-01` | `v1.0.1`, `v1.0.1-rc.1` |
+| GitHub prerelease | **always** | only if you tick the box |
+| Installs over | the last release, and each later nightly | its own nightlies |
 
-Everything is a prerelease until you untick the box on a manual run, so nothing is ever published
-as GitHub's "Latest" release by accident.
+A **nightly is a prerelease of the upcoming version**, which is what lets it install over the
+current release. Trigger a release by hand from the Actions tab; leave `prerelease` unticked
+unless you specifically want a pre-release, because unticked is the default and produces a real
+GitHub release.
 
-```bash
-# trigger a release by hand: Actions > Android release > Run workflow
-#   tag        = v1.0.0
-#   prerelease = leave ticked for now, untick when you mean it
+### How the version numbers fit together
+
+Android keeps one monotonically increasing `versionCode` per `applicationId`, so every tag has to
+be assigned a number in a single sequence that only ever goes up:
+
+```
+versionCode = MAJOR*1000000 + MINOR*10000 + PATCH*100 + seq
 ```
 
-### Why nightlies cannot install over a release
+`seq` is where the ordering inside one version comes from:
 
-Android keeps one monotonically increasing `versionCode` per `applicationId`. The two channels
-share that single counter, so **it is impossible for both to install over each other in both
-directions.** The scheme puts every tagged release above every nightly:
+| tag | seq | versionCode |
+|---|---:|---|
+| `v1.0.0` | 100 | 1000100 |
+| `v1.0.1-nightly-2026-10-01` | 1 | 1000101 |
+| `v1.0.1-nightly-2026-10-02` | 2 | 1000102 |
+| `v1.0.1-rc.1` | 51 | 1000151 |
+| `v1.0.1` | 100 | 1000200 |
+| `v1.0.2-nightly-…` | 1 | 1000201 |
 
-| tag | versionCode |
-|---|---|
-| `nightly-2026-10-01` | `20261001` |
-| `v1.0.0-rc.1` | `100009901` |
-| `v1.0.0` | `100010000` |
-| `v1.0.1` | `100010001` |
+Nightlies take `seq` 1–49, release candidates 51–99, and the real thing always gets 100. That
+buys three things at once:
 
-Which gives:
+- **A nightly installs over the last release**, because it is numbered inside the *next* patch.
+- **The final installs over its own nightlies and rc builds**, because `seq` 100 is above all of
+  them. Nobody has to uninstall, so nobody loses their data.
+- **Each nightly installs over the previous one**, because `seq` is the number of nightly tags
+  already existing for that version, plus one. A rerun or a replayed build still goes forwards
+  rather than colliding.
 
-- **nightly → release works.** This is the direction that matters: every tester who took a
-  nightly can install the real release without uninstalling and losing their data.
-- **release → nightly does not work.** Once someone installs a release, nightlies will not install
-  over it. That is deliberate — they are on a release and should not be pulled back onto unstable
-  builds. If you want unstable alongside a release, use the [debug
-  channel](#debug-builds-and-release-builds-coexist), which has its own applicationId and
-  coexists.
-- `rc.1 < rc.2 < final`, because the prerelease number is subtracted rather than added.
+The one direction that does not work is **going back**: once `v1.0.1` is installed, `v1.0.1`'s own
+nightlies will not install over it. That is deliberate — you should not roll a tester back onto
+unstable — and the error is explicit:
 
-If you would rather have release → nightly work instead, the bands have to be swapped, and you
-lose nightly → release, which strands testers on nightlies. The workflow comments explain where
-to change it.
+```
+INSTALL_FAILED_VERSION_DOWNGRADE: Update version code 1000101 is older than current 1000200
+```
+
+If you want unstable alongside a release, use the [debug
+channel](#debug-builds-and-release-builds-coexist), which has its own applicationId and coexists.
+
+A patch is capped at 49 nightlies. The build fails with a message telling you to cut the next
+patch rather than silently colliding.
 
 ### Nightly gotchas
 
@@ -220,7 +232,10 @@ to change it.
   If nightlies simply stop, check that before suspecting the build.
 - One dated release per night, so the releases page gains ~365 entries a year. Use its search, or
   the CI run history, rather than scrolling.
-- A rerun on the same day reuses the same tag and replaces the APK rather than failing.
+- A rerun on the same day gets the next `seq` rather than colliding, so it publishes a
+  second release for that version rather than replacing the first.
+- The nightly version is derived from the most recent **real** release tag, so rc and nightly
+  tags are skipped when working out what comes next.
 
 ### How a tester installs it
 
