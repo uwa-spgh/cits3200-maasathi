@@ -11,7 +11,7 @@ test.describe('Complete UI coverage', () => {
     await completeOnboardingMvp(page);
   });
 
-  test('Home cards open Reminders, current information page, and Nutrition', async ({ page }) => {
+  test('Home cards open Reminders, current information page, and the stage article', async ({ page }) => {
     const home = visiblePage(page);
     await home.locator('.home-card').filter({ hasText: 'Reminder' }).getByRole('button', { name: 'Learn more' }).click();
     await expect(page).toHaveURL(/reminders/i);
@@ -28,12 +28,16 @@ test.describe('Complete UI coverage', () => {
     await expect(visiblePage(page).locator('.anc-page')).toBeVisible();
 
     await visiblePage(page).getByRole('button', { name: 'Home' }).click();
+    // The third card is the "what to know right now" rotating widget, not a
+    // Nutrition card. Its Learn more deep-links to the current ANC/PNC page
+    // with the topic in the query string. The widget auto-rotates every 10s, so
+    // assert the URL shape rather than a specific topic key.
+    // Nutrition itself is covered by the Information-hub test above.
     await visiblePage(page)
-      .locator('.home-card')
-      .filter({ hasText: 'Remember to eat well' })
+      .locator('.home-card.accent-green')
       .getByRole('button', { name: 'Learn more' })
       .click();
-    await expect(page).toHaveURL(/nutrition/i);
+    await expect(page).toHaveURL(/\/information\/anc\?topic=\w+/i);
   });
 
   test('Information hub opens every browse topic', async ({ page }) => {

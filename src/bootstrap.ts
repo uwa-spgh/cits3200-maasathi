@@ -67,6 +67,10 @@ async function restoreSettings(): Promise<void> {
 export function ensureAppData(): Promise<void> {
   if (!appData) {
     appData = (async () => {
+      // Identifies the running build in logcat, so a fix can be confirmed (or
+      // ruled out) on a device without guessing which commit was installed.
+      console.info(`MaaSathi: build ${__MAASATHI_BUILD_SHA__} starting up`);
+
       const pregnancy = usePregnancy();
       const tt = useTt();
       const emergency = useEmergencyContacts();

@@ -31,6 +31,10 @@
     "reminder_pnc": "Your #ordinal postnatal contact is #date",
     "reminder_tt": "Your tetanus vaccination is #date. Remember to bring your EPI card.",
     "reminder_edd": "Your expected delivery is #date",
+    "reminder_epi_start": "Your baby's vaccinations start #date",
+    "reminder_generic": "Reminder: #date",
+    "channel_name": "Appointment reminders",
+    "channel_description": "Reminders for your antenatal visits, postnatal contacts and vaccinations",
     "in_days":"in #days days"
   },
   "placeholder": {
