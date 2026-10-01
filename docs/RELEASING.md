@@ -1,146 +1,120 @@
 # Releasing MaaSathi
 
-How to publish an Android build your team can install, and how to build one yourself.
+This project publishes signed Android builds to GitHub Releases. It does not produce iOS builds,
+and nothing in this setup touches `ios/` — see [iOS](#ios).
 
-**iOS is not covered.** No iOS build is produced by any of this, and nothing here touches
-`ios/` — the diff against `main` is zero lines. See [iOS](#ios) for what's missing.
+The signing key and its four repository secrets are already configured. Publishing begins once
+this work reaches `main`.
 
-## What you have now
+## What gets published
 
-GitHub Actions publishes a **signed, installable APK** to a GitHub Release, on two channels:
+Two channels, both signed, both using the same application id, so a tester can move from a
+nightly onto a release without uninstalling and losing their data.
 
 | | Nightly | Release |
 |---|---|---|
-| When | automatically, once a day | you trigger it |
+| When | automatically, once a day | triggered by hand |
 | Tag | `v1.0.1-nightly-2026-10-01` | `v1.0.1` |
-| A prerelease on GitHub | always | only if you tick the box |
+| GitHub prerelease | always | only if the box is ticked |
 | Installs over | the last release, and each later nightly | its own nightlies |
 
-Both use the same `applicationId` and the same signing key, so a tester can move from a nightly
-onto a real release without uninstalling and losing their data.
+## Publishing a release
 
-## One-time setup
+Repository → **Actions → Android release → Run workflow**.
 
-### 1. Generate the keystore
+- `tag` — the version to publish, for example `v1.0.0`
+- `prerelease` — leave unticked for a real release
 
-```bash
-git checkout release/android-signed-builds
-git pull
-./scripts/setup-release-signing.sh
-```
+The workflow derives the version from the tag, checks the APK is genuinely signed and correctly
+aligned, runs the test suite, and only then publishes. A failure at any of those steps stops the
+release rather than shipping something broken.
 
-It asks for one password (twice, to confirm). That is the only password — the script reuses it
-for the key too. Note it down.
+## Nightly builds
 
-### 2. Back the keystore up
+These need no action — one appears each night, tagged
+`v1.0.0-nightly-<date>` until something is released, then `v1.0.1-nightly-<date>` and onwards.
 
-`android/keystore/release.keystore` — put a copy somewhere you control, not just on the laptop.
-
-> **This is the one thing that really matters.** The keystore *is* the app's identity. Lose it and
-> you can never ship an update to a copy of the app that is already installed. Your only way out
-> would be a new `applicationId`, which is a different app.
-
-### 3. Encode it
-
-```bash
-base64 -w0 android/keystore/release.keystore                     # Linux
-base64 -i android/keystore/release.keystore | tr -d '\n'         # macOS
-```
-
-The macOS form matters: plain `base64` adds a trailing newline, which silently corrupts the secret.
-
-### 4. Add four secrets
-
-Repo → **Settings → Secrets and variables → Actions → New repository secret**.
-Use *secrets*, not variables — the workflow reads `secrets.*`.
-
-| Name | Value |
-|---|---|
-| `ANDROID_KEYSTORE_BASE64` | the output of step 3 |
-| `ANDROID_KEYSTORE_PASSWORD` | your password |
-| `ANDROID_KEY_ALIAS` | `maasathi` |
-| `ANDROID_KEY_PASSWORD` | **the same password again** |
-
-### 5. Merge the PR
-
-Nightlies start themselves once this is on `main`.
-
-## Publishing
-
-**A release:** repo → **Actions → Android release → Run workflow**. Set `tag` to `v1.0.0`,
-leave `prerelease` unticked.
-
-**A nightly:** nothing to do, they appear once a day. To force one, push a tag:
+To force one, push a tag:
 
 ```bash
 git tag v1.0.1-nightly-2026-10-02
 git push origin v1.0.1-nightly-2026-10-02
 ```
 
-The workflow derives the version from the tag, checks the APK is really signed and 16 KB aligned,
-runs the test suite, and only then publishes.
+Nightlies only run once this branch is merged to `main`, because GitHub only schedules workflows
+that live on the default branch.
 
-## For your team
+## Installing a build
 
-**Nobody needs the keystore.** Two options:
+Download the `.apk` from the release page, open it, and allow installs from that source when
+asked. Requires Android 7.0 or newer.
 
-- Download the `.apk` from the release page, tap it, allow installs from that source.
-  Needs Android 7.0 or newer.
-- Or build their own debug APK and `adb install` it.
+No credentials are needed for this. Nobody on the team needs access to the signing key.
 
 ## Debug builds
 
-Debug builds install as a **separate app**, so they sit next to a release without fighting it:
+Debug builds install as a separate application, so they sit alongside a release without
+interfering with it.
 
-| | applicationId | Label | Icon |
+| | Application id | Label | Icon |
 |---|---|---|---|
 | release | `com.maasathi.app` | MaaSathi | white |
 | debug | `com.maasathi.app.debug` | MaaSathi (debug) | teal |
 
-This matters because Android refuses to install an update signed by a different key. With one
-shared app id, a developer's debug build locks them out of the release they have installed, and
-putting the release back fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.
+This matters because Android refuses to install an update signed by a different key. Sharing one
+application id means a debug build locks its owner out of the release they have installed, and
+putting the release back afterwards fails with `INSTALL_FAILED_UPDATE_INCOMPATIBLE`.
 
-The first time you switch, your debug build is a *different app*, so it starts from onboarding
-again. The old copy stays under the previous id until you uninstall it. Nothing is lost.
+The first build after this change is a different application, so it starts from onboarding again.
+The previous copy stays under the old id until uninstalled.
 
-## Building it yourself
+## Building from source
 
-Needs **JDK 21** and an Android SDK with **platform 36**.
+Requires JDK 21 and an Android SDK with platform 36.
 
 ```bash
 npm install
 npm run build
-npx cap sync android          # required before the first gradle run
+npx cap sync android
 cd android && ./gradlew assembleDebug
 ```
 
-For a signed release, pass the keystore details as environment variables —
-`MAASATHI_KEYSTORE`, `MAASATHI_KEYSTORE_PASSWORD`, `MAASATHI_KEY_ALIAS`,
-`MAASATHI_KEY_PASSWORD`, plus `MAASATHI_VERSION_CODE` and `MAASATHI_VERSION_NAME`. They are
-documented at the top of `android/app/build.gradle`, and the workflow sets them for you. Without
-them the build still works and produces an **unsigned** APK, which no phone will install.
+`npx cap sync android` is required before the first Gradle run: `capacitor-cordova-android-plugins`
+is gitignored but referenced by `settings.gradle`, so the build fails without it.
 
-`npx cap sync android` is not optional: `capacitor-cordova-android-plugins/` is gitignored but
-included by `settings.gradle`, so Gradle fails without it.
+A release build needs the signing details passed in as environment variables
+(`MAASATHI_KEYSTORE`, `MAASATHI_KEYSTORE_PASSWORD`, `MAASATHI_KEY_ALIAS`,
+`MAASATHI_KEY_PASSWORD`, `MAASATHI_VERSION_CODE`, `MAASATHI_VERSION_NAME`), documented at the top
+of `android/app/build.gradle`. Without them the build succeeds but produces an unsigned APK, which
+no device will install. The workflow sets these automatically.
 
-## Things that will bite you
+To regenerate the signing key from scratch, `scripts/setup-release-signing.sh` handles it.
 
-- **Losing the keystore.** Covered above. Back it up before you do anything else.
-- **Never hand out a release signed with a throwaway key.** Android ties updates to the signing
-  key per app id. Anyone who installs a build signed with a different key can never receive a
-  proper update — they would have to uninstall, losing their data. Use a debug build for throwaway
-  testing; it has its own app id and cannot collide.
-- **Nightlies stop silently after 60 days** without activity on a public repo. They also only run
-  from `main`, so they do nothing until the PR is merged.
-- **You cannot roll back to a nightly.** Once `v1.0.1` is out, its nightlies are refused with
-  `INSTALL_FAILED_VERSION_DOWNGRADE`. That is deliberate. Use the debug build for unstable.
-- **A rebuilt keystore is a different app.** If you ever regenerate one, nobody can update.
+## Pitfalls
+
+**The signing key cannot be replaced.** Android ties updates to it per application id. If it is
+lost, no future build can update a copy of the app that is already installed — the only route
+would be a new application id, which is a different app. Keep a backup somewhere separate from the
+machine that generated it.
+
+**Never distribute a build signed with a throwaway key.** Everyone who installs it is permanently
+locked out of real updates, and recovering means uninstalling, which deletes their data. Debug
+builds exist for that purpose and cannot cause it.
+
+**Nightlies stop silently after 60 days** without activity on a public repository. This is GitHub
+behaviour, not a fault in the setup.
+
+**Rolling back to a nightly is refused.** Once `v1.0.1` is installed, its own nightlies are
+rejected with `INSTALL_FAILED_VERSION_DOWNGRADE`. That is intentional; the debug build covers
+unstable testing.
+
+**macOS needs a different base64 command.** `base64 -i release.keystore | tr -d '\n'`, not plain
+`base64`, which appends a newline that corrupts the secret. Linux uses `base64 -w0`.
 
 ## Version numbers
 
-Nightlies are numbered as prereleases of the *upcoming* version, which is what lets them install
-over the current release:
+Nightlies are numbered as prereleases of the upcoming version, which is what allows them to
+install over the current release:
 
 ```
 v1.0.0                      ->  100009999
@@ -148,23 +122,19 @@ v1.0.1-nightly-2026-10-01   ->  100010001    installs over v1.0.0
 v1.0.1                      ->  100019999    installs over its own nightlies
 ```
 
-Until anything is released, nightlies are `v1.0.0-nightly-<date>`. After `v1.0.0` they move to
-`v1.0.1-nightly-<date>`.
-
-The workflow checks every bound and fails with a message naming the fix, rather than quietly
-producing a number that cannot install. The details are in the comments in
+The workflow validates every bound and fails with a message naming the fix rather than quietly
+producing a number that cannot install. The detail lives in the comments in
 `.github/workflows/android-release.yml`.
 
 ## iOS
 
-Not done. Nothing in this repository produces an installable iOS build, and nothing in the release
-setup touches `ios/`.
+No iOS build is produced by any part of this, and `ios/` is unchanged from `main`.
 
-To do it you would need the **Apple Developer Program at US$99/year** — without it you cannot sign
-for a physical iPhone at all — plus an App Store Connect record and a decision between TestFlight
-and ad-hoc profiles. TestFlight is the sane route.
+Supporting it would require the Apple Developer Program at US$99/year — without it, signing for a
+physical iPhone is not possible — plus an App Store Connect record and a decision between
+TestFlight and ad-hoc profiles. TestFlight is the practical choice.
 
-If that happens, the version scheme carries over, with one substitution: iOS has no `versionCode`,
-it has `CFBundleVersion` (the build number), which is the one that must always increase.
-`CFBundleShortVersionString` is limited to three dot-separated integers, so it cannot carry a
-`-nightly-2026-10-01` suffix — the ordering would have to live entirely in the build number.
+The version scheme would carry over with one substitution. iOS has no `versionCode`; the
+equivalent is `CFBundleVersion`, which is the field that must always increase.
+`CFBundleShortVersionString` is restricted to three dot-separated integers, so it cannot hold a
+`-nightly-2026-10-01` suffix — all ordering would have to live in the build number instead.
