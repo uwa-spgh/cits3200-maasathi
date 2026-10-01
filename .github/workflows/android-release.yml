@@ -110,6 +110,31 @@ jobs:
       # Nightlies therefore take 1..49, leaving 50..99 for release candidates and
       # 100 for the real thing, which is why the final always wins over whatever
       # came before it in the same version slot.
+      # A nightly is a prerelease of the UPCOMING version, so it sits above the
+      # last release and below its own final:
+      #
+      #   v1.0.0                    -> 100009999
+      #   v1.0.1-nightly-2026-10-01 -> 100010001   installs over v1.0.0
+      #   v1.0.1-nightly-2026-10-02 -> 100010002   installs over last night
+      #   v1.0.1-rc.1               -> 100019001
+      #   v1.0.1                    -> 100019999   installs over its own nightlies
+      #   v1.0.2-nightly-...        -> 100020001
+      #
+      # versionCode = MAJOR*1e8 + MINOR*1e6 + PATCH*1e4 + seq, with the patch slot
+      # 10000 wide so the three kinds cannot crowd each other:
+      #
+      #   nightly  seq 1     .. 8999    (one per build, so a patch has years of room)
+      #   rc.N     seq 9000+N.. 9998    (N up to 998)
+      #   final    seq 9999             (always top of its own version)
+      #
+      # Keeping the final at the very top of the slot is what lets it replace its
+      # own nightlies and rcs without anyone uninstalling. The rc offset is
+      # subtracted from the top rather than added above it, so a release candidate
+      # can never outrank the release it precedes.
+      #
+      # The ceiling is Android's 2100000000: the largest reachable value is
+      # MAJOR=20 MINOR=99 PATCH=99 final = 2099999999, so MAJOR is capped at 20
+      # and that is checked rather than assumed.
       - name: Derive version, tag and prerelease flag
         id: version
         env:
@@ -118,20 +143,22 @@ jobs:
         run: |
           set -euo pipefail
           today="$(date -u +%Y-%m-%d)"
+          event="${{ github.event_name }}"
 
-          # Most recent real release, ignoring nightly/rc tags.
+          # Most recent real release. rc and nightly tags are deliberately skipped.
           latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
 
-          if [[ "${{ github.event_name }}" == "schedule" ]]; then
-            # Nightly for the next patch after the latest release.
+          if [[ "$event" == "schedule" ]]; then
             if [[ -z "$latest_release" ]]; then
-              base_major=0; base_minor=0; base_patch=0
+              # Nothing released yet, so the version under development is 1.0.0
+              # rather than a 0.0.x placeholder.
+              next_major=1; next_minor=0; next_patch=0
             else
               IFS=. read -r lmaj lmin lpat <<< "${latest_release#v}"
-              base_major="$lmaj"; base_minor="$lmin"; base_patch="$lpat"
+              next_major="$lmaj"; next_minor="$lmin"; next_patch="$(( lpat + 1 ))"
             fi
-            tag="v${base_major}.${base_minor}.$((base_patch + 1))-nightly-${today}"
-          elif [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            tag="v${next_major}.${next_minor}.${next_patch}-nightly-${today}"
+          elif [[ "$event" == "workflow_dispatch" ]]; then
             tag="$INPUT_TAG"
           else
             tag="$GITHUB_REF_NAME"
@@ -140,8 +167,8 @@ jobs:
           if [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
             major="${BASH_REMATCH[1]}"; minor="${BASH_REMATCH[2]}"; patch="${BASH_REMATCH[3]}"
             version_name="${major}.${minor}.${patch}"
-            seq=100
-            if [[ "${{ github.event_name }}" == "workflow_dispatch" ]]; then
+            seq=9999
+            if [[ "$event" == "workflow_dispatch" ]]; then
               prerelease="$INPUT_PRERELEASE"
             else
               prerelease=false
@@ -149,19 +176,25 @@ jobs:
           elif [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)-rc\.([0-9]+)$ ]]; then
             major="${BASH_REMATCH[1]}"; minor="${BASH_REMATCH[2]}"; patch="${BASH_REMATCH[3]}"
             n="${BASH_REMATCH[4]}"
+            if (( n < 1 || n > 998 )); then
+              echo "::error::rc number must be 1-998 so it stays below the final, got ${n}"
+              exit 1
+            fi
             version_name="${major}.${minor}.${patch}-rc.${n}"
-            seq=$(( 50 + n ))
+            seq=$(( 9000 + n ))
             prerelease=true
           elif [[ "$tag" =~ ^v([0-9]+)\.([0-9]+)\.([0-9]+)-nightly-([0-9]{4}-[0-9]{2}-[0-9]{2})$ ]]; then
             major="${BASH_REMATCH[1]}"; minor="${BASH_REMATCH[2]}"; patch="${BASH_REMATCH[3]}"
-            # Take the date from the tag, not from today, so a replayed or
-            # hand-pushed nightly still reports the version it is actually called.
+            # The tag's own date, so a replayed or hand-pushed nightly reports the
+            # version it is actually called rather than today's.
             version_name="${major}.${minor}.${patch}-nightly-${BASH_REMATCH[4]}"
-            # Continue the nightly sequence for this version rather than reusing a
-            # number, so a rerun or a manual replay still installs.
-            seq=$(( $(git tag --list | grep -cE "^v${major}\.${minor}\.${patch}-nightly-" || true) + 1 ))
-            if (( seq > 49 )); then
-              echo "::error::v${major}.${minor}.${patch} already has ${seq} nightlies (max 49); cut v${major}.${minor}.$((patch + 1)) instead"
+            # Count what already exists for this version rather than deriving from
+            # the date: a same-day rerun then reuses the tag and replaces the APK
+            # instead of inventing a second number for one day.
+            existing="$(git tag --list | grep -cE "^v${major}\\.${minor}\\.${patch}-nightly-" || true)"
+            seq=$(( existing + 1 ))
+            if (( seq > 8999 )); then
+              echo "::error::v${major}.${minor}.${patch} already has ${existing} nightlies (max 8999); cut v${major}.${minor}.$((patch + 1))"
               exit 1
             fi
             prerelease=true
@@ -170,7 +203,33 @@ jobs:
             exit 1
           fi
 
-          version_code="$(( major * 1000000 + minor * 10000 + patch * 100 + seq ))"
+          # Guard the version fields rather than trusting them. MAJOR is capped at
+          # 20 because that is where the arithmetic meets Android's ceiling.
+          for pair in "major:$major:20" "minor:$minor:99" "patch:$patch:99"; do
+            IFS=: read -r field value cap <<< "$pair"
+            if (( 10#$value > cap )); then
+              echo "::error::${field} is ${value}, above the supported maximum of ${cap}"
+              exit 1
+            fi
+          done
+
+          version_code="$(( 10#$major * 100000000 + 10#$minor * 1000000 + 10#$patch * 10000 + seq ))"
+
+          if (( version_code > 2100000000 )); then
+            echo "::error::versionCode ${version_code} exceeds Android's maximum of 2100000000"
+            exit 1
+          fi
+
+          # Safety net: whatever we are building must outrank the latest release,
+          # or nobody who installed it will be able to take this build.
+          if [[ -n "$latest_release" ]]; then
+            IFS=. read -r pmaj pmin ppat <<< "${latest_release#v}"
+            previous_code=$(( 10#$pmaj * 100000000 + 10#$pmin * 1000000 + 10#$ppat * 10000 + 9999 ))
+            if (( version_code <= previous_code )); then
+              echo "::error::versionCode ${version_code} does not exceed ${latest_release}'s ${previous_code}; nobody could install this"
+              exit 1
+            fi
+          fi
 
           {
             echo "tag=$tag"
@@ -180,7 +239,7 @@ jobs:
             echo "latest_release=$latest_release"
           } >> "$GITHUB_OUTPUT"
 
-          echo "tag=$tag versionName=$version_name versionCode=$version_code prerelease=$prerelease latestRelease=${latest_release:-none}"
+          echo "tag=$tag versionName=$version_name versionCode=$version_code seq=$seq prerelease=$prerelease latestRelease=${latest_release:-none}"
 
       - name: Install dependencies
         run: npm ci

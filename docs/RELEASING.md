@@ -183,46 +183,75 @@ GitHub release.
 ### How the version numbers fit together
 
 Android keeps one monotonically increasing `versionCode` per `applicationId`, so every tag has to
-be assigned a number in a single sequence that only ever goes up:
+be assigned a number from a single sequence that only ever goes up:
 
 ```
-versionCode = MAJOR*1000000 + MINOR*10000 + PATCH*100 + seq
+versionCode = MAJOR*100000000 + MINOR*1000000 + PATCH*10000 + seq
 ```
 
-`seq` is where the ordering inside one version comes from:
+The patch slot is 10000 wide, split into three bands that cannot overlap:
+
+| kind | `seq` | per-patch capacity |
+|---|---|---|
+| nightly | 1 – 8999 | 8999 nightlies |
+| `rc.N` | 9000+N, so 9001 – 9998 | 998 release candidates |
+| final | 9999 | 1 |
 
 | tag | seq | versionCode |
 |---|---:|---|
-| `v1.0.0` | 100 | 1000100 |
-| `v1.0.1-nightly-2026-10-01` | 1 | 1000101 |
-| `v1.0.1-nightly-2026-10-02` | 2 | 1000102 |
-| `v1.0.1-rc.1` | 51 | 1000151 |
-| `v1.0.1` | 100 | 1000200 |
-| `v1.0.2-nightly-…` | 1 | 1000201 |
+| `v1.0.0` | 9999 | 100009999 |
+| `v1.0.1-nightly-2026-10-01` | 1 | 100010001 |
+| `v1.0.1-nightly-2026-10-02` | 2 | 100010002 |
+| `v1.0.1-rc.1` | 9001 | 100019001 |
+| `v1.0.1` | 9999 | 100019999 |
+| `v1.0.2-nightly-…` | 1 | 100020001 |
 
-Nightlies take `seq` 1–49, release candidates 51–99, and the real thing always gets 100. That
-buys three things at once:
+A nightly's `seq` is **the number of nightly tags already existing for that version, plus one**,
+rather than anything derived from the date. Two reasons:
+
+- A same-day rerun reuses the tag and replaces the APK, rather than inventing a second number
+  for one day.
+- Day-of-year arithmetic looks tidier but breaks across New Year, when day 365 of one patch is
+  followed by day 2 of the next.
+
+That buys, in order:
 
 - **A nightly installs over the last release**, because it is numbered inside the *next* patch.
-- **The final installs over its own nightlies and rc builds**, because `seq` 100 is above all of
-  them. Nobody has to uninstall, so nobody loses their data.
-- **Each nightly installs over the previous one**, because `seq` is the number of nightly tags
-  already existing for that version, plus one. A rerun or a replayed build still goes forwards
-  rather than colliding.
+- **The final installs over its own nightlies and rcs**, because `seq` 9999 is the top of the
+  slot. Nobody uninstalls, so nobody loses their data.
+- **Each nightly installs over the previous one**, because the count grows.
 
-The one direction that does not work is **going back**: once `v1.0.1` is installed, `v1.0.1`'s own
-nightlies will not install over it. That is deliberate — you should not roll a tester back onto
-unstable — and the error is explicit:
+The one direction that does not work is going **back**: once `v1.0.1` is installed, its own
+nightlies will not install over it. That is deliberate, and the error says so:
 
 ```
-INSTALL_FAILED_VERSION_DOWNGRADE: Update version code 1000101 is older than current 1000200
+INSTALL_FAILED_VERSION_DOWNGRADE: Update version code 100010001 is older than current 100019999
 ```
 
-If you want unstable alongside a release, use the [debug
-channel](#debug-builds-and-release-builds-coexist), which has its own applicationId and coexists.
+For unstable alongside a release, use the [debug
+channel](#debug-builds-and-release-builds-coexist) — its own applicationId, and it coexists.
 
-A patch is capped at 49 nightlies. The build fails with a message telling you to cut the next
-patch rather than silently colliding.
+### Before anything releases
+
+With no release tag yet, nightlies are built as **`v1.0.0-nightly-<date>`**, so the version under
+development is 1.0.0 rather than a 0.0.x placeholder. Once `v1.0.0` exists, nightlies move on to
+`v1.0.1-nightly-<date>`.
+
+### Limits, and what happens at them
+
+Every bound is checked, and a violation **fails the build with a message naming the fix** rather
+than quietly producing a colliding number:
+
+| limit | why | message |
+|---|---|---|
+| 8999 nightlies per patch | rc band starts at 9001 | cut the next patch instead |
+| rc number 1–998 | rc must stay below the final | `rc number must be 1-998 so it stays below the final` |
+| MAJOR ≤ 20 | Android's `versionCode` ceiling is 2100000000, and MAJOR=20 MINOR=99 PATCH=99 final is 2099999999 | `major is 21, above the supported maximum of 20` |
+| MINOR, PATCH ≤ 99 | same | `minor is 100, above the supported maximum of 99` |
+
+There is also a standing check that whatever is being built outranks the most recent release. If
+it does not, the build fails with *"nobody could install this"* — that is the check that catches a
+mis-derived version before it reaches a release page, where it would only be found by a tester.
 
 ### Nightly gotchas
 
