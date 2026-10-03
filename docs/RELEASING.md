@@ -34,7 +34,7 @@ release rather than shipping something broken.
 These need no action — one appears each night, tagged
 `v1.0.0-nightly-<date>` until something is released, then `v1.0.1-nightly-<date>` and onwards.
 
-To force one, push a tag:
+To force one, either run the workflow by hand leaving `tag` empty, or push a tag:
 
 ```bash
 git tag v1.0.1-nightly-2026-10-02
@@ -43,6 +43,11 @@ git push origin v1.0.1-nightly-2026-10-02
 
 Nightlies only run once this branch is merged to `main`, because GitHub only schedules workflows
 that live on the default branch.
+
+**The timing is approximate.** The schedule is set for 10:17 Perth, but GitHub decides when to
+actually start it — the first observed run began more than six hours late. Treat the cron as a
+prompt to start looking, not a deadline. Anyone depending on a build at a particular time should
+trigger it by hand.
 
 ## Installing a build
 

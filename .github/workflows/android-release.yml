@@ -31,9 +31,9 @@ on:
   workflow_dispatch:
     inputs:
       tag:
-        description: 'Tag to publish, e.g. v1.0.0 or v1.0.0-rc.1'
-        required: true
-        default: 'v0.1.0'
+        description: 'Tag to publish. Leave empty, or enter "nightly", for tonight''s nightly build.'
+        required: false
+        default: ''
       prerelease:
         description: 'Mark as a GitHub prerelease. Leave unticked for a real release.'
         required: false
@@ -148,18 +148,30 @@ jobs:
           # Most recent real release. rc and nightly tags are deliberately skipped.
           latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
 
-          if [[ "$event" == "schedule" ]]; then
+          # The nightly tag is derived rather than typed: the patch after the most
+          # recent release, or 1.0.0 if nothing has been released.
+          derive_nightly_tag() {
             if [[ -z "$latest_release" ]]; then
-              # Nothing released yet, so the version under development is 1.0.0
-              # rather than a 0.0.x placeholder.
-              next_major=1; next_minor=0; next_patch=0
-            else
-              IFS=. read -r lmaj lmin lpat <<< "${latest_release#v}"
-              next_major="$lmaj"; next_minor="$lmin"; next_patch="$(( lpat + 1 ))"
+              printf 'v1.0.0-nightly-%s' "$today"
+              return
             fi
-            tag="v${next_major}.${next_minor}.${next_patch}-nightly-${today}"
+            IFS=. read -r lmaj lmin lpat <<< "${latest_release#v}"
+            printf 'v%s.%s.%s-nightly-%s' "$lmaj" "$lmin" "$(( lpat + 1 ))" "$today"
+          }
+
+          if [[ "$event" == "schedule" ]]; then
+            tag="$(derive_nightly_tag)"
           elif [[ "$event" == "workflow_dispatch" ]]; then
             tag="$INPUT_TAG"
+            # An empty tag, or a bare "nightly", means "give me tonight's nightly".
+            # Anything ending in -nightly gets today's date so the dated shape is
+            # the only one that ever reaches a release page. Without this, the
+            # default in the UI silently published a 0.1.0 nightly.
+            if [[ -z "$tag" || "$tag" == "nightly" ]]; then
+              tag="$(derive_nightly_tag)"
+            elif [[ "$tag" == *-nightly ]]; then
+              tag="${tag}-${today}"
+            fi
           else
             tag="$GITHUB_REF_NAME"
           fi
