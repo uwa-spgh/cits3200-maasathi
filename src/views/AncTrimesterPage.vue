@@ -3,7 +3,7 @@
     :title="$t('information.title')"
     :breadcrumb="breadcrumb"
     :icon="informationCircleOutline"
-    color="green"
+    color="blue"
   >
     <div class="anc-trimester">
       <ExpandableCard
