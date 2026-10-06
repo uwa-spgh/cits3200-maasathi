@@ -84,8 +84,6 @@ const infoTopics: Topic[] = [
   { key: 'pain', points: 1 },
   { key: 'cleanliness', points: 1 },
   { key: 'cord_healing', points: 10 },
-  { key: 'vaccines_after_birth', points: 6 },
-  { key: 'childhood_immunisation', points: 9 },
   { key: 'checkup', points: 1 },
   { key: 'family_planning', points: 1 },
   { key: 'mood', points: 1 }
@@ -145,7 +143,7 @@ function listenTopic(topic: Topic): void {
 .topic-link-btn {
   background-color: #fff;
   color: var(--color-card-text, #1a1a1a);
-  border: 2px solid var(--color-information-bg, #7bc62d);
+  border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
   padding: 14px 18px;
   font-size: 0.98rem;

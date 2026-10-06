@@ -2,7 +2,7 @@
   <PageShell
     :title="$t('information.title')"
     :icon="informationCircleOutline"
-    color="green"
+    color="blue"
   >
     <div class="info-hub">
       <section v-if="nowTopics.length" class="now-section">
@@ -114,7 +114,7 @@ const topics = computed(() => {
 
 .now-icon {
   font-size: 1.25rem;
-  color: var(--color-information-bg, #7bc62d);
+  color: var(--color-profile-bg, #33a1de);
 }
 
 .now-title {
@@ -155,7 +155,7 @@ const topics = computed(() => {
 .topic-btn {
   background-color: #fff;
   color: var(--color-card-text, #1a1a1a);
-  border: 2px solid var(--color-information-bg, #7bc62d);
+  border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
   padding: 14px 18px;
   font-size: 0.98rem;

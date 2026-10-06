@@ -32,8 +32,13 @@
 
       <section class="form-card">
         <h2 class="form-title">{{ $t('profile.plan_bag_title') }}</h2>
+        <h3 class="bag-subtitle first">{{ $t('profile.plan_bag_mother_title') }}</h3>
         <ul class="bag-list">
-          <li>{{ $t('profile.plan_bag_coming_soon') }}</li>
+          <li v-for="n in 7" :key="n">{{ $t(`profile.plan_bag_items.item${n}`) }}</li>
+        </ul>
+        <h3 class="bag-subtitle">{{ $t('profile.plan_bag_baby_title') }}</h3>
+        <ul class="bag-list">
+          <li v-for="n in 4" :key="n">{{ $t(`profile.plan_bag_baby_items.item${n}`) }}</li>
         </ul>
       </section>
 
@@ -135,8 +140,20 @@ async function save(): Promise<void> {
   padding-left: 20px;
   color: var(--color-card-text, #1a1a1a);
   font-size: 0.9rem;
-  opacity: 0.7;
-  font-style: italic;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.bag-subtitle {
+  margin: 14px 4px 8px 4px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-card-text, #1a1a1a);
+}
+
+.bag-subtitle.first {
+  margin-top: 0;
 }
 
 .primary-action {

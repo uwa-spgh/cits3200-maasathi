@@ -47,5 +47,3 @@ export function homePath(): string {
 
 export const ANDROID_BOTTOM_SAFE_AREA = 'env(safe-area-inset-bottom)';
 
-// speed that green widget rotates
-export const NOW_WIDGET_ROTATE_MS = 10000;

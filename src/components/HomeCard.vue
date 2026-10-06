@@ -168,6 +168,16 @@ defineEmits<{
   font-weight: 800;
 }
 
+/* Reminder card: yellow corner tab behind the visit number + icon, flush
+   with the card's top-right corner (card padding 14px 16px, inner radius 18px) */
+.accent-yellow .card-graphic {
+  align-self: flex-start;
+  margin: -14px -16px 0 0;
+  padding: 10px 14px 10px 16px;
+  background: var(--color-reminders-bg, #f6c945);
+  border-radius: 0 18px 0 18px;
+}
+
 .graphic-icon {
   font-size: 2.6rem;
 }

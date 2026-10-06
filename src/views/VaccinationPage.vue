@@ -3,7 +3,7 @@
     :title="$t('information.title')"
     :breadcrumb="$t('information.topics.vaccination')"
     :icon="informationCircleOutline"
-    color="green"
+    color="blue"
   >
     <div class="vaccination-page">
       <div class="tt-card">
@@ -19,6 +19,16 @@
         <p v-else-if="isComplete" class="tt-next">{{ $t('tt.complete_notice') }}</p>
       </div>
 
+      <button class="section-btn" @click="openTetanusInfo">
+        <span>{{ $t('tt.education_title') }}</span>
+        <IonIcon :icon="chevronForwardOutline" class="chevron" />
+      </button>
+
+      <button class="section-btn" @click="openChildVaccines">
+        <span>{{ $t('tt.child_vaccines_title') }}</span>
+        <IonIcon :icon="chevronForwardOutline" class="chevron" />
+      </button>
+
       <ExpandableCard :title="$t('tt.schedule_title')">
         <ul class="dose-list">
           <li v-for="dose in sortedDoses" :key="dose.id">
@@ -27,10 +37,6 @@
           <li v-if="sortedDoses.length === 0" class="empty">{{ $t('tt.no_doses') }}</li>
         </ul>
       </ExpandableCard>
-
-      <button class="section-btn" @click="openTetanusInfo">
-        {{ $t('tt.education_title') }}
-      </button>
 
       <ExpandableCard :title="$t('tt.epi_card_title')">
         <p class="card-text">{{ $t('tt.bring_epi_card.point1') }}</p>
@@ -41,8 +47,8 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useIonRouter } from '@ionic/vue';
-import { informationCircleOutline } from 'ionicons/icons';
+import { IonIcon, useIonRouter } from '@ionic/vue';
+import { chevronForwardOutline, informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import { useTt } from '../composables/useTt';
@@ -55,6 +61,10 @@ const { history, doses, lifetimeDoseCount, isComplete, isUnknown } = useTt();
 
 function openTetanusInfo(): void {
   ionRouter.push({ name: 'VaccinationTetanus' });
+}
+
+function openChildVaccines(): void {
+  ionRouter.push({ name: 'VaccinationChild' });
 }
 
 const statusLabel = computed(() => {
@@ -129,21 +139,29 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
 }
 
 .section-btn {
-  background-color: var(--color-btn-more-bg, #7bc62d);
-  color: var(--color-btn-more-text, #000);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 999px;
-  padding: 14px 20px;
-  font-size: 1rem;
+  background-color: #fff;
+  color: var(--color-card-text, #1a1a1a);
+  border: 2px solid var(--color-profile-bg, #33a1de);
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
   transition: transform 0.15s ease;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
 }
 
 .section-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.section-btn .chevron {
+  font-size: 1.2rem;
+  opacity: 0.6;
 }
 
 .dose-list {

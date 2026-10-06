@@ -7,14 +7,22 @@ export interface NowTopic {
   points: number;
   /** When set, this topic links out to a full info page instead of showing inline bullet points. */
   route?: string;
+  /** Page whose expandable card holds this topic (opened with ?topic=key). Defaults to Anc/Pnc by `ns`. */
+  page?: string;
+  /** Card key on `page` when it differs from `key` (e.g. the PNC page calls mental wellbeing `mood`). */
+  pageKey?: string;
+  /** i18n key for the widget text, overriding the default first-point/body excerpt. */
+  excerptKey?: string;
 }
 
 /** Stage topics without nutrition (nutrition is kept separate in the Nutrition section) */
 export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
   'ANC:visit1': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
-    { ns: 'anc', key: 'healthy_diet', points: 2 },
-    { ns: 'anc', key: 'hydration_rest', points: 2 }
+    { ns: 'anc', key: 'healthy_diet', points: 2, page: 'Nutrition' },
+    { ns: 'anc', key: 'hydration_rest', points: 2 },
+    // Visit 1 nudges the user to start their Birth Plan rather than show the info card
+    { ns: 'anc', key: 'birth_preparedness', points: 2, route: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan' }
   ],
   'ANC:visit2': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
@@ -24,13 +32,16 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
   'ANC:visit3': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
     { ns: 'anc', key: 'calcium_supplementation', points: 2 },
-    { ns: 'anc', key: 'mental_wellbeing', points: 2 }
+    { ns: 'anc', key: 'mental_wellbeing', points: 2 },
+    { ns: 'anc', key: 'birth_preparedness', points: 2 }
   ],
   'ANC:visit4': [
     { ns: 'anc', key: 'preparing_baby_care', points: 2 },
     { ns: 'anc', key: 'skilled_birth_care', points: 2 },
     { ns: 'anc', key: 'signs_of_labour', points: 5 },
-    { ns: 'anc', key: 'labour_go_to_facility', points: 12 }
+    { ns: 'anc', key: 'labour_go_to_facility', points: 12 },
+    // Visit 4 reminds the user to review their Birth Plan
+    { ns: 'anc', key: 'birth_preparedness', points: 2, route: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan_review' }
   ],
   'PNC:contact1': [
     { ns: 'pnc', key: 'rest', points: 1 },
@@ -38,17 +49,17 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
     { ns: 'pnc', key: 'breastfeeding', points: 0, route: 'PncBreastfeeding' }
   ],
   'PNC:contact2': [
-    { ns: 'pnc', key: 'mental_wellbeing', points: 1 },
+    { ns: 'pnc', key: 'mental_wellbeing', points: 1, pageKey: 'mood' },
     { ns: 'pnc', key: 'family_planning', points: 1 },
     { ns: 'pnc', key: 'cord_healing', points: 10 }
   ],
   'PNC:contact3': [
     { ns: 'pnc', key: 'routine_care', points: 0, route: 'PncRoutineCare' },
-    { ns: 'pnc', key: 'vaccines_after_birth', points: 6 },
-    { ns: 'pnc', key: 'childhood_immunisation', points: 9 }
+    { ns: 'pnc', key: 'vaccines_after_birth', points: 6, page: 'VaccinationChild' },
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9, page: 'VaccinationChild' }
   ],
   'PNC:contact4': [
-    { ns: 'pnc', key: 'childhood_immunisation', points: 9 },
+    { ns: 'pnc', key: 'childhood_immunisation', points: 9, page: 'VaccinationChild' },
     { ns: 'pnc', key: 'family_planning', points: 1 }
   ]
 };

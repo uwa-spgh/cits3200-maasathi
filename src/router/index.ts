@@ -16,6 +16,7 @@ import PncBreastfeedingPage from '../views/PncBreastfeedingPage.vue';
 import PncRoutineCarePage from '../views/PncRoutineCarePage.vue';
 import VaccinationPage from '../views/VaccinationPage.vue';
 import VaccinationTetanusPage from '../views/VaccinationTetanusPage.vue';
+import VaccinationChildPage from '../views/VaccinationChildPage.vue';
 import DangerSignsPage from '../views/DangerSignsPage.vue';
 import NutritionPage from '../views/NutritionPage.vue';
 import ProfilePage from '../views/ProfilePage.vue';
@@ -47,6 +48,7 @@ const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/information/pnc/routine-care', name: 'PncRoutineCare', component: PncRoutineCarePage },
   { path: '/information/vaccination', name: 'Vaccination', component: VaccinationPage },
   { path: '/information/vaccination/tetanus', name: 'VaccinationTetanus', component: VaccinationTetanusPage },
+  { path: '/information/vaccination/child', name: 'VaccinationChild', component: VaccinationChildPage },
   { path: '/information/danger-signs', name: 'DangerSigns', component: DangerSignsPage },
   { path: '/information/nutrition', name: 'Nutrition', component: NutritionPage },
   { path: '/profile', name: 'Profile', component: ProfilePage },

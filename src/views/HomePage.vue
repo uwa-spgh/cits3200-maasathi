@@ -46,11 +46,8 @@
         />
 
         <!--
-          "What to know right now" rotating widget — pick ONE rotation
-          method in the <script> below (search "ROTATION METHOD"). METHOD 3
-          is active: a single corner arrow on the card advances to the next
-          topic (see the `corner-arrow-*` props below and the `HomeCard`
-          corner-arrow-btn styling for the look).
+          "What to know right now" rotating widget — shows a different topic
+          each day, and the corner arrow advances to the next topic.
         -->
         <HomeCard
           accent="green"
@@ -78,32 +75,27 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import {
   IonContent,
   IonFooter,
   IonHeader,
   IonPage,
-  onIonViewWillLeave,
+  onIonViewWillEnter,
   useIonRouter
 } from '@ionic/vue';
-// Only needed by ROTATION METHOD 2 (leave-page/app rotation) below — safe to
-// leave imported even if that method is disabled.
-import { App as CapApp } from '@capacitor/app';
-import type { PluginListenerHandle } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import BottomNav from '../components/BottomNav.vue';
 import HomeCard from '../components/HomeCard.vue';
 import HomeTimelineRail from '../components/HomeTimelineRail.vue';
 import { homeIcons } from '../config/icons';
-import { NOW_WIDGET_ROTATE_MS } from '../config/app';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import type { ScheduleItem } from '../db/schemas';
-import { formatDayMonthLong, todayIso } from '../utils/date';
+import { daysBetween, formatDayMonthLong, todayIso } from '../utils/date';
 import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
 import { visitNumber } from '../services/notifications';
 
@@ -160,7 +152,7 @@ function openEvent(id: string): void {
 
 const reminderBadge = computed<string | null>(() => {
   const n = visitNumber(shownEvent.value);
-  return n !== null && shownEvent.value?.status !== 'completed' ? `#${n}` : null;
+  return n !== null && shownEvent.value?.status !== 'completed' ? `${n}` : null;
 });
 
 const reminderBody = computed(() => {
@@ -193,14 +185,10 @@ function onRemindersTap(): void {
 }
 
 /**
- * Tapping the Information card opens Layla's comprehensive information page for the current mode.
+ * Tapping the wellbeing card opens the general Information page.
  */
 function onInformationTap(): void {
-  if (mode.value === 'PNC') {
-    go('Pnc');
-  } else {
-    go('Anc');
-  }
+  go('Information');
 }
 
 // ---- Surfaced Stage Content: Wellbeing ----
@@ -213,63 +201,31 @@ const nowTopics = computed(() => {
   return stage ? STAGE_NOW_TOPICS[stage.stageKey] ?? [] : [];
 });
 
-const nowIndex = ref(0);
+// Today's date, refreshed whenever Home is shown so the daily topic changes
+// even if the app stays open overnight.
+const today = ref(todayIso());
+onIonViewWillEnter(() => {
+  today.value = todayIso();
+});
 
-/** Move to the next/previous slide, wrapping around. Shared by whichever
- *  rotation method below is active. */
-function nowAdvance(step: number): void {
+// Extra steps from tapping the corner arrow, on top of the daily topic.
+const nowTapOffset = ref(0);
+
+// Start from a different topic each day, then step forward per arrow tap.
+const nowIndex = computed(() => {
   const len = nowTopics.value.length;
-  if (len === 0) return;
-  nowIndex.value = (nowIndex.value + step + len) % len;
-}
-
-// Always jump back to the first slide when the underlying topic list
-// changes (e.g. moving from one ANC visit to the next).
-watch(nowTopics, () => {
-  nowIndex.value = 0;
+  if (len === 0) return 0;
+  const day = daysBetween('1970-01-01', today.value);
+  return (((day + nowTapOffset.value) % len) + len) % len;
 });
 
-
-// METHOD 1: auto-rotate on a timer 
-/*
-let nowTimer: ReturnType<typeof setInterval> | null = null;
-
-function stopNowRotation(): void {
-  if (nowTimer !== null) {
-    clearInterval(nowTimer);
-    nowTimer = null;
-  }
-}
-
-function startNowRotation(): void {
-  stopNowRotation();
-  if (nowTopics.value.length <= 1) return;
-  nowTimer = setInterval(() => nowAdvance(1), NOW_WIDGET_ROTATE_MS);
-}
-
-watch(nowTopics, startNowRotation, { immediate: true });
-onUnmounted(stopNowRotation);
-*/
-
-// METHOD 2: advance once each time you leave the Home page
-/*
-onIonViewWillLeave(() => nowAdvance(1));
-
-let appStateHandle: PluginListenerHandle | null = null;
-onMounted(async () => {
-  appStateHandle = await CapApp.addListener('appStateChange', ({ isActive }) => {
-    if (!isActive) nowAdvance(1);
-  });
+// Clear manual taps when the topic list (e.g. a new ANC visit) or the day changes.
+watch([nowTopics, today], () => {
+  nowTapOffset.value = 0;
 });
-onUnmounted(() => {
-  void appStateHandle?.remove();
-});
-*/
-
-// METHOD 3: manual navigation via a corner arrow button
 
 function nowNext(): void {
-  nowAdvance(1);
+  nowTapOffset.value += 1;
 }
 
 const activeNowTopic = computed(() => nowTopics.value[nowIndex.value] ?? null);
@@ -282,6 +238,7 @@ const nowTitle = computed(() => {
 const nowExcerpt = computed(() => {
   const topic = activeNowTopic.value;
   if (!topic) return '';
+  if (topic.excerptKey) return t(topic.excerptKey);
   if (topic.key === 'breastfeeding') return t('pnc.start_early.point1');
   if (topic.key === 'routine_care') return t('pnc.routine_care_blurb');
   if (topic.route) return excerpt(t(`${topic.ns}.${topic.key}_body`));
@@ -298,8 +255,8 @@ function onNowLearnMore(): void {
     go(topic.route);
     return;
   }
-  const routeName = topic.ns === 'pnc' ? 'Pnc' : 'Anc';
-  ionRouter.push({ name: routeName, query: { topic: topic.key } });
+  const routeName = topic.page ?? (topic.ns === 'pnc' ? 'Pnc' : 'Anc');
+  ionRouter.push({ name: routeName, query: { topic: topic.pageKey ?? topic.key } });
 }
 </script>
 
