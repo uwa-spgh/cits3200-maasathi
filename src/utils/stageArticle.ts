@@ -7,7 +7,7 @@ export interface NowTopic {
   points: number;
   /** When set, this topic links out to a full info page instead of showing inline bullet points. */
   route?: string;
-  /** Page whose expandable card holds this topic (opened with ?topic=key). Defaults to Anc/Pnc by `ns`. */
+  /** Page the Home widget's "Learn more" opens (with ?topic=key). Defaults to Anc/Pnc by `ns`. */
   page?: string;
   /** Card key on `page` when it differs from `key` (e.g. the PNC page calls mental wellbeing `mood`). */
   pageKey?: string;
@@ -22,7 +22,7 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
     { ns: 'anc', key: 'healthy_diet', points: 2, page: 'Nutrition' },
     { ns: 'anc', key: 'hydration_rest', points: 2 },
     // Visit 1 nudges the user to start their Birth Plan rather than show the info card
-    { ns: 'anc', key: 'birth_preparedness', points: 2, route: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan' }
+    { ns: 'anc', key: 'birth_preparedness', points: 2, page: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan' }
   ],
   'ANC:visit2': [
     { ns: 'anc', key: 'iron_folic_acid', points: 2 },
@@ -41,7 +41,7 @@ export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
     { ns: 'anc', key: 'signs_of_labour', points: 5 },
     { ns: 'anc', key: 'labour_go_to_facility', points: 12 },
     // Visit 4 reminds the user to review their Birth Plan
-    { ns: 'anc', key: 'birth_preparedness', points: 2, route: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan_review' }
+    { ns: 'anc', key: 'birth_preparedness', points: 2, page: 'ProfilePlan', excerptKey: 'home.cards.now_birth_plan_review' }
   ],
   'PNC:contact1': [
     { ns: 'pnc', key: 'rest', points: 1 },

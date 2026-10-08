@@ -36,7 +36,6 @@
           v-for="topic in topics"
           :key="topic.route"
           class="topic-btn"
-          :class="{ danger: topic.key === 'danger_signs' }"
           @click="ionRouter.push({ name: topic.route })"
         >
           <span>{{ $t(`information.topics.${topic.key}`) }}</span>
@@ -83,8 +82,7 @@ const topics = computed(() => {
     { key: 'breastfeeding', route: 'PncBreastfeeding' },
     { key: 'pnc', route: 'Pnc' },
     { key: 'nutrition', route: 'Nutrition' },
-    { key: 'vaccination', route: 'Vaccination' },
-    { key: 'danger_signs', route: 'DangerSigns' }
+    { key: 'vaccination', route: 'Vaccination' }
   ];
   if (mode.value === 'PNC') {
     return [...base.filter((x) => x.key === 'pnc'), ...base.filter((x) => x.key !== 'pnc')];
@@ -171,10 +169,6 @@ const topics = computed(() => {
 
 .topic-btn:active {
   transform: scale(0.98);
-}
-
-.topic-btn.danger {
-  border-color: var(--color-emergency-bg, #ff5c5c);
 }
 
 .arrow-icon {
