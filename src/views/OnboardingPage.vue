@@ -31,7 +31,9 @@
               label-placement="stacked"
             />
           </IonItem>
-          <button class="answer-btn primary" @click="advance('lmp_known')">
+          <button class="answer-btn primary" 
+            :disabled="!name?.trim()"
+            @click="advance('lmp_known')">
             {{ $t('common.next') }}
           </button>
         </section>
@@ -145,7 +147,7 @@
           </IonItem>
           <button
             class="answer-btn primary"
-            :disabled="ttDoses === null"
+            :disabled="ttDoses === null || !ttLastDate"
             @click="setTtAndFinish('known')"
           >
             {{ $t('common.next') }}
