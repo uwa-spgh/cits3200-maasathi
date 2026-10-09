@@ -25,7 +25,7 @@
           :title-icon="homeIcons.reminderTitle"
           :body="reminderBody"
           :badge="reminderBadge"
-          :graphic-icon="homeIcons.reminderGraphic"
+          :graphic-icon="reminderGraphic"
           :listen-label="$t('home.cards.listen')"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
@@ -148,7 +148,15 @@ function openEvent(id: string): void {
   ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
 
-
+const reminderGraphic = computed(() => {
+  const e = shownEvent.value;
+  if (!e) return homeIcons.reminderGraphic;
+  if (e.type === 'ANC') return homeIcons.nodeAnc;
+  if (e.type === 'PNC') return homeIcons.nodePnc;
+  if (e.type === 'TT') return homeIcons.nodeTt;
+  if (e.ref === 'edd') return homeIcons.nodeMilestone;
+  return homeIcons.reminderGraphic;
+});
 
 const reminderBadge = computed<string | null>(() => {
   const n = visitNumber(shownEvent.value);

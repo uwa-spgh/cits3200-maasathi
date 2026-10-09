@@ -45,15 +45,12 @@ export const homeIcons = {
   /** Timeline node states */
   nodeAction: shieldCheckmarkOutline,
 
-  /** Timeline node per event type — shown inside every circle */
+  /** Timeline node per event type — shown inside every circle
+    they are also used as the icon in the reminder widget**/
   nodeAnc: healthCheck,
   nodePnc: healthCheck,
   nodeTt: syringe,
   nodeMilestone: heartOutline,
-
-  /** Reminder card: title icon + large graphic */
-  reminderTitle: clock,
-  reminderGraphic: healthCheck,
 
   /** "How are you?" card title icon */
   wellbeingTitle: smile,
