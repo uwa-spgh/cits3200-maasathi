@@ -7,13 +7,17 @@
     <div class="reminders-page">
       <!-- Unscheduled TT prompt if status is still unknown -->
       <div v-if="ttNotice" class="tt-banner">
-        <p class="tt-banner-text">{{ $t('tt.status_unknown') }}</p>
-        <button
-          class="tt-banner-link"
-          @click="ionRouter.push({ name: 'ProfileVaccination' })"
-        >
-          {{ $t('profile.vaccination_title') }} &rarr;
-        </button>
+        <!-- The button floats right at the end of the text, so it shares the
+             last line when there is room and drops below when there is not -->
+        <p class="tt-banner-text">
+          {{ $t('tt.unknown_banner') }}
+          <button
+            class="tt-banner-link"
+            @click="ionRouter.push({ name: 'ProfileVaccination' })"
+          >
+            {{ $t('profile.menu_vaccination') }}
+          </button>
+        </p>
       </div>
 
       <!-- Active / Upcoming / Overdue visits -->
@@ -22,6 +26,7 @@
           :items="displayedUpcoming"
           :expanded-id="expandedId"
           :info-for-item="infoForItem"
+          :can-undo-item="canUndoItem"
           @toggle="toggleExpand"
           @complete="onComplete"
           @undo="onUndo"
@@ -59,6 +64,7 @@
         :items="pastItems"
         :expanded-id="expandedId"
         :info-for-item="infoForItem"
+        :can-undo-item="canUndoItem"
         @toggle="toggleExpand"
         @complete="onComplete"
         @undo="onUndo"
@@ -74,7 +80,7 @@ import { useIonRouter } from '@ionic/vue';
 import { timeOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import TimelineList from '../components/TimelineList.vue';
-import { useSchedule } from '../composables/useSchedule';
+import { ttDoseNumber, useSchedule } from '../composables/useSchedule';
 import { useTt, TT_MAX_DOSES } from '../composables/useTt';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useI18n } from 'vue-i18n';
@@ -86,7 +92,7 @@ const ionRouter = useIonRouter();
 const { t } = useI18n();
 const { activePregnancy } = usePregnancy();
 const { items, markCompleted, markUpcoming } = useSchedule();
-const { isUnknown, nextDoseNumber } = useTt();
+const { isUnknown, nextDoseNumber, lifetimeDoseCount } = useTt();
 
 const expandedId = ref<string | null>(null);
 const showPast = ref(false);
@@ -97,7 +103,7 @@ const ttNotice = computed(() => isUnknown.value && activePregnancy.value !== nul
 /** Dose-specific info for the TT reminder (no "coming soon" placeholder). */
 function infoForItem(item: ScheduleItem): ItemInfo | null {
   if (item.type !== 'TT') return null;
-  const n = nextDoseNumber.value;
+  const n = ttDoseNumber(item) ?? nextDoseNumber.value;
   if (n === null) return null;
   const rawBody = t(`tt.dose_info.dose${n}`);
   const body = rawBody && rawBody !== `tt.dose_info.dose${n}` ? rawBody.trim() : '';
@@ -133,6 +139,12 @@ const pastItems = computed(() =>
 
 function toggleExpand(id: string): void {
   expandedId.value = expandedId.value === id ? null : id;
+}
+
+/** Only the most recent TT dose can be undone, so the dose count stays in order. */
+function canUndoItem(item: ScheduleItem): boolean {
+  const dose = ttDoseNumber(item);
+  return dose === null || dose === lifetimeDoseCount.value;
 }
 
 async function onComplete(item: ScheduleItem): Promise<void> {
@@ -175,32 +187,42 @@ onMounted(() => {
 }
 
 .tt-banner {
-  background: #fff7ed;
-  border: 1px solid #fdba74;
-  border-radius: 12px;
-  padding: 12px 14px;
+  background: #fff;
+  border: 2px solid var(--color-reminders-bg, #f6c945);
+  border-radius: 20px;
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  padding: 10px 10px 10px 14px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 8px;
 }
 
 .tt-banner-text {
+  flex: 1;
+  min-width: 0;
+  display: flow-root;
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.88rem;
   font-weight: 600;
-  color: #9a3412;
+  line-height: 1.45;
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .tt-banner-link {
-  background: none;
+  float: right;
+  margin: 2px 0 0 10px;
+  background: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
   border: none;
-  color: #c2410c;
-  font-weight: 700;
-  font-size: 0.82rem;
+  border-radius: 999px;
+  padding: 0 18px;
+  height: 36px;
+  font-weight: 800;
+  font-size: 0.9rem;
   cursor: pointer;
   white-space: nowrap;
-  padding: 0;
+}
+
+.tt-banner-link:active {
+  transform: scale(0.95);
 }
 
 .section {

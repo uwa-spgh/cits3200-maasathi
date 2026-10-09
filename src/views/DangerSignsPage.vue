@@ -18,6 +18,8 @@
           </li>
         </ul>
       </ExpandableCard>
+
+      <p class="seek-care-note">{{ $t('danger_signs.seek_care_note') }}</p>
     </div>
   </PageShell>
 </template>
@@ -50,5 +52,18 @@ const groups = [
   gap: 6px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
+}
+
+.seek-care-note {
+  margin: 0;
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: #fff;
+  border: 2px solid var(--color-emergency-bg, #ff5c5c);
+  color: var(--color-card-text, #1a1a1a);
+  font-size: 0.95rem;
+  font-weight: 700;
+  line-height: 1.4;
+  text-align: center;
 }
 </style>

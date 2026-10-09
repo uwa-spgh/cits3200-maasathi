@@ -38,12 +38,6 @@
         <IonIcon :icon="chevronForwardOutline" class="chev" />
       </button>
 
-      <button class="menu-item" @click="router.push({ name: 'ProfileContacts' })">
-        <IonIcon :icon="callOutline" class="menu-icon" />
-        <span>{{ $t('profile.menu_contacts') }}</span>
-        <IonIcon :icon="chevronForwardOutline" class="chev" />
-      </button>
-
       <div class="menu-item lang-row">
         <IonIcon :icon="languageOutline" class="menu-icon" />
         <span>{{ $t('language.select') }}</span>
@@ -82,7 +76,6 @@ import { IonIcon } from '@ionic/vue';
 import {
   archiveOutline,
   bookmarkOutline,
-  callOutline,
   chevronForwardOutline,
   languageOutline,
   medkitOutline,

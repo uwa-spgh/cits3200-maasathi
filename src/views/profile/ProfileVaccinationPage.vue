@@ -65,7 +65,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   IonButton,
@@ -106,14 +106,18 @@ const recordFacility = ref('');
 const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber - b.doseNumber));
 const doseCount = computed(() => doses.value.length);
 
-onMounted(() => {
-  const h = history.value;
-  if (h) {
+// Pre-fill the form with the saved TT answer (from onboarding or an earlier
+// save), and keep it in step when doses are recorded elsewhere.
+watch(
+  ttHistory,
+  (h) => {
+    if (!h) return;
     ttForm.value.status = h.status;
     ttForm.value.dosesReceived = h.dosesReceived;
     ttForm.value.lastDoseDate = h.lastDoseDate ?? '';
-  }
-});
+  },
+  { immediate: true }
+);
 
 async function showSaved(): Promise<void> {
   const toast = await toastController.create({
