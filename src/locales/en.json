@@ -119,6 +119,7 @@
   "danger_signs": {
     "section_title": "Danger signs — go to the health facility immediately",
     "newborn_title": "Newborn danger signs — go to the health facility immediately",
+    "seek_care_note": "If you are experiencing any danger signs, please go to a health care facility as soon as possible.",
     "pregnancy": {
       "title": "During pregnancy",
       "signs": {
@@ -216,7 +217,12 @@
       "contact4": "PNC Contact 4 (6 weeks)"
     },
     "tt": {
-      "next": "Tetanus (TT) vaccination due"
+      "next": "Tetanus (TT) vaccination due",
+      "dose1": "Tetanus (TT) vaccination — dose 1 of 5",
+      "dose2": "Tetanus (TT) vaccination — dose 2 of 5",
+      "dose3": "Tetanus (TT) vaccination — dose 3 of 5",
+      "dose4": "Tetanus (TT) vaccination — dose 4 of 5",
+      "dose5": "Tetanus (TT) vaccination — dose 5 of 5"
     },
     "milestone": {
       "edd": "Expected date of delivery",
@@ -544,6 +550,7 @@
   },
   "tt": {
     "tracker_title": "Tetanus (TT) vaccination tracker",
+    "unknown_banner": "Confirm your tetanus doses with your health worker at your next visit, then update them here.",
     "doses_count": "{count} of {max} lifetime doses recorded",
     "next_due": "Next dose due: {date}",
     "unknown_notice": "Vaccination history unknown — confirm with your health worker",
@@ -620,13 +627,10 @@
     "menu_personal": "Personal information",
     "menu_pregnancy": "My pregnancy",
     "menu_vaccination": "My vaccinations",
-    "menu_contacts": "Emergency contacts",
     "menu_birth_plan": "My Birth Plan",
     "menu_settings": "Settings",
     "menu_history": "Past pregnancy",
     "data_section": "Data",
-    "contacts_hint": "These numbers are used by the Emergency page. All data stays on your phone.",
-    "contacts_number_placeholder": "Enter phone number",
     "name_label": "Your name",
     "name_placeholder": "Enter your name",
     "plan_facility_label": "Place of Delivery",

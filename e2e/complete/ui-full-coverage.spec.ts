@@ -94,7 +94,6 @@ test.describe('Complete UI coverage', () => {
       { name: 'Personal information', url: /profile\/personal/i },
       { name: 'My pregnancy', url: /profile\/pregnancy/i },
       { name: 'My vaccinations', url: /profile\/vaccination/i },
-      { name: 'Emergency contacts', url: /profile\/contacts/i },
       { name: 'Settings', url: /profile\/settings/i }
     ];
 

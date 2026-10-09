@@ -92,7 +92,7 @@
               {{ $t('timeline.mark_completed') }}
             </IonButton>
             <IonButton
-              v-else
+              v-else-if="canUndo"
               size="small"
               fill="outline"
               class="action-btn undo-btn"
@@ -135,12 +135,15 @@ const props = withDefaults(
     /** Optional extra info box (e.g. dose-specific TT information). */
     infoTitle?: string | null;
     infoBody?: string | null;
+    /** Whether a completed item offers "Move back to upcoming". */
+    canUndo?: boolean;
   }>(),
   {
     expanded: false,
     isLast: false,
     infoTitle: null,
-    infoBody: null
+    infoBody: null,
+    canUndo: true
   }
 );
 

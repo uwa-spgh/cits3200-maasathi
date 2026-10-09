@@ -56,7 +56,7 @@ const CHANNEL_IMPORTANCE = 4;
 let channelLocale: string | null = null;
 
 export function visitNumber(item: ScheduleItem | null): number | null {
-  if (!item) return null;
+  if (!item || item.type === 'TT') return null;
   const match = item.ref.match(/(\d+)$/);
   return match ? Number(match[1]) : null;
 }

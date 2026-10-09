@@ -16,7 +16,20 @@ function itemId(pregnancyId: string, type: string, refKey: string): string {
   return `${pregnancyId}:${type}:${refKey}`;
 }
 
-function desiredItems(pregnancy: Pregnancy, ttNextDue: string | null, ttComplete: boolean, ttUnknown: boolean): ScheduleItem[] {
+/** Dose number of a TT reminder (its ref is `dose<n>`), or null for other items. */
+export function ttDoseNumber(item: ScheduleItem): number | null {
+  if (item.type !== 'TT') return null;
+  const match = item.ref.match(/^dose(\d+)$/);
+  return match ? Number(match[1]) : null;
+}
+
+function desiredItems(
+  pregnancy: Pregnancy,
+  ttNextDue: string | null,
+  ttComplete: boolean,
+  ttUnknown: boolean,
+  ttNextDose: number | null
+): ScheduleItem[] {
   const result: ScheduleItem[] = [];
   const isPnc = pregnancy.deliveryDate !== null;
 
@@ -51,13 +64,14 @@ function desiredItems(pregnancy: Pregnancy, ttNextDue: string | null, ttComplete
         completedAt: null
       });
     }
-    if (ttNextDue && !ttComplete && !ttUnknown) {
+    // One reminder per dose, so each dose keeps its own completed entry.
+    if (ttNextDue && ttNextDose !== null && !ttComplete && !ttUnknown) {
       result.push({
-        id: itemId(pregnancy.id, 'TT', 'next'),
+        id: itemId(pregnancy.id, 'TT', `dose${ttNextDose}`),
         pregnancyId: pregnancy.id,
         type: 'TT',
-        ref: 'next',
-        titleKey: 'timeline.tt.next',
+        ref: `dose${ttNextDose}`,
+        titleKey: `timeline.tt.dose${ttNextDose}`,
         dueDate: ttNextDue,
         status: 'upcoming',
         completedAt: null
@@ -97,7 +111,7 @@ function desiredItems(pregnancy: Pregnancy, ttNextDue: string | null, ttComplete
  * notifications scheduled.
  */
 export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
-  const { computeNextDue, isComplete, isUnknown } = useTt();
+  const { computeNextDue, isComplete, isUnknown, nextDoseNumber, lifetimeDoseCount } = useTt();
   const existing = await scheduleRepo.byPregnancy(pregnancy.id);
   const completionByKey = new Map<string, ScheduleItem>();
   for (const item of existing) {
@@ -105,16 +119,26 @@ export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
   }
 
   const ttNextDue = computeNextDue(pregnancy.registeredAt);
-  const desired = desiredItems(pregnancy, ttNextDue, isComplete.value, isUnknown.value);
+  const desired = desiredItems(pregnancy, ttNextDue, isComplete.value, isUnknown.value, nextDoseNumber.value);
 
+  // TT reminders for doses already received stay in the history as completed;
+  // every other item no longer in the schedule is removed.
+  const keptTt: ScheduleItem[] = [];
   const staleIds = new Set(existing.map((e) => e.id).filter((id) => !desired.some((d) => d.id === id)));
   for (const staleId of staleIds) {
     const stale = existing.find((e) => e.id === staleId);
-    if (stale) await cancelItemReminders(stale);
-  }
-  for (const id of staleIds) {
-    const stale = existing.find((e) => e.id === id);
-    if (stale) await scheduleRepo.remove(stale);
+    if (!stale) continue;
+    await cancelItemReminders(stale);
+    const dose = ttDoseNumber(stale);
+    if (dose !== null && (stale.status === 'completed' || dose <= lifetimeDoseCount.value)) {
+      keptTt.push(
+        stale.status === 'completed'
+          ? stale
+          : { ...stale, status: 'completed', completedAt: new Date().toISOString() }
+      );
+    } else {
+      await scheduleRepo.remove(stale);
+    }
   }
 
   const merged: ScheduleItem[] = desired.map((item) => {
@@ -125,7 +149,7 @@ export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
     return item;
   });
 
-  await scheduleRepo.upsertAll(merged);
+  await scheduleRepo.upsertAll([...merged, ...keptTt]);
 
   for (const item of merged) {
     if (item.status === 'upcoming' && item.dueDate >= todayIso()) {
@@ -136,7 +160,7 @@ export async function regenerateSchedule(pregnancy: Pregnancy): Promise<void> {
     }
   }
 
-  items.value = merged.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
+  items.value = [...merged, ...keptTt].sort((a, b) => a.dueDate.localeCompare(b.dueDate));
   activePregnancyId.value = pregnancy.id;
 }
 
@@ -157,7 +181,21 @@ async function load(): Promise<void> {
   items.value = existing.sort((a, b) => a.dueDate.localeCompare(b.dueDate));
 }
 
+async function regenerateActive(): Promise<void> {
+  const active = await pregnancyRepo.active();
+  if (active) await regenerateSchedule(active);
+}
+
 async function markCompleted(item: ScheduleItem): Promise<void> {
+  // A TT reminder marked completed records that dose (dated today), which
+  // also moves the schedule on to the next dose.
+  if (ttDoseNumber(item) !== null) {
+    await cancelItemReminders(item);
+    await useTt().recordDose(todayIso());
+    await regenerateActive();
+    await load();
+    return;
+  }
   await cancelItemReminders(item);
   item.status = 'completed';
   item.completedAt = new Date().toISOString();
@@ -166,6 +204,16 @@ async function markCompleted(item: ScheduleItem): Promise<void> {
 }
 
 async function markUpcoming(item: ScheduleItem): Promise<void> {
+  // Undoing a TT reminder removes the dose it recorded (latest dose only).
+  const dose = ttDoseNumber(item);
+  if (dose !== null) {
+    const removed = await useTt().removeLatestDose(dose);
+    if (!removed) return;
+    await scheduleRepo.upsertAll([{ ...item, status: 'upcoming', completedAt: null }]);
+    await regenerateActive();
+    await load();
+    return;
+  }
   item.status = 'upcoming';
   item.completedAt = null;
   await scheduleRepo.upsertAll([{ ...item }]);
