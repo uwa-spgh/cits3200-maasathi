@@ -168,12 +168,12 @@ function listen(text: string): void {
 }
 
 .stage-card {
-  background: #fff;
-  border: 1.5px solid rgba(43, 123, 196, 0.2);
+  background: var(--color-surface, #fff);
+  border: 1.5px solid var(--color-profile-bg, #33a1de);
   border-radius: 20px;
   padding: 18px;
   text-align: left;
-  box-shadow: 0 4px 14px rgba(43, 123, 196, 0.06);
+  box-shadow: 0 4px 14px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 
 .stage-header {
@@ -189,8 +189,8 @@ function listen(text: string): void {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background: #2b7bc4;
-  color: #fff;
+  background: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000000);
   padding: 3px 8px;
   border-radius: 6px;
 }
@@ -198,8 +198,8 @@ function listen(text: string): void {
 .timing-badge {
   font-size: 0.74rem;
   font-weight: 700;
-  background: #f1f5f9;
-  color: #475569;
+  background: var(--color-card-bg, #eaeaea);
+  color: var(--color-text-muted, #5c5c5c);
   padding: 3px 8px;
   border-radius: 6px;
 }
@@ -208,7 +208,7 @@ function listen(text: string): void {
   margin: 4px 0 10px 0;
   font-weight: 800;
   font-size: 1.25rem;
-  color: #1a1a1a;
+  color: var(--color-surface-text, #1a1a1a);
   line-height: 1.3;
 }
 
@@ -216,7 +216,7 @@ function listen(text: string): void {
   margin: 0 0 14px 0;
   font-size: 0.95rem;
   line-height: 1.5;
-  color: #374151;
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .stage-actions {
@@ -228,9 +228,9 @@ function listen(text: string): void {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  color: var(--color-card-text, #1a1a1a);
   padding: 6px 12px;
   border-radius: 10px;
   font-size: 0.84rem;
@@ -240,7 +240,7 @@ function listen(text: string): void {
 }
 
 .listen-btn:active {
-  background: #e2e8f0;
+  filter: brightness(0.94);
 }
 
 .stage-topics-section {
@@ -252,7 +252,7 @@ function listen(text: string): void {
 .topics-heading {
   font-size: 0.96rem;
   font-weight: 800;
-  color: #1e293b;
+  color: var(--color-card-text, #1a1a1a);
   margin: 4px 0 2px 4px;
 }
 
@@ -264,7 +264,7 @@ function listen(text: string): void {
 
 .point-list li {
   margin-bottom: 6px;
-  color: #374151;
+  color: var(--color-surface-text, #1a1a1a);
   font-size: 0.92rem;
   white-space: pre-line;
 }
@@ -274,15 +274,15 @@ function listen(text: string): void {
 }
 
 .topic-link-btn {
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid rgba(43, 123, 196, 0.2);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-profile-bg, #33a1de);
   border-radius: 20px;
   padding: 14px 16px;
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(43, 123, 196, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   display: flex;
   align-items: center;
   justify-content: space-between;

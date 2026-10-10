@@ -166,6 +166,15 @@ async function regenerateActive(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
 }
 
 .form-title {
@@ -178,8 +187,7 @@ async function regenerateActive(): Promise<void> {
 .field-hint {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .primary-action {
@@ -204,7 +212,7 @@ async function regenerateActive(): Promise<void> {
   padding: 8px 8px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 .dose-row:last-child {

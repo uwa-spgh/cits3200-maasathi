@@ -296,7 +296,7 @@ function onNowLearnMore(): void {
 .brand-tag {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #8c8c8c;
+  color: var(--color-text-muted, #5c5c5c);
   margin: 0 0 4px 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -305,12 +305,12 @@ function onNowLearnMore(): void {
 .greeting {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--color-card-text, #1a1a1a);
   margin: 0;
 }
 
 .nav-footer {
   background: var(--color-app-bg, #fbf7f5);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 -4px 16px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 </style>

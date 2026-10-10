@@ -96,16 +96,16 @@ const breadcrumb = computed(() => `${t('information.topics.vaccination')} - ${t(
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .topic-listen-btn {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-bg, #f1f5f9);
+  border: 1px solid var(--color-border, #cbd5e1);
+  color: var(--color-card-text, #334155);
   padding: 5px 11px;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -115,6 +115,6 @@ const breadcrumb = computed(() => `${t('information.topics.vaccination')} - ${t(
 }
 
 .topic-listen-btn:active {
-  background: #e2e8f0;
+  background: var(--color-app-bg, #e2e8f0);
 }
 </style>

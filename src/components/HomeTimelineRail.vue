@@ -235,7 +235,7 @@ function scrollBy(direction: 1 | -1): void {
   top: 50%;
   height: 2px;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--color-text-muted, rgba(0, 0, 0, 0.2));
   border-radius: 2px;
 }
 
@@ -256,13 +256,9 @@ function scrollBy(direction: 1 | -1): void {
   color: var(--color-card-text, #1a1a1a);
 }
 
-.node.done ion-icon {
-  filter: invert(1);
-}
-
 .node {
   border: 2.5px solid var(--color-card-text, #1a1a1a);
-  background: #fff;
+  background: var(--color-surface, #fff);
   color: var(--color-card-text, #1a1a1a);
   border-radius: 50%;
   padding: 0;
@@ -285,7 +281,11 @@ function scrollBy(direction: 1 | -1): void {
 
 .node.done {
   background: var(--color-card-text, #1a1a1a);
-  color: #fff;
+  color: var(--color-surface, #fff);
+}
+
+.node.done ion-icon {
+  color: var(--color-surface, #fff);
 }
 
 .node.current {

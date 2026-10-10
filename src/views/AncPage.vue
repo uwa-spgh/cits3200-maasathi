@@ -119,7 +119,7 @@ function listenTopic(topic: Topic): void {
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   line-height: 1.45;
 }
 
@@ -131,9 +131,9 @@ function listenTopic(topic: Topic): void {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  color: var(--color-card-text, #1a1a1a);
   padding: 5px 11px;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -143,13 +143,13 @@ function listenTopic(topic: Topic): void {
 }
 
 .topic-listen-btn:active {
-  background: #e2e8f0;
+  filter: brightness(0.94);
 }
 
 .birth-plan-link-btn {
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid rgba(43, 123, 196, 0.3);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-profile-bg, #33a1de);
   border-radius: 14px;
   padding: 10px 14px;
   font-size: 0.86rem;
@@ -168,7 +168,7 @@ function listenTopic(topic: Topic): void {
 
 .birth-plan-link-btn .arrow-icon {
   font-size: 1.1rem;
-  opacity: 0.6;
+  color: var(--color-text-muted, #5c5c5c);
   flex-shrink: 0;
 }
 </style>

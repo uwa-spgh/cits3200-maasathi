@@ -349,6 +349,20 @@ async function confirmClosePregnancy(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
+}
+
+/* Unchecked toggle track: the Ionic default is black at 39%, invisible on dark. */
+.form-card ion-toggle {
+  --track-background: color-mix(in srgb, var(--color-card-text, #1a1a1a) 40%, transparent);
 }
 
 .form-title {
@@ -378,8 +392,7 @@ async function confirmClosePregnancy(): Promise<void> {
 .field-hint {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .primary-action {
@@ -392,8 +405,8 @@ async function confirmClosePregnancy(): Promise<void> {
 
 .danger-action {
   --border-radius: 999px;
-  --color: #c0392b;
-  --border-color: #c0392b;
+  --color: var(--color-danger, #c0392b);
+  --border-color: var(--color-danger, #c0392b);
   font-weight: 700;
 }
 </style>

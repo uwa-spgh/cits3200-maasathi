@@ -628,7 +628,6 @@
     "menu_pregnancy": "My pregnancy",
     "menu_vaccination": "My vaccinations",
     "menu_birth_plan": "My Birth Plan",
-    "menu_settings": "Settings",
     "menu_history": "Past pregnancy",
     "data_section": "Data",
     "name_label": "Your name",
@@ -715,10 +714,6 @@
     "close_pregnancy_btn": "Close current pregnancy early",
     "close_confirm_title": "Close pregnancy?",
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
-    "nav_mode_label": "Navigation style",
-    "nav_mode_hint": "Developer option — app restarts to apply",
-    "nav_home_bar": "Home button bar",
-    "nav_tab_bar": "Tab bar",
     "reset_data_btn": "Reset all data",
     "reset_confirm_title": "Reset all data?",
     "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
@@ -757,20 +752,9 @@
   },
   "theme": {
     "title": "Appearance",
-    "open": "Customise",
-    "presets": "Theme presets",
-    "preset_vibrant": "Vibrant",
-    "preset_pastel": "Pastel",
-    "preset_contrast": "High contrast",
-    "preset_dark": "Dark",
-    "customize_colors": "Customise colours",
-    "background_color": "Background",
-    "card_color": "Card",
-    "emergency_color": "Emergency",
-    "reminders_color": "Reminders",
-    "information_color": "Information",
-    "profile_color": "Profile",
-    "reset": "Reset"
+    "normal": "Normal",
+    "contrast": "High contrast",
+    "dark": "Dark"
   },
   "content": {
     "empty": "Content coming soon."

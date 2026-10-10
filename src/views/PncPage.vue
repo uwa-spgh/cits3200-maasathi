@@ -113,7 +113,7 @@ function listenTopic(topic: Topic): void {
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   line-height: 1.45;
 }
 
@@ -125,9 +125,9 @@ function listenTopic(topic: Topic): void {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  color: var(--color-card-text, #1a1a1a);
   padding: 5px 11px;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -137,19 +137,19 @@ function listenTopic(topic: Topic): void {
 }
 
 .topic-listen-btn:active {
-  background: #e2e8f0;
+  filter: brightness(0.94);
 }
 
 .topic-link-btn {
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
   padding: 14px 18px;
   font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
   display: flex;
   align-items: center;
@@ -163,6 +163,6 @@ function listenTopic(topic: Topic): void {
 
 .arrow-icon {
   font-size: 1.2rem;
-  opacity: 0.6;
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

@@ -54,6 +54,6 @@ const breadcrumb = computed(() => `${t('information.topics.vaccination')} - ${t(
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 </style>

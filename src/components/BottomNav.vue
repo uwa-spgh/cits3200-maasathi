@@ -44,9 +44,10 @@ defineEmits<{
 <style scoped>
 .bottom-nav {
   width: 100%;
-  background: #fff;
+  background: var(--color-surface, #fff);
   border-radius: 24px 24px 0 0;
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.1);
+  border-top: 1.5px solid var(--color-card-border, transparent);
+  box-shadow: 0 -4px 16px var(--color-shadow, rgba(0, 0, 0, 0.1));
   display: flex;
   align-items: flex-end;
   padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px)) 12px;
@@ -83,7 +84,7 @@ defineEmits<{
 .nav-home {
   border: none;
   background: var(--color-reminders-bg, #f6c945);
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-reminders-text, #000);
   height: 60px;
   width: 60px;
   border-radius: 50%;

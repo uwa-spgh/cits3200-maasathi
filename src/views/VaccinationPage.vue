@@ -97,6 +97,7 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
 
 .tt-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   padding: 16px 18px;
   color: var(--color-card-text, #1a1a1a);
@@ -123,9 +124,18 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   white-space: nowrap;
 }
 
-.chip-progress { background: var(--color-reminders-bg, #f6c945); }
-.chip-complete { background: var(--color-btn-more-bg, #7bc62d); }
-.chip-unknown { background: var(--color-profile-bg, #33a1de); }
+.chip-progress {
+  background: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
+}
+.chip-complete {
+  background: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-btn-more-text, #000);
+}
+.chip-unknown {
+  background: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000);
+}
 
 .tt-doses {
   margin: 10px 0 0 0;
@@ -139,15 +149,15 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
 }
 
 .section-btn {
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
   padding: 14px 18px;
   font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
   display: flex;
   align-items: center;
@@ -161,7 +171,7 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
 
 .section-btn .chevron {
   font-size: 1.2rem;
-  opacity: 0.6;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .dose-list {
@@ -171,20 +181,20 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .dose-list .empty {
   list-style: none;
   margin-left: -20px;
   font-style: italic;
-  opacity: 0.7;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .card-text {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.45;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 </style>

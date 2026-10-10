@@ -109,6 +109,15 @@ async function save(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
 }
 
 .form-title {
@@ -119,11 +128,11 @@ async function save(): Promise<void> {
 }
 
 .advice-card {
-  background: #fff;
+  background: var(--color-surface, #fff);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 20px;
   padding: 14px 16px 12px 16px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 
 .advice-text {
@@ -131,7 +140,7 @@ async function save(): Promise<void> {
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.4;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   text-align: center;
 }
 

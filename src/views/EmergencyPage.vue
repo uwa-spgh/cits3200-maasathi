@@ -107,13 +107,13 @@ void t;
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-emergency-bg, #ff5c5c);
   border-radius: 20px;
   padding: 12px 18px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -137,7 +137,7 @@ void t;
 
 .call-number {
   font-size: 0.8rem;
-  opacity: 0.8;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .danger-box {
@@ -160,7 +160,7 @@ void t;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   font-size: 0.9rem;
 }
 </style>

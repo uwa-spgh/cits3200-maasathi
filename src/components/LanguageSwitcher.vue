@@ -58,11 +58,11 @@ const changeLanguage = (newLang: string) => {
 .lang-icon {
   font-size: 1.2rem;
   margin-right: 4px;
-  color: var(--ion-color-dark, #333);
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .lang-select {
-  --placeholder-color: var(--ion-color-dark, #333);
+  --placeholder-color: var(--color-card-text, #1a1a1a);
   font-weight: 500;
 }
 </style>

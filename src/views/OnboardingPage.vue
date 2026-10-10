@@ -312,6 +312,7 @@ async function finish(): Promise<void> {
   border-radius: 50%;
   border: none;
   background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   color: var(--color-card-text, #1a1a1a);
   display: flex;
   align-items: center;
@@ -325,6 +326,7 @@ async function finish(): Promise<void> {
 
 .step-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 24px;
   padding: 28px 22px;
   text-align: center;
@@ -358,6 +360,7 @@ async function finish(): Promise<void> {
 
 .step-input {
   --background: var(--color-app-bg, #fbf7f5);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 14px;
   padding: 4px 8px;
 }
@@ -380,7 +383,8 @@ async function finish(): Promise<void> {
 
 .answer-btn:active {
   transform: scale(0.97);
-  background-color: #33a1de;
+  background-color: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000);
 }
 
 .answer-btn:disabled {
@@ -396,16 +400,15 @@ async function finish(): Promise<void> {
   border: 0;
   width: auto;
   background: var(--color-app-bg, #fbf7f5);
-  color: var(--color-card-text, #1a1a1a);
   border-radius: 999px;
   font-size: 0.8rem;
   align-self: center;
-  opacity: 0.80;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .done-icon {
   font-size: 4rem;
-  color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-information-bg, #7bc62d);
   align-self: center;
 }
 
@@ -422,7 +425,7 @@ async function finish(): Promise<void> {
   height: 48px; 
   width: 48px; 
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--color-border, rgba(0, 0, 0, 0.2));
   background: var(--color-app-bg, #fbf7f5);
   color: var(--color-card-text, #1a1a1a);
   font-size: 1.4rem;
@@ -440,7 +443,6 @@ async function finish(): Promise<void> {
   margin: 0;
   font-size: 0.8rem;
   font-style: italic;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

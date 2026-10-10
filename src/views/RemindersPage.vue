@@ -187,10 +187,10 @@ onMounted(() => {
 }
 
 .tt-banner {
-  background: #fff;
+  background: var(--color-surface, #fff);
   border: 2px solid var(--color-reminders-bg, #f6c945);
   border-radius: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   padding: 10px 10px 10px 14px;
   display: flex;
 }
@@ -203,7 +203,7 @@ onMounted(() => {
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.45;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .tt-banner-link {
@@ -232,22 +232,22 @@ onMounted(() => {
 }
 
 .see-more-btn {
-  background: #fff;
-  border: 1.5px solid #e5e7eb;
+  background: var(--color-surface, #fff);
+  border: 1.5px solid var(--color-border, #e5e7eb);
   border-radius: 12px;
   padding: 10px 14px;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #4b5563;
+  color: var(--color-text-muted, #4b5563);
   cursor: pointer;
   align-self: center;
   margin-top: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 2px 4px var(--color-shadow, rgba(0, 0, 0, 0.03));
   transition: all 0.15s ease;
 }
 
 .see-more-btn:active {
-  background: #f9fafb;
+  background: var(--color-app-bg, #f9fafb);
 }
 
 .past-section {
@@ -255,8 +255,8 @@ onMounted(() => {
 }
 
 .past-toggle {
-  background: #f3f4f6;
-  border: none;
+  background: var(--color-card-bg, #f3f4f6);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 10px;
   padding: 10px 14px;
   display: flex;
@@ -264,7 +264,7 @@ onMounted(() => {
   align-items: center;
   font-size: 0.88rem;
   font-weight: 700;
-  color: #4b5563;
+  color: var(--color-card-text, #4b5563);
   cursor: pointer;
 }
 </style>
