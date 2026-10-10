@@ -22,10 +22,8 @@ test.describe('Complete UI coverage', () => {
       .filter({ hasText: 'Information' })
       .getByRole('button', { name: 'Learn more' })
       .click();
-    // The existing main branch routes this card to the current ANC/PNC page,
-    // rather than to the Information hub.
-    await expect(page).toHaveURL(/\/information\/anc/i);
-    await expect(visiblePage(page).locator('.anc-page')).toBeVisible();
+    await expect(page).toHaveURL(/\/information$/i);
+    await expect(visiblePage(page).locator('.info-hub')).toBeVisible();
 
     await visiblePage(page).getByRole('button', { name: 'Home' }).click();
     // The third card is the "what to know right now" rotating widget, not a
@@ -44,10 +42,10 @@ test.describe('Complete UI coverage', () => {
     await page.goto('/information');
     const topics = [
       { name: 'Antenatal care (ANC)', url: /information\/anc/i },
+      { name: 'Breastfeeding support', url: /information\/pnc\/breastfeeding/i },
       { name: 'Postnatal care (PNC)', url: /information\/pnc/i },
       { name: 'Nutrition', url: /information\/nutrition/i },
-      { name: 'Vaccination', url: /information\/vaccination/i },
-      { name: 'Danger signs', url: /information\/danger-signs/i }
+      { name: 'Vaccination', url: /information\/vaccination/i }
     ];
 
     for (const topic of topics) {
