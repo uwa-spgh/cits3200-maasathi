@@ -144,12 +144,12 @@ function openEvent(id: string): void {
 
 const reminderGraphic = computed(() => {
   const e = shownEvent.value;
-  if (!e) return homeIcons.reminderGraphic;
+  if (!e) return homeIcons.nodeAnc;
   if (e.type === 'ANC') return homeIcons.nodeAnc;
   if (e.type === 'PNC') return homeIcons.nodePnc;
   if (e.type === 'TT') return homeIcons.nodeTt;
   if (e.ref === 'edd') return homeIcons.nodeMilestone;
-  return homeIcons.reminderGraphic;
+  return homeIcons.nodeAnc;
 });
 
 const reminderBadge = computed<string | null>(() => {

@@ -53,6 +53,9 @@ export const homeIcons = {
   nodeTt: syringe,
   nodeMilestone: heartOutline,
 
+  /** Reminder widget title icon */
+  reminderTitle: clock,
+
   /** "How are you?" card title icon */
   wellbeingTitle: smile,
 
