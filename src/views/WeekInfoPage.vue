@@ -1,3 +1,6 @@
+<!--
+  WeekInfoPage — information for the current stage (or the ?mode and ?ref query): stage heading and overview with listen controls, plus topic cards for that stage.
+-->
 <template>
   <PageShell
     :title="$t('week_info.title')"

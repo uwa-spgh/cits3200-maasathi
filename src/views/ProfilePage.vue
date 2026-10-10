@@ -1,3 +1,6 @@
+<!--
+  ProfilePage — profile menu: links to personal details, pregnancy, vaccination and birth plan; language and appearance settings; archived pregnancies; and a reset-all-data action behind a confirmation.
+-->
 <template>
   <PageShell
     nav="profile"

@@ -1,3 +1,6 @@
+<!--
+  ProfileVaccinationPage — record tetanus (TT) status and doses, optionally log a new dose with its date and facility, and view the dose list. Saving regenerates the reminder schedule.
+-->
 <template>
   <PageShell
     nav="profile"

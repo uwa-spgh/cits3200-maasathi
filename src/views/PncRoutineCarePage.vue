@@ -1,3 +1,6 @@
+<!--
+  PncRoutineCarePage — routine baby care guidance (keeping warm, routine breastfeeding, cleanliness, safety, check-ups) as expandable cards with listen buttons.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

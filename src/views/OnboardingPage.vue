@@ -1,3 +1,6 @@
+<!--
+  OnboardingPage — first-run setup: language, name, pregnancy dates (known LMP/EDD or a month estimate) and tetanus history. Saves the profile and pregnancy, then opens Home. Back steps through earlier answers.
+-->
 <template>
   <IonPage>
     <IonContent class="onboarding-content">

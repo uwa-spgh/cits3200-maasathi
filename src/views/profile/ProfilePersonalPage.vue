@@ -1,3 +1,6 @@
+<!--
+  ProfilePersonalPage — edit the user's name and age and save them. Reached from the Profile menu.
+-->
 <template>
   <PageShell
     nav="profile"

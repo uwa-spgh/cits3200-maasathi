@@ -1,3 +1,6 @@
+<!--
+  PncPage — postnatal care information: expandable cards for maternal topics (rest, bleeding, pain, cord healing, check-ups, mood and more), plus a link to routine baby care. Opens one card when given ?topic=.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

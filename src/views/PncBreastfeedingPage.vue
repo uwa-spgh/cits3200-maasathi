@@ -1,3 +1,6 @@
+<!--
+  PncBreastfeedingPage — postnatal breastfeeding guidance (starting early, feeding often, positioning, milk supply, help) as expandable cards with listen buttons.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

@@ -1,3 +1,6 @@
+<!--
+  AncTrimesterPage — ANC guidance for one trimester (?trimester=1, 2 or 3): the visits due in that trimester, danger signs, nutrition, and tests once that content exists.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

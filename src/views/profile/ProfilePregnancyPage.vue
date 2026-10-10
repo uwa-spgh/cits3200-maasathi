@@ -1,3 +1,6 @@
+<!--
+  ProfilePregnancyPage — edit pregnancy details: LMP and EDD in ANC mode, or delivery details in PNC mode, plus obstetric history and risk fields. Can also register a birth, start a new pregnancy or close the current one early.
+-->
 <template>
   <PageShell
     nav="profile"

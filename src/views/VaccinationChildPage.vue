@@ -1,3 +1,6 @@
+<!--
+  VaccinationChildPage — childhood immunisation information: vaccines after birth and the childhood schedule, as expandable cards. Opens one card when given ?topic=.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

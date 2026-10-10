@@ -1,3 +1,6 @@
+<!--
+  DangerSignsPage — danger signs grouped by pregnancy, labour, postpartum and newborn, with a "seek care" note and listen buttons. Shown under the danger nav tab.
+-->
 <template>
   <PageShell
     nav="danger"

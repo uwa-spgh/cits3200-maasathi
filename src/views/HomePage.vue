@@ -1,3 +1,6 @@
+<!--
+  HomePage — main dashboard: greeting, a timeline rail of visits, and cards for the next reminder, a wellbeing article, and a daily "What to know right now" topic. Cards open Reminders, Information or the topic page.
+-->
 <template>
   <IonPage>
     <IonHeader class="home-header ion-no-border">

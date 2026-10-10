@@ -1,3 +1,6 @@
+<!--
+  EmergencyPage — tap-to-call emergency contacts, a placeholder for the nearest facility, and danger-sign checklists. Checklists depend on stage: pregnancy, labour signs from week 36, or postpartum and newborn in PNC mode.
+-->
 <template>
   <PageShell
     nav="danger"

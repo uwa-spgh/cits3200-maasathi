@@ -1,3 +1,6 @@
+<!--
+  VaccinationPage — tetanus (TT) tracker showing status, doses recorded and next due date, with the dose schedule and EPI card reminder. Links to tetanus education and child vaccines.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

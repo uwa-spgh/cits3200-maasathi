@@ -1,3 +1,6 @@
+<!--
+  AncPage — antenatal care information: expandable cards for each ANC topic, with listen buttons. Opens one card when given ?topic=, and the birth preparedness card links to the birth plan.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

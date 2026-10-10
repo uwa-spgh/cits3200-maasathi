@@ -1,3 +1,6 @@
+<!--
+  RemindersPage — timeline of upcoming and overdue visits (first three shown, expandable) and completed visits, where items can be marked done or undone. A TT banner links to vaccination while status is unknown. ?focus=<id> opens a specific item.
+-->
 <template>
   <PageShell
     :title="$t('reminders.title')"

@@ -1,3 +1,6 @@
+<!--
+  NutritionPage — nutrition topics (healthy diet, iron and folic acid, calcium, hydration, activity) as expandable cards with listen buttons. Opens one card when given ?topic=.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

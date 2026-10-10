@@ -1,3 +1,6 @@
+<!--
+  HistorySummaryPage — read-only summary of an archived pregnancy: delivery details, child DOB, visit tracking, care and TT counts, schedule record and notes. Opened from the history list on the Profile page.
+-->
 <template>
   <PageShell
     nav="profile"

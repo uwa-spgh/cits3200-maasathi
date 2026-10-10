@@ -1,3 +1,6 @@
+<!--
+  InformationPage — information hub: "What to know right now" topics for the current stage, plus links to browse ANC, breastfeeding, PNC, nutrition and vaccination. PNC mode lists PNC first.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"

@@ -1,3 +1,6 @@
+<!--
+  ProfilePlan — birth plan form (facility, birth attendant, transport, emergency contact) saved on demand, with mother's and baby's bag checklists and advice. Reached from the Profile menu and the ANC birth preparedness card.
+-->
 <template>
   <PageShell
     nav="profile"

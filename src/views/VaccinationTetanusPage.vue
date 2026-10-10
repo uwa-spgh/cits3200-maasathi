@@ -1,3 +1,6 @@
+<!--
+  VaccinationTetanusPage — tetanus education cards (what tetanus is, newborn risk, protection, five-dose schedule, bringing the EPI card, previous doses) with listen buttons.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"
