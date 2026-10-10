@@ -35,7 +35,7 @@
           <div v-if="prepText" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
             <ContentText :text="prepText" />
-            <ListenButton size="sm" accent="yellow" class="panel-listen" :text="prepSpeech" />
+            <ListenButton size="sm" class="panel-listen" :text="prepSpeech" />
           </div>
 
           <!-- Yellow EPI card reminder placed in the expanded content area (no coming-soon placeholder) -->
@@ -46,7 +46,7 @@
               <span class="epi-text">{{ $t('tt.bring_epi_card_banner') }}</span>
             </div>
             <ContentText v-if="infoBody" :text="infoBody" class="epi-dose-body" />
-            <ListenButton size="sm" accent="yellow" class="panel-listen" :text="epiSpeech" />
+            <ListenButton size="sm" class="panel-listen" :text="epiSpeech" />
           </div>
 
           <!-- Natural button to full information page -->
@@ -259,8 +259,9 @@ const epiSpeech = computed(() =>
 <style scoped>
 /* One row per visit: a narrow track (dot + line) beside a single card.
    Every card shares the same radius, border width, padding and shadow.
-   The section is yellow: borders, dots and accent pills are yellow, and
-   status is shown lightly (emergency badge when overdue, muted when done). */
+   Neutral by default like the rest of the app. Yellow is an accent only:
+   the due-today dot, the due-today card edge and the DUE TODAY badge.
+   Overdue gets a small emergency badge; completed drops to muted. */
 .timeline-item {
   display: flex;
   position: relative;
@@ -285,7 +286,7 @@ const epiSpeech = computed(() =>
   left: 50%;
   width: 2px;
   margin-left: -1px;
-  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 50%, var(--color-border, rgba(0, 0, 0, 0.1)));
+  background-color: var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 /* First row starts its line at its own dot */
@@ -303,11 +304,13 @@ const epiSpeech = computed(() =>
   height: 12px;
   margin-left: -6px;
   border-radius: 50%;
-  background-color: var(--color-reminders-bg, #f6c945);
+  background-color: var(--color-text-muted, #5c5c5c);
   box-shadow: 0 0 0 3px var(--color-app-bg, #fbf7f5);
   z-index: 1;
 }
 
+/* Neutral card: same border as the expandable cards elsewhere in the app.
+   The border is solid in high contrast because --color-border is black there. */
 .item-card {
   flex: 1;
   min-width: 0;
@@ -315,7 +318,7 @@ const epiSpeech = computed(() =>
   padding: 14px 16px;
   background-color: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 2px solid var(--color-reminders-bg, #f6c945);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   cursor: pointer;
@@ -326,17 +329,15 @@ const epiSpeech = computed(() =>
   transform: scale(0.99);
 }
 
-/* Status system, kept light: every card keeps the yellow border.
-   Upcoming fades the border and dot back; completed drops to neutral. */
-.status-upcoming .item-card {
-  border-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
+/* Due today is the one state that gets a yellow edge: a thick left bar
+   drawn inside the card, so the neutral border (and high-contrast black) stays. */
+.status-today .item-card {
+  box-shadow: inset 4px 0 0 var(--color-reminders-bg, #f6c945), 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
-.status-done .item-card { border-color: var(--color-border, rgba(0, 0, 0, 0.1)); }
 
+/* Dots: due today is yellow, overdue is emergency, everything else muted */
+.status-today .track-dot { background-color: var(--color-reminders-bg, #f6c945); }
 .status-overdue .track-dot { background-color: var(--color-emergency-bg, #ff5c5c); }
-.status-upcoming .track-dot {
-  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
-}
 .status-done .track-dot { background-color: var(--color-text-muted, #5c5c5c); }
 
 .status-done .item-title {
@@ -382,22 +383,16 @@ const epiSpeech = computed(() =>
 }
 
 .date-chip {
-  background-color: transparent;
+  background-color: var(--color-card-bg, #eaeaea);
   color: var(--color-text-muted, #5c5c5c);
   font-size: 0.75rem;
   letter-spacing: 0;
   text-transform: none;
 }
 
-/* Due pill: solid yellow when due today, a light yellow tint when upcoming,
+/* Due pill: neutral when upcoming, solid yellow when due today,
    a small emergency label only when overdue, muted when completed.
-   Text on the tint stays surface-text; text on solid fills is the -text token. */
-.status-upcoming .due-badge {
-  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 14%, var(--color-surface, #fff));
-  color: var(--color-surface-text, #1a1a1a);
-  border-color: var(--color-reminders-bg, #f6c945);
-}
-
+   Text on solid fills is the -text token. */
 .status-today .due-badge {
   background-color: var(--color-reminders-bg, #f6c945);
   color: var(--color-reminders-text, #000);
@@ -447,13 +442,13 @@ const epiSpeech = computed(() =>
 }
 
 /* Shared inner panel for the prep box, EPI box and open-page buttons:
-   a faint yellow tint on the surface with a yellow outline */
+   a neutral card-coloured panel with a neutral outline */
 .prep-box,
 .epi-reminder-box,
 .open-page-btn {
-  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 14%, var(--color-surface, #fff));
-  color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-reminders-bg, #f6c945);
+  background-color: var(--color-card-bg, #eaeaea);
+  color: var(--color-card-text, #1a1a1a);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 14px;
 }
 
@@ -473,7 +468,7 @@ const epiSpeech = computed(() =>
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .panel-listen {
@@ -489,7 +484,7 @@ const epiSpeech = computed(() =>
 
 .epi-icon {
   font-size: 1.15rem;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -497,14 +492,14 @@ const epiSpeech = computed(() =>
 .epi-text {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
   line-height: 1.4;
 }
 
 .epi-dose-body {
   margin-top: 4px;
   font-size: 0.85rem;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .info-action-container {
@@ -531,7 +526,7 @@ const epiSpeech = computed(() =>
 
 .open-page-btn .btn-main-icon {
   font-size: 1.25rem;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
 }
 
@@ -543,7 +538,7 @@ const epiSpeech = computed(() =>
 
 .open-page-btn .btn-arrow {
   font-size: 1.15rem;
-  color: var(--color-surface-text, #1a1a1a);
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
 }
 

@@ -18,7 +18,7 @@
             {{ $t('profile.menu_vaccination') }}
           </button>
         </p>
-        <ListenButton size="sm" accent="yellow" class="tt-banner-listen" :text="ttNoticeText" />
+        <ListenButton size="sm" class="tt-banner-listen" :text="ttNoticeText" />
       </div>
 
       <!-- Active / Upcoming / Overdue visits -->
@@ -189,11 +189,11 @@ onMounted(() => {
   gap: 16px;
 }
 
-/* TT notice: same card as the timeline rows, with the reminders accent border */
+/* TT notice: same neutral card as the timeline rows; only its link pill is yellow */
 .tt-banner {
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 2px solid var(--color-reminders-bg, #f6c945);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   padding: 14px 14px 14px 16px;
@@ -243,20 +243,19 @@ onMounted(() => {
   gap: 12px;
 }
 
-/* Primary pill: solid yellow with dark text, 44px touch height */
+/* Secondary pill: neutral outline, 44px touch height (the yellow pill is reserved for Mark completed) */
 .see-more-btn {
   align-self: center;
   min-height: 44px;
   padding: 0 18px;
-  background: var(--color-reminders-bg, #f6c945);
-  color: var(--color-reminders-text, #000);
-  border: 1.5px solid var(--color-card-border, transparent);
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-text-muted, #5c5c5c);
   border-radius: 999px;
   font-family: inherit;
   font-size: 0.9rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 2px 6px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -268,7 +267,7 @@ onMounted(() => {
   margin-top: 4px;
 }
 
-/* Collapsible header styled like the app's expandable cards */
+/* Collapsible header styled exactly like the app's expandable cards */
 .past-toggle {
   width: 100%;
   min-height: 52px;
@@ -278,7 +277,7 @@ onMounted(() => {
   align-items: center;
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 2px solid var(--color-reminders-bg, #f6c945);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   font-family: inherit;

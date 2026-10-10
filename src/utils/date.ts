@@ -68,7 +68,8 @@ export function nextDueFromLastDose(lastDoseNumber: number, lastDoseDateIso: str
 
 export function formatDate(iso: string | null | undefined, locale = 'en'): string {
   if (!iso) return '';
-  const [y, m, d] = iso.split('-').map((n) => Number(n));
+  // Accept full ISO timestamps (e.g. completedAt) as well as plain YYYY-MM-DD.
+  const [y, m, d] = iso.slice(0, 10).split('-').map((n) => Number(n));
   const date = new Date(y, (m ?? 1) - 1, d ?? 1);
   return date.toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-GB', {
     day: 'numeric',
