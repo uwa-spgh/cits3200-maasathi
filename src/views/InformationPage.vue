@@ -23,9 +23,11 @@
             v-else
             :title="$t(`${topic.ns}.${topic.key}_title`)"
           >
-            <ul class="sign-list">
-              <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
-            </ul>
+            <ListenList
+              :title="$t(`${topic.ns}.${topic.key}_title`)"
+              :points="topicPoints(topic)"
+              accent="blue"
+            />
           </ExpandableCard>
         </template>
       </section>
@@ -48,6 +50,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useIonRouter } from '@ionic/vue';
 import { IonIcon } from '@ionic/vue';
 import {
@@ -57,10 +60,13 @@ import {
 } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { currentStageRef, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import type { NowTopic } from '../utils/stageArticle';
 
+const { t } = useI18n();
 const ionRouter = useIonRouter();
 const { mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
@@ -75,6 +81,11 @@ const nowTopics = computed(() => {
   if (!currentStage.value) return [];
   return STAGE_NOW_TOPICS[currentStage.value.stageKey] ?? [];
 });
+
+/** The bullet points shown inline for a "Now" topic card, in display order. */
+function topicPoints(topic: NowTopic): string[] {
+  return Array.from({ length: topic.points }, (_, i) => t(`${topic.ns}.${topic.key}.point${i + 1}`));
+}
 
 const topics = computed(() => {
   const base = [
@@ -120,20 +131,6 @@ const topics = computed(() => {
   font-size: 1.1rem;
   font-weight: 800;
   color: var(--color-card-text, #1a1a1a);
-}
-
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-surface-text, #1a1a1a);
-}
-
-.sign-list li {
-  white-space: pre-line;
 }
 
 .browse-section {

@@ -14,16 +14,18 @@
 
         <h2 class="stage-title">{{ stageHeading }}</h2>
 
-        <p v-if="stageOverview" class="stage-summary">
-          {{ stageOverview }}
-        </p>
-
-        <div v-if="stageOverview" class="stage-actions">
-          <button class="listen-btn" @click="listen(stageOverview)">
-            <IonIcon :icon="volumeMediumOutline" />
-            <span>{{ $t('home.cards.listen') }}</span>
-          </button>
-        </div>
+        <template v-if="stageOverview">
+          <!-- Long overviews are split into parts, each with its own Listen button -->
+          <div v-if="overviewIsLong" class="stage-summary-block">
+            <ListenText :text="stageOverview" />
+          </div>
+          <template v-else>
+            <p class="stage-summary">{{ stageOverview }}</p>
+            <div class="stage-actions">
+              <ListenButton size="sm" :text="stageOverview" />
+            </div>
+          </template>
+        </template>
       </div>
 
       <!-- Stage guidance cards for this visit (without nutrition) -->
@@ -40,18 +42,17 @@
             <IonIcon :icon="chevronForwardOutline" />
           </button>
           <ExpandableCard v-else :title="$t(`${topic.ns}.${topic.key}_title`)">
-            <ul class="point-list">
-              <li v-for="n in topic.points" :key="n">
-                {{ $t(`${topic.ns}.${topic.key}.point${n}`) }}
-              </li>
-            </ul>
+            <ListenList
+              :title="$t(`${topic.ns}.${topic.key}_title`)"
+              :points="topicPoints(topic)"
+            />
           </ExpandableCard>
         </template>
       </section>
 
       <!-- Fallback if no topic cards mapped for this stage -->
       <ExpandableCard v-else-if="fallbackText" :title="$t('week_info.current_stage_info')">
-        <ContentText :text="fallbackText" />
+        <ListenText :title="$t('week_info.current_stage_info')" :text="fallbackText" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -61,22 +62,23 @@
 import { computed, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
 import { IonIcon, useIonRouter } from '@ionic/vue';
-import { chevronForwardOutline, informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
+import { chevronForwardOutline, informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import ContentText from '../components/ContentText.vue';
+import ListenButton from '../components/ListenButton.vue';
+import ListenList from '../components/ListenList.vue';
+import ListenText from '../components/ListenText.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { useSpeech } from '../composables/useSpeech';
 import { currentStageRef, getStageSummary, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { chunkSentences } from '../utils/speechChunks';
 import { useI18n } from 'vue-i18n';
 
 const route = useRoute();
 const ionRouter = useIonRouter();
-const { t, locale } = useI18n();
+const { t } = useI18n();
 const { activePregnancy, mode, currentWeek, postpartumDay } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
-const { speak } = useSpeech();
 
 onMounted(() => {
   void loadSchedule();
@@ -139,11 +141,21 @@ const stageOverview = computed(() => {
   return getStageSummary(stage.mode, stage.ref, t);
 });
 
+/** Overviews longer than one listen part use ListenText instead of a single button. */
+const overviewIsLong = computed(() => chunkSentences(stageOverview.value).length > 1);
+
 const stageTopics = computed(() => {
   const stage = currentStage.value;
   // STAGE_NOW_TOPICS has nutrition excluded
   return STAGE_NOW_TOPICS[stage.stageKey] ?? [];
 });
+
+/** The translated bullet points for a stage topic card, in order. */
+function topicPoints(topic: { ns: string; key: string; points: number }): string[] {
+  return Array.from({ length: topic.points }, (_, i) =>
+    t(`${topic.ns}.${topic.key}.point${i + 1}`)
+  );
+}
 
 const fallbackText = computed(() => {
   const override = t('week_info.body_stage');
@@ -153,10 +165,6 @@ const fallbackText = computed(() => {
   const key = stage.ns === 'pnc' ? `pnc.contact_body.${stage.ref}` : `anc.visit_body.${stage.ref}`;
   return t(key) || t('content.empty');
 });
-
-function listen(text: string): void {
-  speak(text, locale.value);
-}
 </script>
 
 <style scoped>
@@ -224,23 +232,9 @@ function listen(text: string): void {
   gap: 10px;
 }
 
-.listen-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--color-card-bg, #eaeaea);
-  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
-  color: var(--color-card-text, #1a1a1a);
-  padding: 6px 12px;
-  border-radius: 10px;
-  font-size: 0.84rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.listen-btn:active {
-  filter: brightness(0.94);
+.stage-summary-block {
+  margin-bottom: 14px;
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .stage-topics-section {
@@ -254,23 +248,6 @@ function listen(text: string): void {
   font-weight: 800;
   color: var(--color-card-text, #1a1a1a);
   margin: 4px 0 2px 4px;
-}
-
-.point-list {
-  margin: 0;
-  padding-left: 20px;
-  line-height: 1.5;
-}
-
-.point-list li {
-  margin-bottom: 6px;
-  color: var(--color-surface-text, #1a1a1a);
-  font-size: 0.92rem;
-  white-space: pre-line;
-}
-
-.point-list li:last-child {
-  margin-bottom: 0;
 }
 
 .topic-link-btn {

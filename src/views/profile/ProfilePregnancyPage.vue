@@ -25,6 +25,9 @@
             <IonInput v-model="form.edd" type="date" />
           </IonItem>
           <p class="field-hint">{{ $t('profile.date_pair_hint') }}</p>
+          <div class="hint-listen">
+            <ListenButton size="sm" accent="blue" :text="$t('profile.date_pair_hint')" />
+          </div>
         </template>
 
         <template v-else>
@@ -113,6 +116,9 @@
       <section v-if="activePregnancy && mode === 'ANC'" class="form-card">
         <h2 class="form-title">{{ $t('profile.birth_registration') }}</h2>
         <p class="field-hint">{{ $t('profile.birth_registration_hint') }}</p>
+        <div class="hint-listen">
+          <ListenButton size="sm" accent="blue" :text="$t('profile.birth_registration_hint')" />
+        </div>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.delivery_date_label') }}</IonLabel>
           <IonInput v-model="birth.deliveryDate" type="date" />
@@ -194,6 +200,7 @@ import {
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
+import ListenButton from '../../components/ListenButton.vue';
 import { usePregnancy } from '../../composables/usePregnancy';
 import { lmpFromEdd, eddFromLmp, formatDate } from '../../utils/date';
 import type { DeliveryMode, BirthOutcome } from '../../db/schemas';
@@ -393,6 +400,10 @@ async function confirmClosePregnancy(): Promise<void> {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
   color: var(--color-text-muted, #5c5c5c);
+}
+
+.hint-listen {
+  margin: 0 8px 8px 8px;
 }
 
 .primary-action {

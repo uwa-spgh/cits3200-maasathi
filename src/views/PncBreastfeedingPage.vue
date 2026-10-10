@@ -11,9 +11,11 @@
         :key="topic.key"
         :title="$t(`pnc.${topic.key}_title`)"
       >
-        <ul class="sign-list">
-          <li v-for="n in topic.points" :key="n">{{ $t(`pnc.${topic.key}.point${n}`) }}</li>
-        </ul>
+        <ListenList
+          :title="$t(`pnc.${topic.key}_title`)"
+          :points="topicPoints(topic)"
+          accent="blue"
+        />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -25,10 +27,16 @@ import { useI18n } from 'vue-i18n';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 
 const { t } = useI18n();
 
-const infoTopics: { key: string; points: number }[] = [
+interface Topic {
+  key: string;
+  points: number;
+}
+
+const infoTopics: Topic[] = [
   { key: 'start_early', points: 1 },
   { key: 'only_breastmilk', points: 1 },
   { key: 'feed_often', points: 1 },
@@ -39,6 +47,11 @@ const infoTopics: { key: string; points: number }[] = [
   { key: 'get_help', points: 1 }
 ];
 
+/** The displayed points for a topic, in order. ListenList reads these exact strings. */
+function topicPoints(topic: Topic): string[] {
+  return Array.from({ length: topic.points }, (_, i) => t(`pnc.${topic.key}.point${i + 1}`));
+}
+
 const breadcrumb = computed(() => `${t('information.topics.pnc')} - ${t('pnc.breastfeeding_title')}`);
 </script>
 
@@ -47,15 +60,5 @@ const breadcrumb = computed(() => `${t('information.topics.pnc')} - ${t('pnc.bre
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-surface-text, #1a1a1a);
 }
 </style>

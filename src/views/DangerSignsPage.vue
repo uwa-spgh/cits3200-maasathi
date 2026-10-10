@@ -12,22 +12,30 @@
         :key="group.key"
         :title="$t(`danger_signs.${group.key}.title`)"
       >
-        <ul class="sign-list">
-          <li v-for="n in group.count" :key="n">
-            {{ $t(`danger_signs.${group.key}.signs.sign${n}`) }}
-          </li>
-        </ul>
+        <ListenList
+          :title="$t(`danger_signs.${group.key}.title`)"
+          :points="signTexts(group)"
+          accent="red"
+        />
       </ExpandableCard>
 
       <p class="seek-care-note">{{ $t('danger_signs.seek_care_note') }}</p>
+      <div class="seek-care-listen">
+        <ListenButton size="sm" accent="red" :text="$t('danger_signs.seek_care_note')" />
+      </div>
     </div>
   </PageShell>
 </template>
 
 <script setup lang="ts">
+import { useI18n } from 'vue-i18n';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenButton from '../components/ListenButton.vue';
+import ListenList from '../components/ListenList.vue';
+
+const { t } = useI18n();
 
 const groups = [
   { key: 'pregnancy', count: 11 },
@@ -35,6 +43,11 @@ const groups = [
   { key: 'postpartum', count: 9 },
   { key: 'newborn', count: 6 }
 ];
+
+/** The translated signs for one group, in display order. */
+function signTexts(group: { key: string; count: number }): string[] {
+  return Array.from({ length: group.count }, (_, i) => t(`danger_signs.${group.key}.signs.sign${i + 1}`));
+}
 </script>
 
 <style scoped>
@@ -44,14 +57,9 @@ const groups = [
   gap: 14px;
 }
 
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
+.seek-care-listen {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-surface-text, #1a1a1a);
+  justify-content: center;
 }
 
 .seek-care-note {

@@ -33,11 +33,11 @@
           :key="group.key"
           :title="$t(`danger_signs.${group.key}.title`)"
         >
-          <ul class="danger-list">
-            <li v-for="sign in group.signs" :key="sign">
-              {{ $t(`danger_signs.${group.key}.signs.${sign}`) }}
-            </li>
-          </ul>
+          <ListenList
+            :title="$t(`danger_signs.${group.key}.title`)"
+            :points="signTexts(group)"
+            accent="red"
+          />
         </ExpandableCard>
       </div>
     </div>
@@ -51,6 +51,7 @@ import { callOutline, warningOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import PlaceholderBox from '../components/PlaceholderBox.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 import { useEmergencyContacts } from '../composables/useEmergencyContacts';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useI18n } from 'vue-i18n';
@@ -75,6 +76,11 @@ onMounted(() => {
     signs: Array.from({ length: SIGN_COUNTS[key] }, (_, i) => `sign${i + 1}`)
   }));
 });
+
+/** The translated sign texts for one danger-sign group, in display order. */
+function signTexts(group: { key: string; signs: string[] }): string[] {
+  return group.signs.map((sign) => t(`danger_signs.${group.key}.signs.${sign}`));
+}
 
 /** Context-relevant checklists for all four stages:
  *  - ANC: pregnancy signs, plus labour signs from week 36 (Visit 4 guidance).
@@ -152,15 +158,5 @@ void t;
   font-size: 1.05rem;
   color: var(--color-card-text, #1a1a1a);
   text-align: center;
-}
-
-.danger-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--color-surface-text, #1a1a1a);
-  font-size: 0.9rem;
 }
 </style>

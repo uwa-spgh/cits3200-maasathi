@@ -26,7 +26,12 @@
           <IonLabel position="stacked">{{ $t('profile.tt_last_dose_label') }}</IonLabel>
           <IonInput v-model="ttForm.lastDoseDate" type="date" />
         </IonItem>
-        <p v-if="ttForm.status === 'unknown'" class="field-hint">{{ $t('profile.tt_unknown_hint') }}</p>
+        <template v-if="ttForm.status === 'unknown'">
+          <p class="field-hint">{{ $t('profile.tt_unknown_hint') }}</p>
+          <div class="hint-listen">
+            <ListenButton size="sm" accent="blue" :text="$t('profile.tt_unknown_hint')" />
+          </div>
+        </template>
 
         <IonButton expand="block" class="primary-action" @click="saveTt">
           {{ $t('common.save') }}
@@ -78,6 +83,7 @@ import {
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
+import ListenButton from '../../components/ListenButton.vue';
 import { useTt } from '../../composables/useTt';
 import { regenerateSchedule } from '../../composables/useSchedule';
 import { pregnancyRepo } from '../../db/database';
@@ -188,6 +194,10 @@ async function regenerateActive(): Promise<void> {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
   color: var(--color-text-muted, #5c5c5c);
+}
+
+.hint-listen {
+  margin: 0 8px 8px 8px;
 }
 
 .primary-action {

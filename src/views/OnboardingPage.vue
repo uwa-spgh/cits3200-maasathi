@@ -13,6 +13,7 @@
           <IonIcon :icon=onBoardingIcons.wavingHand class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.welcome_text')" />
           <LanguageSwitcher class="language-picker" />
           <button class="answer-btn primary" @click="advance('name')">
             {{ $t('common.next') }}
@@ -94,6 +95,7 @@
             </button>
           </div>
           <p class="step-hint">{{ $t('onboarding.estimate_hint') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.estimate_hint')" />
           <button
             class="answer-btn primary"
             :disabled="estimateMonths === null"
@@ -158,6 +160,7 @@
         <section v-else class="step-card">
           <h1 class="step-title">{{ $t('onboarding.done_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.done_text') }}</p>
+          <ListenButton class="step-listen" size="sm" accent="green" :text="$t('onboarding.done_text')" />
           <IonIcon :icon="heartCircleOutline" class="done-icon" />
           <button class="answer-btn primary" @click="finish">
             {{ $t('onboarding.start_app') }}
@@ -176,6 +179,7 @@ import { arrowBackOutline, heartCircleOutline } from 'ionicons/icons';
 import { onBoardingIcons } from '../config/icons.js';
 
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
+import ListenButton from '../components/ListenButton.vue';
 import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
@@ -365,7 +369,8 @@ async function finish(): Promise<void> {
   padding: 4px 8px;
 }
 
-.language-picker {
+.language-picker,
+.step-listen {
   align-self: center;
 }
 

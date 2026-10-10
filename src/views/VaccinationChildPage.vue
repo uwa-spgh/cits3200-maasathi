@@ -13,13 +13,11 @@
         :title="$t(`pnc.${topic.key}_title`)"
         :start-open="topic.key === targetTopic"
       >
-        <ul class="sign-list">
-          <li v-for="n in topic.points" :key="n">{{ $t(`pnc.${topic.key}.point${n}`) }}</li>
-        </ul>
-        <button class="topic-listen-btn" @click.stop="listenTopic(topic)">
-          <IonIcon :icon="volumeMediumOutline" />
-          <span>{{ $t('home.cards.listen') }}</span>
-        </button>
+        <ListenList
+          :title="$t(`pnc.${topic.key}_title`)"
+          :points="topicPoints(topic)"
+          accent="blue"
+        />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -28,16 +26,14 @@
 <script setup lang="ts">
 import { computed, nextTick, onMounted } from 'vue';
 import { useRoute } from 'vue-router';
-import { IonIcon } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
-import { informationCircleOutline, volumeMediumOutline } from 'ionicons/icons';
+import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import { useSpeech } from '../composables/useSpeech';
+import ListenList from '../components/ListenList.vue';
 
 const route = useRoute();
-const { t, locale } = useI18n();
-const { speak } = useSpeech();
+const { t } = useI18n();
 
 interface Topic {
   key: string;
@@ -71,12 +67,9 @@ onMounted(async () => {
   }
 });
 
-function listenTopic(topic: Topic): void {
-  const lines: string[] = [t(`pnc.${topic.key}_title`)];
-  for (let i = 1; i <= topic.points; i++) {
-    lines.push(t(`pnc.${topic.key}.point${i}`));
-  }
-  speak(lines.join('. '), locale.value);
+/** The displayed points for a topic, in order. ListenList reads these exact strings. */
+function topicPoints(topic: Topic): string[] {
+  return Array.from({ length: topic.points }, (_, i) => t(`pnc.${topic.key}.point${i + 1}`));
 }
 
 const breadcrumb = computed(() => `${t('information.topics.vaccination')} - ${t('tt.child_vaccines_title')}`);
@@ -87,34 +80,5 @@ const breadcrumb = computed(() => `${t('information.topics.vaccination')} - ${t(
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-surface-text, #1a1a1a);
-}
-
-.topic-listen-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  background: var(--color-card-bg, #f1f5f9);
-  border: 1px solid var(--color-border, #cbd5e1);
-  color: var(--color-card-text, #334155);
-  padding: 5px 11px;
-  border-radius: 8px;
-  font-size: 0.78rem;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.15s ease;
-}
-
-.topic-listen-btn:active {
-  background: var(--color-app-bg, #e2e8f0);
 }
 </style>

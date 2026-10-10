@@ -17,7 +17,8 @@
     "no": "No",
     "not_sure": "I'm not sure",
     "mode_anc": "ANC mode",
-    "mode_pnc": "PNC mode"
+    "mode_pnc": "PNC mode",
+    "part_of": "Part {current} of {total}"
   },
   "nav": {
     "home": "Home",
@@ -58,6 +59,7 @@
       "ordinal_4": "fourth",
       "wellbeing_title": "Information",
       "listen": "Listen",
+      "stop": "Stop",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
       "now_placeholder": "Nothing new to know right now.",

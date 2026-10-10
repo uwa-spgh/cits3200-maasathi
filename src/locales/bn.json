@@ -17,7 +17,8 @@
     "no": "না",
     "not_sure": "আমি নিশ্চিত নই",
     "mode_anc": "অ্যানসি মোড",
-    "mode_pnc": "পিএনসি মোড"
+    "mode_pnc": "পিএনসি মোড",
+    "part_of": "{total} এর মধ্যে অংশ {current}"
   },
   "nav": {
     "home": "হোম",
@@ -58,6 +59,7 @@
       "ordinal_4": "চতুর্থ",
       "wellbeing_title": "তথ্য",
       "listen": "শুনুন",
+      "stop": "থামান",
       "learn_more": "আরও জানুন",
       "wellbeing_placeholder": "আপনার বর্তমান স্বাস্থ্য ও পরামর্শ এখানে দেখা যাবে।",
       "now_placeholder": "এই মুহূর্তে নতুন কিছু জানার নেই।",

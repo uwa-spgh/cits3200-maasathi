@@ -57,8 +57,11 @@ function resolveInfo(item: ScheduleItem): ItemInfo | null {
 }
 
 .empty-note {
+  margin: 0;
+  padding: 12px 0;
   text-align: center;
   font-size: 0.9rem;
+  font-weight: 600;
   font-style: italic;
   color: var(--color-text-muted, #5c5c5c);
 }

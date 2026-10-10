@@ -26,10 +26,9 @@
           :body="reminderBody"
           :badge="reminderBadge"
           :graphic-icon="reminderGraphic"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="reminderBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
-          @listen="listen(reminderBody)"
           @learn-more="onRemindersTap"
         />
 
@@ -38,10 +37,9 @@
           :title="$t('home.cards.wellbeing_title')"
           :title-icon="homeIcons.wellbeingTitle"
           :body="wellbeingBody"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="wellbeingBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onInformationTap"
-          @listen="listen(wellbeingBody)"
           @learn-more="onInformationTap"
         />
 
@@ -56,12 +54,11 @@
           :body="nowExcerpt"
           :corner-arrow-icon="nowTopics.length > 1 ? homeIcons.nowNext : null"
           :corner-arrow-label="$t('home.cards.now_next')"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="nowExcerpt"
           :learn-more-label="$t('home.cards.learn_more')"
           :dot-count="nowTopics.length"
           :active-dot-index="nowIndex"
           @open="onNowLearnMore"
-          @listen="listen(nowExcerpt)"
           @learn-more="onNowLearnMore"
           @corner-arrow="nowNext"
         />
@@ -91,7 +88,6 @@ import HomeTimelineRail from '../components/HomeTimelineRail.vue';
 import { homeIcons } from '../config/icons';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import type { ScheduleItem } from '../db/schemas';
@@ -105,7 +101,6 @@ const { userName } = useUser();
 const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 const { load: loadTt } = useTt();
-const { speak } = useSpeech();
 
 onMounted(() => {
   void loadSchedule();
@@ -114,10 +109,6 @@ onMounted(() => {
 
 function go(routeName: string): void {
   ionRouter.push({ name: routeName });
-}
-
-function listen(text: string): void {
-  speak(text, locale.value);
 }
 
 // ---- Reminder card: the next thing needing attention ----

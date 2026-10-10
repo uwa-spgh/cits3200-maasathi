@@ -18,6 +18,7 @@
             {{ $t('profile.menu_vaccination') }}
           </button>
         </p>
+        <ListenButton size="sm" class="tt-banner-listen" :text="ttNoticeText" />
       </div>
 
       <!-- Active / Upcoming / Overdue visits -->
@@ -78,6 +79,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useIonRouter } from '@ionic/vue';
 import { timeOutline } from 'ionicons/icons';
+import ListenButton from '../components/ListenButton.vue';
 import PageShell from '../components/PageShell.vue';
 import TimelineList from '../components/TimelineList.vue';
 import { ttDoseNumber, useSchedule } from '../composables/useSchedule';
@@ -99,6 +101,7 @@ const showPast = ref(false);
 const showAllUpcoming = ref(false);
 
 const ttNotice = computed(() => isUnknown.value && activePregnancy.value !== null);
+const ttNoticeText = computed(() => t('tt.unknown_banner'));
 
 /** Dose-specific info for the TT reminder (no "coming soon" placeholder). */
 function infoForItem(item: ScheduleItem): ItemInfo | null {
@@ -186,85 +189,106 @@ onMounted(() => {
   gap: 16px;
 }
 
+/* TT notice: same card as the timeline rows, with the reminders accent border */
 .tt-banner {
   background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-reminders-bg, #f6c945);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
-  padding: 10px 10px 10px 14px;
+  padding: 14px 14px 14px 16px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .tt-banner-text {
-  flex: 1;
-  min-width: 0;
   display: flow-root;
   margin: 0;
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.45;
   color: var(--color-surface-text, #1a1a1a);
 }
 
+.tt-banner-listen {
+  align-self: flex-start;
+}
+
+/* Primary pill, same height as the other action buttons */
 .tt-banner-link {
   float: right;
-  margin: 2px 0 0 10px;
+  margin: 0 0 0 12px;
   background: var(--color-reminders-bg, #f6c945);
   color: var(--color-reminders-text, #000);
   border: none;
   border-radius: 999px;
-  padding: 0 18px;
-  height: 36px;
+  padding: 0 16px;
+  height: 40px;
+  min-height: 40px;
+  font-family: inherit;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
   white-space: nowrap;
 }
 
 .tt-banner-link:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
+/* Secondary pill: outlined, 44px touch height */
 .see-more-btn {
-  background: var(--color-surface, #fff);
-  border: 1.5px solid var(--color-border, #e5e7eb);
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: var(--color-text-muted, #4b5563);
-  cursor: pointer;
   align-self: center;
-  margin-top: 4px;
-  box-shadow: 0 2px 4px var(--color-shadow, rgba(0, 0, 0, 0.03));
-  transition: all 0.15s ease;
+  min-height: 44px;
+  padding: 0 18px;
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-text-muted, #5c5c5c);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 2px 6px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  transition: transform 0.15s ease;
 }
 
 .see-more-btn:active {
-  background: var(--color-app-bg, #f9fafb);
+  transform: scale(0.97);
 }
 
 .past-section {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
+/* Collapsible header styled like the app's expandable cards */
 .past-toggle {
-  background: var(--color-card-bg, #f3f4f6);
-  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
-  border-radius: 10px;
-  padding: 10px 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border-radius: 20px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 700;
-  color: var(--color-card-text, #4b5563);
   cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.past-toggle:active {
+  transform: scale(0.99);
 }
 </style>

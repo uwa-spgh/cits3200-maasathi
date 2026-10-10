@@ -11,12 +11,9 @@
           <p class="tt-title">{{ $t('tt.tracker_title') }}</p>
           <span class="tt-chip" :class="statusClass">{{ statusLabel }}</span>
         </div>
-        <p class="tt-doses">
-          {{ $t('tt.doses_count', { count: lifetimeDoseCount, max: 5 }) }}
-        </p>
-        <p v-if="nextDueDisplay" class="tt-next">{{ $t('tt.next_due', { date: nextDueDisplay }) }}</p>
-        <p v-else-if="isUnknown" class="tt-next">{{ $t('tt.unknown_notice') }}</p>
-        <p v-else-if="isComplete" class="tt-next">{{ $t('tt.complete_notice') }}</p>
+        <p class="tt-doses">{{ trackerDosesLine }}</p>
+        <p v-if="trackerNextLine" class="tt-next">{{ trackerNextLine }}</p>
+        <ListenButton class="tt-listen" accent="blue" :text="trackerSpeech" />
       </div>
 
       <button class="section-btn" @click="openTetanusInfo">
@@ -39,7 +36,8 @@
       </ExpandableCard>
 
       <ExpandableCard :title="$t('tt.epi_card_title')">
-        <p class="card-text">{{ $t('tt.bring_epi_card.point1') }}</p>
+        <p class="card-text">{{ epiText }}</p>
+        <ListenButton class="card-listen" accent="blue" :text="epiText" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -51,9 +49,11 @@ import { IonIcon, useIonRouter } from '@ionic/vue';
 import { chevronForwardOutline, informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenButton from '../components/ListenButton.vue';
 import { useTt } from '../composables/useTt';
 import { useI18n } from 'vue-i18n';
 import { formatDate } from '../utils/date';
+import { speechText } from '../utils/speechChunks';
 
 const { t, locale } = useI18n();
 const ionRouter = useIonRouter();
@@ -86,6 +86,22 @@ const nextDueDisplay = computed(() => {
 });
 
 const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber - b.doseNumber));
+
+const trackerDosesLine = computed(() => t('tt.doses_count', { count: lifetimeDoseCount.value, max: 5 }));
+
+const trackerNextLine = computed(() => {
+  if (nextDueDisplay.value) return t('tt.next_due', { date: nextDueDisplay.value });
+  if (isUnknown.value) return t('tt.unknown_notice');
+  if (isComplete.value) return t('tt.complete_notice');
+  return '';
+});
+
+/** Reads the tracker exactly as displayed: title, status, doses, then the next-due/notice line. */
+const trackerSpeech = computed(() =>
+  speechText(t('tt.tracker_title'), [statusLabel.value, trackerDosesLine.value, trackerNextLine.value])
+);
+
+const epiText = computed(() => t('tt.bring_epi_card.point1'));
 </script>
 
 <style scoped>
@@ -148,6 +164,10 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   opacity: 0.85;
 }
 
+.tt-listen {
+  margin-top: 14px;
+}
+
 .section-btn {
   background-color: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
@@ -196,5 +216,9 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   font-size: 0.9rem;
   line-height: 1.45;
   color: var(--color-surface-text, #1a1a1a);
+}
+
+.card-listen {
+  align-self: flex-start;
 }
 </style>

@@ -22,7 +22,7 @@
         </button>
       </div>
     </div>
-    <div v-if="listenLabel || learnMoreLabel" class="card-actions" :class="{ split: listenLabel && learnMoreLabel }">
+    <div v-if="listenText || learnMoreLabel" class="card-actions" :class="{ split: listenText && learnMoreLabel }">
       <button
         v-if="learnMoreLabel"
         class="pill-btn learn"
@@ -31,14 +31,7 @@
         <IonIcon :icon="homeIcons.learnMore" />
         <span>{{ learnMoreLabel }}</span>
       </button>
-      <button
-        v-if="listenLabel"
-        class="pill-btn listen"
-        @click.stop="$emit('listen')"
-      >
-        <IonIcon :icon="homeIcons.listen" />
-        <span>{{ listenLabel }}</span>
-      </button>
+      <ListenButton v-if="listenText" :text="listenText" :accent="accent" />
     </div>
     <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
       <span
@@ -53,6 +46,7 @@
 
 <script setup lang="ts">
 import { IonIcon } from '@ionic/vue';
+import ListenButton from './ListenButton.vue';
 import { homeIcons } from '../config/icons';
 
 export type CardAccent = 'yellow' | 'blue' | 'green' | 'red';
@@ -67,7 +61,8 @@ defineProps<{
   graphicIconSecondary?: string | null;
   cornerArrowIcon?: string | null;
   cornerArrowLabel?: string;
-  listenLabel?: string | null;
+  /** Text read aloud by the Listen button; the button is hidden when empty. */
+  listenText?: string | null;
   learnMoreLabel?: string | null;
   dotCount?: number;
   activeDotIndex?: number;
@@ -75,7 +70,6 @@ defineProps<{
 
 defineEmits<{
   (e: 'open'): void;
-  (e: 'listen'): void;
   (e: 'learnMore'): void;
   (e: 'cornerArrow'): void;
 }>();
