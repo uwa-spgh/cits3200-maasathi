@@ -16,7 +16,11 @@
         :title="$t(`anc.${topic.key}_title`)"
         :start-open="topic.key === targetTopic"
       >
-        <ListenList :title="$t(`anc.${topic.key}_title`)" :points="topicPoints(topic)" />
+        <ListenList
+          :title="$t(`anc.${topic.key}_title`)"
+          :points="topicPoints(topic)"
+          accent="blue"
+        />
         <button
           v-if="topic.key === 'birth_preparedness'"
           class="birth-plan-link-btn"
