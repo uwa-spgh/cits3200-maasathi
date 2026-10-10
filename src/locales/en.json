@@ -184,6 +184,8 @@
   },
   "timeline": {
     "empty": "No reminders here",
+    "status_completed": "Completed",
+    "completed_on": "Completed on {date}",
     "mark_completed": "Mark completed",
     "mark_upcoming": "Move back to upcoming",
     "due_today": "Due today",

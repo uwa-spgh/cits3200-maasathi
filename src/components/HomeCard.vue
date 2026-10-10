@@ -31,7 +31,7 @@
         <IonIcon :icon="homeIcons.learnMore" />
         <span>{{ learnMoreLabel }}</span>
       </button>
-      <ListenButton v-if="listenText" :text="listenText" :accent="accent" />
+      <ListenButton v-if="listenText" :text="listenText" :accent="accent" size="xs" />
     </div>
     <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
       <span
@@ -225,17 +225,23 @@ defineEmits<{
   justify-content: space-between;
 }
 
+/* Same box as ListenButton size="xs" so the two buttons on a card line up. */
 .pill-btn {
-  border: none;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 2px solid var(--color-card-border, transparent);
   border-radius: 999px;
-  padding: 6px 16px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   font-size: 0.82rem;
   font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
   color: var(--color-card-text, #1a1a1a);
+  transition: transform 0.1s ease;
 }
 
 .pill-btn:active {
@@ -244,6 +250,7 @@ defineEmits<{
 
 .pill-btn ion-icon {
   font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
 .accent-yellow .pill-btn { background: var(--color-reminders-bg, #f6c945); color: var(--color-reminders-text, #000); }

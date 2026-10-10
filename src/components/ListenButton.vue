@@ -7,7 +7,11 @@
     @click.stop="onClick"
   >
     <IonIcon :icon="isSpeaking ? homeIcons.stop : homeIcons.listen" aria-hidden="true" />
-    <span>{{ label }}</span>
+    <!-- Both labels share one grid cell, so the button is as wide as the longer one and does not resize when toggling. -->
+    <span class="label-stack">
+      <span :class="{ 'is-hidden': isSpeaking }">{{ listenLabel }}</span>
+      <span :class="{ 'is-hidden': !isSpeaking }">{{ stopLabel }}</span>
+    </span>
   </button>
 </template>
 
@@ -35,7 +39,7 @@ const props = withDefaults(
     /** The text to read aloud. Clicking does nothing when empty. */
     text: string;
     accent?: ListenAccent;
-    size?: 'md' | 'sm';
+    size?: 'xs' | 'sm' | 'md';
   }>(),
   { accent: 'neutral', size: 'md' }
 );
@@ -45,7 +49,9 @@ const { speaking, speak, stop } = useSpeech();
 
 const ownerId = Symbol('listen-button');
 const isSpeaking = computed(() => speaking.value && activeOwner.value === ownerId);
-const label = computed(() => t(isSpeaking.value ? 'home.cards.stop' : 'home.cards.listen'));
+const listenLabel = computed(() => t('home.cards.listen'));
+const stopLabel = computed(() => t('home.cards.stop'));
+const label = computed(() => (isSpeaking.value ? stopLabel.value : listenLabel.value));
 
 function onClick(): void {
   if (!props.text) return;
@@ -89,8 +95,7 @@ onBeforeUnmount(() => {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 40px;
-  padding: 0 16px;
+  /* 2px border on every size (solid in high contrast, transparent elsewhere) so the box never changes size. */
   border: 2px solid transparent;
   border-radius: 999px;
   font-weight: 800;
@@ -100,21 +105,44 @@ onBeforeUnmount(() => {
   transition: transform 0.1s ease, box-shadow 0.15s ease;
 }
 
+/* Home cards: compact pills, the same geometry as the Learn more pill in HomeCard.vue. */
+.listen-button.size-xs {
+  min-height: 34px;
+  padding: 0 14px;
+  font-size: 0.82rem;
+}
+
+.listen-button.size-sm {
+  min-height: 36px;
+  padding: 0 14px;
+  font-size: 0.8rem;
+}
+
 .listen-button.size-md {
   min-height: 44px;
   padding: 0 18px;
   font-size: 0.9rem;
 }
 
-.listen-button.size-sm {
-  min-height: 40px;
-  padding: 0 14px;
-  font-size: 0.82rem;
+.label-stack {
+  display: inline-grid;
+}
+
+.label-stack > span {
+  grid-area: 1 / 1;
+}
+
+.label-stack > span.is-hidden {
+  visibility: hidden;
 }
 
 .listen-button ion-icon {
   font-size: 1.15rem;
   flex-shrink: 0;
+}
+
+.listen-button.size-xs ion-icon {
+  font-size: 1.1rem;
 }
 
 .listen-button:active {

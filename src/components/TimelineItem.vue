@@ -35,7 +35,7 @@
           <div v-if="prepText" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
             <ContentText :text="prepText" />
-            <ListenButton size="sm" class="panel-listen" :text="prepSpeech" />
+            <ListenButton size="sm" accent="yellow" class="panel-listen" :text="prepSpeech" />
           </div>
 
           <!-- Yellow EPI card reminder placed in the expanded content area (no coming-soon placeholder) -->
@@ -46,7 +46,7 @@
               <span class="epi-text">{{ $t('tt.bring_epi_card_banner') }}</span>
             </div>
             <ContentText v-if="infoBody" :text="infoBody" class="epi-dose-body" />
-            <ListenButton size="sm" class="panel-listen" :text="epiSpeech" />
+            <ListenButton size="sm" accent="yellow" class="panel-listen" :text="epiSpeech" />
           </div>
 
           <!-- Natural button to full information page -->
@@ -258,8 +258,9 @@ const epiSpeech = computed(() =>
 
 <style scoped>
 /* One row per visit: a narrow track (dot + line) beside a single card.
-   Every card shares the same radius, border width, padding and shadow;
-   only the border and dot take the status colour. */
+   Every card shares the same radius, border width, padding and shadow.
+   The section is yellow: borders, dots and accent pills are yellow, and
+   status is shown lightly (emergency badge when overdue, muted when done). */
 .timeline-item {
   display: flex;
   position: relative;
@@ -284,7 +285,7 @@ const epiSpeech = computed(() =>
   left: 50%;
   width: 2px;
   margin-left: -1px;
-  background-color: var(--color-border, rgba(0, 0, 0, 0.1));
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 50%, var(--color-border, rgba(0, 0, 0, 0.1)));
 }
 
 /* First row starts its line at its own dot */
@@ -302,7 +303,7 @@ const epiSpeech = computed(() =>
   height: 12px;
   margin-left: -6px;
   border-radius: 50%;
-  background-color: var(--color-text-muted, #5c5c5c);
+  background-color: var(--color-reminders-bg, #f6c945);
   box-shadow: 0 0 0 3px var(--color-app-bg, #fbf7f5);
   z-index: 1;
 }
@@ -314,7 +315,7 @@ const epiSpeech = computed(() =>
   padding: 14px 16px;
   background-color: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 2px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 2px solid var(--color-reminders-bg, #f6c945);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   cursor: pointer;
@@ -325,17 +326,18 @@ const epiSpeech = computed(() =>
   transform: scale(0.99);
 }
 
-/* Status system: overdue = emergency, due today = reminders,
-   upcoming = neutral, completed = success (with muted text). */
-.status-overdue .item-card { border-color: var(--color-emergency-bg, #ff5c5c); }
-.status-today .item-card { border-color: var(--color-reminders-bg, #f6c945); }
-.status-upcoming .item-card { border-color: var(--color-border, rgba(0, 0, 0, 0.1)); }
-.status-done .item-card { border-color: var(--color-success, #10b981); }
+/* Status system, kept light: every card keeps the yellow border.
+   Upcoming fades the border and dot back; completed drops to neutral. */
+.status-upcoming .item-card {
+  border-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
+}
+.status-done .item-card { border-color: var(--color-border, rgba(0, 0, 0, 0.1)); }
 
 .status-overdue .track-dot { background-color: var(--color-emergency-bg, #ff5c5c); }
-.status-today .track-dot { background-color: var(--color-reminders-bg, #f6c945); }
-.status-upcoming .track-dot { background-color: var(--color-text-muted, #5c5c5c); }
-.status-done .track-dot { background-color: var(--color-success, #10b981); }
+.status-upcoming .track-dot {
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
+}
+.status-done .track-dot { background-color: var(--color-text-muted, #5c5c5c); }
 
 .status-done .item-title {
   color: var(--color-text-muted, #5c5c5c);
@@ -387,22 +389,31 @@ const epiSpeech = computed(() =>
   text-transform: none;
 }
 
-.status-overdue .due-badge {
-  background-color: var(--color-emergency-bg, #ff5c5c);
-  color: var(--color-emergency-text, #000);
-  border-color: transparent;
+/* Due pill: solid yellow when due today, a light yellow tint when upcoming,
+   a small emergency label only when overdue, muted when completed.
+   Text on the tint stays surface-text; text on solid fills is the -text token. */
+.status-upcoming .due-badge {
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 14%, var(--color-surface, #fff));
+  color: var(--color-surface-text, #1a1a1a);
+  border-color: var(--color-reminders-bg, #f6c945);
 }
 
 .status-today .due-badge {
   background-color: var(--color-reminders-bg, #f6c945);
   color: var(--color-reminders-text, #000);
-  border-color: transparent;
+  border-color: var(--color-card-border, transparent);
+}
+
+.status-overdue .due-badge {
+  background-color: var(--color-emergency-bg, #ff5c5c);
+  color: var(--color-emergency-text, #000);
+  border-color: var(--color-card-border, transparent);
 }
 
 .status-done .due-badge {
-  background-color: var(--color-success, #10b981);
-  color: var(--color-success-text, #000);
-  border-color: transparent;
+  background-color: transparent;
+  color: var(--color-text-muted, #5c5c5c);
+  border-color: var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 .done-icon {
@@ -435,13 +446,14 @@ const epiSpeech = computed(() =>
   gap: 12px;
 }
 
-/* Shared inner panel for the prep box, EPI box and open-page buttons */
+/* Shared inner panel for the prep box, EPI box and open-page buttons:
+   a faint yellow tint on the surface with a yellow outline */
 .prep-box,
 .epi-reminder-box,
 .open-page-btn {
-  background-color: var(--color-card-bg, #eaeaea);
-  color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 14%, var(--color-surface, #fff));
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-reminders-bg, #f6c945);
   border-radius: 14px;
 }
 
@@ -461,7 +473,7 @@ const epiSpeech = computed(() =>
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--color-text-muted, #5c5c5c);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .panel-listen {
@@ -477,7 +489,7 @@ const epiSpeech = computed(() =>
 
 .epi-icon {
   font-size: 1.15rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -485,14 +497,14 @@ const epiSpeech = computed(() =>
 .epi-text {
   font-size: 0.88rem;
   font-weight: 700;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   line-height: 1.4;
 }
 
 .epi-dose-body {
   margin-top: 4px;
   font-size: 0.85rem;
-  color: var(--color-text-muted, #5c5c5c);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .info-action-container {
@@ -519,7 +531,7 @@ const epiSpeech = computed(() =>
 
 .open-page-btn .btn-main-icon {
   font-size: 1.25rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   flex-shrink: 0;
 }
 
@@ -531,7 +543,7 @@ const epiSpeech = computed(() =>
 
 .open-page-btn .btn-arrow {
   font-size: 1.15rem;
-  color: var(--color-text-muted, #5c5c5c);
+  color: var(--color-surface-text, #1a1a1a);
   flex-shrink: 0;
 }
 
@@ -557,11 +569,14 @@ const epiSpeech = computed(() =>
   text-transform: none;
 }
 
-/* Primary: filled with success */
+/* Primary: solid yellow pill with dark text (never light text on yellow) */
 .complete-btn {
-  --background: var(--color-success, #10b981);
-  --background-hover: color-mix(in srgb, var(--color-success, #10b981) 85%, #000);
-  --color: var(--color-success-text, #000);
+  --background: var(--color-reminders-bg, #f6c945);
+  --background-hover: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 85%, #000);
+  --color: var(--color-reminders-text, #000);
+  --border-color: var(--color-card-border, transparent);
+  --border-width: 2px;
+  --border-style: solid;
 }
 
 /* Secondary: outlined */

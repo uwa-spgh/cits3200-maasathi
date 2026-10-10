@@ -184,6 +184,8 @@
   },
   "timeline": {
     "empty": "এখানে কোনো স্মারক নেই",
+    "status_completed": "সম্পন্ন",
+    "completed_on": "{date} তারিখে সম্পন্ন",
     "mark_completed": "সম্পন্ন চিহ্নিত করুন",
     "mark_upcoming": "আসন্ন হিসেবে চিহ্নিত করুন",
     "due_today": "আজ নির্ধারিত",

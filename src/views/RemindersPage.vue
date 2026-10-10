@@ -18,7 +18,7 @@
             {{ $t('profile.menu_vaccination') }}
           </button>
         </p>
-        <ListenButton size="sm" class="tt-banner-listen" :text="ttNoticeText" />
+        <ListenButton size="sm" accent="yellow" class="tt-banner-listen" :text="ttNoticeText" />
       </div>
 
       <!-- Active / Upcoming / Overdue visits -->
@@ -243,14 +243,14 @@ onMounted(() => {
   gap: 12px;
 }
 
-/* Secondary pill: outlined, 44px touch height */
+/* Primary pill: solid yellow with dark text, 44px touch height */
 .see-more-btn {
   align-self: center;
   min-height: 44px;
   padding: 0 18px;
-  background: var(--color-surface, #fff);
-  color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-text-muted, #5c5c5c);
+  background: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
+  border: 1.5px solid var(--color-card-border, transparent);
   border-radius: 999px;
   font-family: inherit;
   font-size: 0.9rem;
@@ -278,7 +278,7 @@ onMounted(() => {
   align-items: center;
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 2px solid var(--color-reminders-bg, #f6c945);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   font-family: inherit;
