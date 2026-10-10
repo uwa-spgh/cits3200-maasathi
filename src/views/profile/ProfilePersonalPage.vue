@@ -48,7 +48,7 @@ const { userName, setUserName } = useUser();
 const form = ref<{ name: string; age: number | null }>({ name: '', age: null });
 
 onMounted(async () => {
-  form.value.name = userName();
+  form.value.name = userName.value;
   form.value.age = await settingsRepo.getNumber(AGE_KEY);
 });
 
