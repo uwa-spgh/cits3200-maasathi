@@ -92,7 +92,7 @@ test.describe('Complete UI coverage', () => {
       { name: 'Personal information', url: /profile\/personal/i },
       { name: 'My pregnancy', url: /profile\/pregnancy/i },
       { name: 'My vaccinations', url: /profile\/vaccination/i },
-      { name: 'Settings', url: /profile\/settings/i }
+      { name: 'Birth plan', url: /profile\/plan/i }
     ];
 
     for (const item of items) {
@@ -100,6 +100,14 @@ test.describe('Complete UI coverage', () => {
       await visiblePage(page).getByRole('button', { name: item.name }).click();
       await expect(page).toHaveURL(item.url);
     }
+  });
+
+  test('Appearance action sheet switches theme preset', async ({ page }) => {
+    await page.goto('/profile');
+    await visiblePage(page).getByRole('button', { name: /Appearance/i }).click();
+    await expect(page.locator('ion-action-sheet')).toBeVisible();
+    await page.locator('ion-action-sheet button', { hasText: 'Dark' }).click();
+    await expect(page.locator('html')).toHaveClass(/dark/);
   });
 
   test('Reminders expand opens WeekInfo guidance', async ({ page }) => {

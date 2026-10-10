@@ -107,13 +107,13 @@ void t;
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
   border: 2px solid var(--color-emergency-bg, #ff5c5c);
   border-radius: 20px;
   padding: 12px 18px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -143,7 +143,7 @@ void t;
 .danger-box {
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 10px;
 }
 
 .danger-box-title {
@@ -151,7 +151,6 @@ void t;
   font-weight: 800;
   font-size: 1.05rem;
   color: var(--color-card-text, #1a1a1a);
-  text-align: center;
 }
 
 .danger-list {
@@ -160,7 +159,7 @@ void t;
   display: flex;
   flex-direction: column;
   gap: 6px;
-  color: var(--color-card-text, #1a1a1a);
   font-size: 0.9rem;
+  color: var(--color-card-text, #1a1a1a);
 }
 </style>

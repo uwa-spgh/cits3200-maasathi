@@ -253,7 +253,7 @@ const prepText = computed(() => {
   height: 14px;
   border-radius: 50%;
   background-color: #d1d5db;
-  border: 3px solid #fff;
+  border: 3px solid var(--color-app-bg, #fff);
   box-shadow: 0 0 0 2px #d1d5db;
   margin-top: 18px;
   z-index: 1;
@@ -262,17 +262,17 @@ const prepText = computed(() => {
 .track-line {
   flex: 1;
   width: 2px;
-  background-color: #e5e7eb;
+  background-color: var(--color-card-border, #e5e7eb);
 }
 
 .item-card {
   flex: 1;
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   border-radius: 16px;
   padding: 14px 16px;
   margin: 6px 0 6px 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1.5px solid transparent;
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.04));
+  border: 1.5px solid var(--color-card-border, transparent);
   cursor: pointer;
   transition: all 0.15s ease;
 }
@@ -303,27 +303,25 @@ const prepText = computed(() => {
 
 .status-done .item-card {
   opacity: 0.75;
-  background-color: #f9fafb;
+  background-color: var(--color-card-bg, #f9fafb);
 }
 
 .status-overdue .item-card {
-  border-color: #fca5a5;
-  background-color: #fff5f5;
+  border-color: var(--color-emergency-bg, #ef4444);
 }
 
 .status-overdue .due-badge {
-  background-color: #ef4444;
-  color: #fff;
+  background-color: var(--color-emergency-bg, #ef4444);
+  color: var(--color-emergency-text, #fff);
 }
 
 .status-today .item-card {
-  border-color: #93c5fd;
-  background-color: #eff6ff;
+  border-color: var(--color-profile-bg, #33a1de);
 }
 
 .status-today .due-badge {
-  background-color: #2563eb;
-  color: #fff;
+  background-color: var(--color-profile-bg, #2563eb);
+  color: var(--color-profile-text, #fff);
 }
 
 .item-header {
@@ -346,13 +344,13 @@ const prepText = computed(() => {
   letter-spacing: 0.04em;
   padding: 3px 8px;
   border-radius: 8px;
-  background-color: #e5e7eb;
-  color: #4b5563;
+  background-color: var(--color-card-border, #e5e7eb);
+  color: var(--color-card-text, #4b5563);
 }
 
 .date-chip {
   font-size: 0.78rem;
-  color: #6b7280;
+  color: var(--color-subtext, #6b7280);
   font-weight: 600;
 }
 
@@ -365,26 +363,26 @@ const prepText = computed(() => {
   margin: 0;
   font-size: 1.02rem;
   font-weight: 700;
-  color: #1a1a1a;
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .item-subtitle {
   margin: 4px 0 0 0;
   font-size: 0.84rem;
-  color: #6b7280;
+  color: var(--color-subtext, #6b7280);
 }
 
 .item-detail {
   margin-top: 14px;
   padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--color-card-border, #e5e7eb);
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
 .prep-box {
-  background-color: #f9fafb;
+  background-color: var(--color-card-border, rgba(0, 0, 0, 0.04));
   border-radius: 12px;
   padding: 10px 12px;
 }
@@ -394,14 +392,14 @@ const prepText = computed(() => {
   font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
-  color: #6b7280;
+  color: var(--color-subtext, #6b7280);
   letter-spacing: 0.03em;
 }
 
 /* Yellow EPI card reminder placed in the expanded content area */
 .epi-reminder-box {
-  background: #fffbe6;
-  border: 1.5px solid #ffd591;
+  background: var(--color-card-bg, #fffbe6);
+  border: 1.5px solid var(--color-reminders-bg, #ffd591);
   border-radius: 12px;
   padding: 12px 14px;
   display: flex;
@@ -415,7 +413,7 @@ const prepText = computed(() => {
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #873800;
+  color: var(--color-card-text, #873800);
 }
 
 .epi-reminder-inner {
@@ -426,7 +424,7 @@ const prepText = computed(() => {
 
 .epi-icon {
   font-size: 1.15rem;
-  color: #d46b08;
+  color: var(--color-reminders-bg, #d46b08);
   flex-shrink: 0;
   margin-top: 1px;
 }
@@ -434,14 +432,14 @@ const prepText = computed(() => {
 .epi-text {
   font-size: 0.88rem;
   font-weight: 600;
-  color: #873800;
+  color: var(--color-card-text, #873800);
   line-height: 1.4;
 }
 
 .epi-dose-body {
   margin-top: 4px;
   font-size: 0.85rem;
-  color: #595959;
+  color: var(--color-subtext, #595959);
 }
 
 .info-action-container {
@@ -460,38 +458,37 @@ const prepText = computed(() => {
   font-size: 0.88rem;
   font-weight: 700;
   cursor: pointer;
-  border: 1.5px solid #e2e8f0;
-  background: #f8fafc;
-  color: #1e293b;
+  border: 1.5px solid var(--color-card-border, #e2e8f0);
+  background: var(--color-card-bg, #f8fafc);
+  color: var(--color-card-text, #1e293b);
   text-align: left;
   transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+  box-shadow: 0 1px 3px var(--color-shadow, rgba(0, 0, 0, 0.03));
 }
 
 .open-page-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  opacity: 0.9;
 }
 
 .open-page-btn:active {
-  background: #e2e8f0;
+  transform: scale(0.98);
 }
 
 .open-page-btn .btn-main-icon {
   font-size: 1.25rem;
-  color: #475569;
+  color: var(--color-profile-bg, #475569);
   flex-shrink: 0;
 }
 
 .open-page-btn .btn-label {
   flex: 1;
-  color: #1e293b;
+  color: var(--color-card-text, #1e293b);
   line-height: 1.35;
 }
 
 .open-page-btn .btn-arrow {
   font-size: 1.15rem;
-  color: #94a3b8;
+  color: var(--color-subtext, #94a3b8);
   flex-shrink: 0;
 }
 
@@ -512,7 +509,7 @@ const prepText = computed(() => {
 }
 
 .undo-btn {
-  --color: #6b7280;
-  --border-color: #d1d5db;
+  --color: var(--color-subtext, #6b7280);
+  --border-color: var(--color-card-border, #d1d5db);
 }
 </style>

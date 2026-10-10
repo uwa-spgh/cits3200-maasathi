@@ -106,7 +106,7 @@ void props;
 }
 
 .header-icon.tint-red { color: var(--color-emergency-bg, #ff5c5c); }
-.header-icon.tint-yellow { color: #d9a521; }
+.header-icon.tint-yellow { color: var(--color-reminders-bg, #d9a521); }
 .header-icon.tint-green { color: var(--color-information-bg, #7bc62d); }
 .header-icon.tint-blue { color: var(--color-profile-bg, #33a1de); }
 
@@ -128,10 +128,10 @@ void props;
   text-overflow: ellipsis;
   white-space: nowrap;
   text-align: center;
-  background: #fff;
+  background: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
   border: 2px solid transparent;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 
 .breadcrumb-pill--red { border-color: var(--color-emergency-bg, #ff5c5c); }

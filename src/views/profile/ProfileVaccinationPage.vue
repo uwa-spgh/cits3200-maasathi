@@ -164,8 +164,10 @@ async function regenerateActive(): Promise<void> {
 
 .form-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1.5px solid var(--color-card-border, transparent);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
 }
 
 .form-title {
@@ -204,7 +206,7 @@ async function regenerateActive(): Promise<void> {
   padding: 8px 8px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed var(--color-card-border, rgba(0, 0, 0, 0.1));
 }
 
 .dose-row:last-child {

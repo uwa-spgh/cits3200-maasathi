@@ -64,8 +64,10 @@ async function save(): Promise<void> {
 <style scoped>
 .form-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1.5px solid var(--color-card-border, transparent);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
 }
 
 .primary-action {

@@ -1,10 +1,14 @@
-import { reactive } from 'vue';
+import { reactive, ref } from 'vue';
 import { settingsRepo } from '../db/database';
 
 export interface ThemeColors {
   appBg: string;
   cardBg: string;
   cardText: string;
+  cardBorder: string;
+  cardSubtext: string;
+  navBg: string;
+  shadow: string;
   btnMoreBg: string;
   btnMoreText: string;
   emergencyBg: string;
@@ -17,87 +21,107 @@ export interface ThemeColors {
   profileText: string;
 }
 
-export type PresetKey = 'vibrant' | 'pastel' | 'contrast' | 'dark';
+export type PresetKey = 'original' | 'dark' | 'contrast';
 
 export const THEME_PRESETS: Record<PresetKey, ThemeColors> = {
-  vibrant: {
+  original: {
     appBg: '#FBF7F5',
-    cardBg: '#EAEAEA',
+    cardBg: '#FFFFFF',
     cardText: '#1A1A1A',
+    cardBorder: 'rgba(0, 0, 0, 0.08)',
+    cardSubtext: '#6B7280',
+    navBg: '#FFFFFF',
+    shadow: 'rgba(0, 0, 0, 0.06)',
     btnMoreBg: '#7BC62D',
     btnMoreText: '#000000',
     emergencyBg: '#FF5C5C',
-    emergencyText: '#000000',
+    emergencyText: '#FFFFFF',
     remindersBg: '#F6C945',
-    remindersText: '#000000',
+    remindersText: '#1A1A1A',
     informationBg: '#7BC62D',
     informationText: '#000000',
     profileBg: '#33A1DE',
-    profileText: '#000000'
-  },
-  pastel: {
-    appBg: '#FDFBF7',
-    cardBg: '#F3EFEA',
-    cardText: '#2D2D2D',
-    btnMoreBg: '#A8E6CF',
-    btnMoreText: '#1A3326',
-    emergencyBg: '#FFB3BA',
-    emergencyText: '#4A151B',
-    remindersBg: '#FFDFBA',
-    remindersText: '#4A3215',
-    informationBg: '#BAFFC9',
-    informationText: '#154A21',
-    profileBg: '#BAE1FF',
-    profileText: '#152E4A'
-  },
-  contrast: {
-    appBg: '#FFFFFF',
-    cardBg: '#000000',
-    cardText: '#FFFFFF',
-    btnMoreBg: '#00FF00',
-    btnMoreText: '#000000',
-    emergencyBg: '#D32F2F',
-    emergencyText: '#FFFFFF',
-    remindersBg: '#F57F17',
-    remindersText: '#000000',
-    informationBg: '#1B5E20',
-    informationText: '#FFFFFF',
-    profileBg: '#0D47A1',
     profileText: '#FFFFFF'
   },
   dark: {
-    appBg: '#121212',
-    cardBg: '#1E1E1E',
-    cardText: '#E0E0E0',
-    btnMoreBg: '#66BB6A',
+    appBg: '#121214',
+    cardBg: '#1E1E24',
+    cardText: '#F3F4F6',
+    cardBorder: 'rgba(255, 255, 255, 0.12)',
+    cardSubtext: '#9CA3AF',
+    navBg: '#18181C',
+    shadow: 'rgba(0, 0, 0, 0.45)',
+    btnMoreBg: '#4ADE80',
     btnMoreText: '#000000',
-    emergencyBg: '#EF5350',
+    emergencyBg: '#EF4444',
     emergencyText: '#FFFFFF',
-    remindersBg: '#FFCA28',
+    remindersBg: '#FBBF24',
+    remindersText: '#1A1A1A',
+    informationBg: '#22C55E',
+    informationText: '#000000',
+    profileBg: '#38BDF8',
+    profileText: '#000000'
+  },
+  contrast: {
+    appBg: '#000000',
+    cardBg: '#0D0D0D',
+    cardText: '#FFFFFF',
+    cardBorder: '#FFFFFF',
+    cardSubtext: '#E5E7EB',
+    navBg: '#000000',
+    shadow: 'none',
+    btnMoreBg: '#00FF66',
+    btnMoreText: '#000000',
+    emergencyBg: '#FF1744',
+    emergencyText: '#FFFFFF',
+    remindersBg: '#FFD600',
     remindersText: '#000000',
-    informationBg: '#26A69A',
-    informationText: '#FFFFFF',
-    profileBg: '#42A5F5',
-    profileText: '#FFFFFF'
+    informationBg: '#00E676',
+    informationText: '#000000',
+    profileBg: '#00B0FF',
+    profileText: '#000000'
   }
 };
 
 const STORAGE_KEY = 'maasathi_theme_colors';
+const PRESET_STORAGE_KEY = 'maasathi_theme_preset';
+
+function normalizePresetKey(key: string | null): PresetKey {
+  if (key === 'dark') return 'dark';
+  if (key === 'contrast') return 'contrast';
+  return 'original';
+}
+
+function loadInitialPreset(): PresetKey {
+  try {
+    if (typeof window !== 'undefined' && window.localStorage) {
+      const saved = localStorage.getItem(PRESET_STORAGE_KEY);
+      if (saved) return normalizePresetKey(saved);
+    }
+  } catch (e) {
+    console.error('Failed to load theme preset from localStorage', e);
+  }
+  return 'original';
+}
 
 function loadInitialTheme(): ThemeColors {
+  const initialPreset = loadInitialPreset();
   try {
     if (typeof window !== 'undefined' && window.localStorage) {
       const saved = localStorage.getItem(STORAGE_KEY);
       if (saved) {
-        return JSON.parse(saved);
+        const parsed = JSON.parse(saved);
+        // Ensure all required fields exist
+        return { ...THEME_PRESETS[initialPreset], ...parsed };
       }
     }
   } catch (e) {
     console.error('Failed to load theme from localStorage', e);
   }
-  return { ...THEME_PRESETS.vibrant };
+  return { ...THEME_PRESETS[initialPreset] };
 }
 
+const currentPresetKey = ref<PresetKey>(loadInitialPreset());
 const currentTheme = reactive<ThemeColors>(loadInitialTheme());
 
 export function useTheme() {
@@ -108,6 +132,10 @@ export function useTheme() {
     root.style.setProperty('--color-app-bg', currentTheme.appBg);
     root.style.setProperty('--color-card-bg', currentTheme.cardBg);
     root.style.setProperty('--color-card-text', currentTheme.cardText);
+    root.style.setProperty('--color-card-border', currentTheme.cardBorder);
+    root.style.setProperty('--color-subtext', currentTheme.cardSubtext);
+    root.style.setProperty('--color-nav-bg', currentTheme.navBg);
+    root.style.setProperty('--color-shadow', currentTheme.shadow);
     root.style.setProperty('--color-btn-more-bg', currentTheme.btnMoreBg);
     root.style.setProperty('--color-btn-more-text', currentTheme.btnMoreText);
     root.style.setProperty('--color-emergency-bg', currentTheme.emergencyBg);
@@ -118,23 +146,40 @@ export function useTheme() {
     root.style.setProperty('--color-information-text', currentTheme.informationText);
     root.style.setProperty('--color-profile-bg', currentTheme.profileBg);
     root.style.setProperty('--color-profile-text', currentTheme.profileText);
+
+    if (currentPresetKey.value === 'dark' || currentPresetKey.value === 'contrast') {
+      root.classList.add('dark');
+      if (currentPresetKey.value === 'contrast') {
+        root.classList.add('high-contrast');
+      } else {
+        root.classList.remove('high-contrast');
+      }
+      root.style.colorScheme = 'dark';
+    } else {
+      root.classList.remove('dark');
+      root.classList.remove('high-contrast');
+      root.style.colorScheme = 'light';
+    }
   };
 
   const saveTheme = () => {
     try {
       if (typeof window !== 'undefined' && window.localStorage) {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(currentTheme));
+        localStorage.setItem(PRESET_STORAGE_KEY, currentPresetKey.value);
       }
     } catch (e) {
       console.error('Failed to save theme to localStorage', e);
     }
     // Mirror into SQLite so the choice survives WebView storage wipes.
     void settingsRepo.setJson(STORAGE_KEY, { ...currentTheme });
+    void settingsRepo.set(PRESET_STORAGE_KEY, currentPresetKey.value);
   };
 
   const applyPreset = (presetKey: PresetKey) => {
     const preset = THEME_PRESETS[presetKey];
     if (preset) {
+      currentPresetKey.value = presetKey;
       Object.assign(currentTheme, preset);
       applyThemeToDOM();
       saveTheme();
@@ -148,11 +193,12 @@ export function useTheme() {
   };
 
   const resetToDefault = () => {
-    applyPreset('vibrant');
+    applyPreset('original');
   };
 
   return {
     theme: currentTheme,
+    currentPresetKey,
     applyThemeToDOM,
     applyPreset,
     updateColor,

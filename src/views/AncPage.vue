@@ -131,9 +131,9 @@ function listenTopic(topic: Topic): void {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-border, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--color-card-border, #cbd5e1);
+  color: var(--color-card-text, #334155);
   padding: 5px 11px;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -143,13 +143,13 @@ function listenTopic(topic: Topic): void {
 }
 
 .topic-listen-btn:active {
-  background: #e2e8f0;
+  opacity: 0.8;
 }
 
 .birth-plan-link-btn {
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid rgba(43, 123, 196, 0.3);
+  border: 1.5px solid var(--color-card-border, rgba(43, 123, 196, 0.3));
   border-radius: 14px;
   padding: 10px 14px;
   font-size: 0.86rem;
@@ -160,6 +160,7 @@ function listenTopic(topic: Topic): void {
   justify-content: space-between;
   text-align: left;
   margin-bottom: 10px;
+  box-shadow: 0 2px 6px var(--color-shadow, rgba(0, 0, 0, 0.04));
 }
 
 .birth-plan-link-btn:active {

@@ -758,20 +758,9 @@
   },
   "theme": {
     "title": "সাজসজ্জা",
-    "open": "কাস্টমাইজ",
-    "presets": "থিম প্রিসেট",
-    "preset_vibrant": "ভাইব্র্যান্ট",
-    "preset_pastel": "প্যাস্টেল",
-    "preset_contrast": "হাই কনট্রাস্ট",
+    "preset_original": "আসল",
     "preset_dark": "ডার্ক",
-    "customize_colors": "রঙ কাস্টমাইজ করুন",
-    "background_color": "পটভূমি",
-    "card_color": "কার্ড",
-    "emergency_color": "জরুরি",
-    "reminders_color": "স্মারক",
-    "information_color": "তথ্য",
-    "profile_color": "প্রোফাইল",
-    "reset": "রিসেট"
+    "preset_contrast": "উচ্চ বৈসাদৃশ্য"
   },
   "content": {
     "empty": "বিষয়বস্তু শীঘ্রই আসছে।"

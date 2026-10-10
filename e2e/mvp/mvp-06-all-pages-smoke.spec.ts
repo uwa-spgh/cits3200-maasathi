@@ -23,7 +23,7 @@ const STATIC_ROUTES: { path: string; label: string }[] = [
   { path: '/profile/personal', label: 'ProfilePersonal' },
   { path: '/profile/pregnancy', label: 'ProfilePregnancy' },
   { path: '/profile/vaccination', label: 'ProfileVaccination' },
-  { path: '/profile/settings', label: 'ProfileSettings' }
+  { path: '/profile/plan', label: 'ProfilePlan' }
 ];
 
 test.describe('All pages smoke', () => {

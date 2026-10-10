@@ -24,7 +24,6 @@ import ProfilePersonalPage from '../views/profile/ProfilePersonalPage.vue';
 import ProfilePregnancyPage from '../views/profile/ProfilePregnancyPage.vue';
 import ProfileVaccinationPage from '../views/profile/ProfileVaccinationPage.vue';
 import ProfilePlanPage from '../views/profile/ProfilePlan.vue';
-import ProfileSettingsPage from '../views/profile/ProfileSettingsPage.vue';
 import HistorySummaryPage from '../views/HistorySummaryPage.vue';
 import OnboardingPage from '../views/OnboardingPage.vue';
 import TabsLayout from '../layouts/TabsLayout.vue';
@@ -55,7 +54,7 @@ const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/profile/pregnancy', name: 'ProfilePregnancy', component: ProfilePregnancyPage },
   { path: '/profile/vaccination', name: 'ProfileVaccination', component: ProfileVaccinationPage },
   { path: '/profile/plan', name: 'ProfilePlan', component: ProfilePlanPage },
-  { path: '/profile/settings', name: 'ProfileSettings', component: ProfileSettingsPage },
+  { path: '/profile/settings', redirect: '/profile' },
   { path: '/profile/history/:pregnancyId', name: 'HistorySummary', component: HistorySummaryPage }
 ];
 

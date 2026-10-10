@@ -1,189 +1,158 @@
 <template>
-  <div class="rail-row">
+  <div class="timeline-rail-wrap">
     <button
-      v-if="canGoBack"
-      class="rail-chevron"
-      :aria-label="$t('home.rail.scroll_back')"
-      @click="scrollBy(-1)"
+      class="rail-chevron left"
+      :class="{ disabled: !canScrollLeft }"
+      :aria-label="$t('home.timeline.scroll_left')"
+      @click="scrollBy(-160)"
     >
-      <IonIcon :icon="homeIcons.railBack" />
+      <IonIcon :icon="arrowBackCircleOutline" />
     </button>
 
-    <div ref="trackEl" class="rail-track" role="list" :aria-label="$t('home.rail.timeline_label')">
-      <div class="nodes-row" :class="{ spread }">
-        <span class="rail-line" aria-hidden="true"></span>
+    <div ref="trackRef" class="rail-track" @scroll="onScroll">
+      <div class="nodes-row" :class="{ spread: items.length <= 4 }">
+        <div class="rail-line" />
         <div
-          v-for="n in nodes"
-          :key="n.id"
+          v-for="item in items"
+          :key="item.id"
           class="node-slot"
-          role="listitem"
         >
-          <span v-if="n.id === currentId" class="node-date">{{ n.dateLabel }}</span>
+          <span class="node-date">{{ formatDayMonthShort(item.dueDate) }}</span>
           <button
             class="node"
-            :class="{ done: n.done, current: n.id === currentId, selected: n.id === selectedId }"
-            :title="n.title"
-            :aria-label="n.title"
-            @click="$emit('select', n.id)"
+            :class="{
+              done: item.status === 'done',
+              current: item.id === currentId,
+              selected: item.id === selectedId
+            }"
+            :aria-label="ariaLabel(item)"
+            @click="onSelect(item)"
           >
-            <IonIcon :icon="n.action ? homeIcons.nodeAction : n.icon" />
+            <IonIcon :icon="nodeIcon(item)" />
           </button>
         </div>
       </div>
     </div>
 
     <button
-      v-if="canGoForward"
-      class="rail-chevron"
-      :aria-label="$t('home.rail.scroll_forward')"
-      @click="scrollBy(1)"
+      class="rail-chevron right"
+      :class="{ disabled: !canScrollRight }"
+      :aria-label="$t('home.timeline.scroll_right')"
+      @click="scrollBy(160)"
     >
-      <IonIcon :icon="homeIcons.railForward" />
+      <IonIcon :icon="arrowForwardCircleOutline" />
     </button>
   </div>
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
+import { nextTick, onMounted, ref, watch } from 'vue';
 import { IonIcon } from '@ionic/vue';
+import {
+  arrowBackCircleOutline,
+  arrowForwardCircleOutline,
+  checkmarkOutline
+} from 'ionicons/icons';
 import { useI18n } from 'vue-i18n';
 import { homeIcons } from '../config/icons';
-import { formatDayMonthShort, formatDate, todayIso } from '../utils/date';
 import type { ScheduleItem } from '../db/schemas';
+import { formatDayMonthShort } from '../utils/date';
 
 const props = defineProps<{
   items: ScheduleItem[];
   currentId?: string | null;
-  selectedId?: string | null;
-  /** Extra action node, e.g. confirming TT vaccination when history is unknown. */
-  actionNode?: { id: string; title: string } | null;
 }>();
 
-defineEmits<{
-  (e: 'select', id: string): void;
+const emit = defineEmits<{
+  (e: 'select', item: ScheduleItem): void;
 }>();
 
-const { t, locale } = useI18n();
-const trackEl = ref<HTMLElement | null>(null);
+const { t } = useI18n();
 
-const canGoBack = ref(false);
-const canGoForward = ref(false);
-const spread = ref(true);
-
-type NodeKind = 'anc' | 'pnc' | 'tt' | 'milestone';
-
-function kindOf(item: ScheduleItem): NodeKind {
-  if (item.type === 'ANC') return 'anc';
-  if (item.type === 'PNC') return 'pnc';
-  if (item.type === 'TT') return 'tt';
-  return 'milestone';
-}
-
-function kindIcon(kind: NodeKind): string {
-  if (kind === 'anc') return homeIcons.nodeAnc;
-  if (kind === 'pnc') return homeIcons.nodePnc;
-  if (kind === 'tt') return homeIcons.nodeTt;
-  return homeIcons.nodeMilestone;
-}
-
-const nodes = computed(() => {
-  const sorted = props.items
-    .slice()
-    .sort((a, b) => a.dueDate.localeCompare(b.dueDate));
-  const list = sorted.map((i) => ({
-    id: i.id,
-    done: i.status === 'completed',
-    action: false,
-    icon: kindIcon(kindOf(i)),
-    dateLabel: formatDayMonthShort(i.dueDate, locale.value),
-    title: `${t(i.titleKey)} · ${formatDate(i.dueDate, locale.value)}`
-  }));
-  if (props.actionNode) {
-    // No due date is known, so it sits at the "now" position in the rail.
-    const at = sorted.findIndex((i) => i.dueDate > todayIso());
-    const node = {
-      id: props.actionNode.id,
-      done: false,
-      action: true,
-      icon: homeIcons.nodeAction,
-      dateLabel: '',
-      title: props.actionNode.title
-    };
-    if (at < 0) list.push(node);
-    else list.splice(at, 0, node);
-  }
-  return list;
-});
-
-function updateChevrons(): void {
-  const el = trackEl.value;
-  if (!el) {
-    canGoBack.value = false;
-    canGoForward.value = false;
-    spread.value = true;
-    return;
-  }
-  canGoBack.value = el.scrollLeft > 4;
-  canGoForward.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
-  // When everything fits, spread the events across the full rail width.
-  spread.value = el.scrollWidth <= el.clientWidth + 1;
-}
-
-let observer: ResizeObserver | null = null;
-
-function onTrackScroll(): void {
-  updateChevrons();
-}
-
-onMounted(() => {
-  void nextTick().then(() => updateChevrons());
-  if (typeof ResizeObserver !== 'undefined' && trackEl.value) {
-    observer = new ResizeObserver(() => updateChevrons());
-    observer.observe(trackEl.value);
-  }
-  trackEl.value?.addEventListener('scroll', onTrackScroll, { passive: true });
-  // Re-measure once everything (icons, fonts) has settled, in case the
-  // first pass ran before layout stabilised.
-  if (typeof window !== 'undefined') {
-    window.addEventListener('load', onTrackScroll, { once: true });
-    document.fonts?.ready.then(() => updateChevrons()).catch(() => undefined);
-    window.setTimeout(() => updateChevrons(), 600);
-  }
-});
-
-onUnmounted(() => {
-  observer?.disconnect();
-  trackEl.value?.removeEventListener('scroll', onTrackScroll);
-  if (typeof window !== 'undefined') {
-    window.removeEventListener('load', onTrackScroll);
-  }
-});
+const trackRef = ref<HTMLElement | null>(null);
+const canScrollLeft = ref(false);
+const canScrollRight = ref(false);
+const selectedId = ref<string | null>(props.currentId ?? null);
 
 watch(
-  () => [props.items.length, props.actionNode?.id, locale.value],
-  () => {
-    void nextTick().then(() => updateChevrons());
+  () => props.currentId,
+  (id) => {
+    if (id) selectedId.value = id;
   }
 );
 
-function scrollBy(direction: 1 | -1): void {
-  const el = trackEl.value;
+watch(
+  () => props.items,
+  async () => {
+    await nextTick();
+    updateScrollState();
+    scrollToCurrent();
+  },
+  { deep: true }
+);
+
+onMounted(async () => {
+  await nextTick();
+  updateScrollState();
+  scrollToCurrent();
+});
+
+function nodeIcon(item: ScheduleItem): string {
+  if (item.status === 'done') return checkmarkOutline;
+  if (item.type === 'tt') return homeIcons.reminderTt;
+  if (item.type === 'pnc') return homeIcons.reminderPnc;
+  return homeIcons.reminderAnc;
+}
+
+function ariaLabel(item: ScheduleItem): string {
+  const status = item.status === 'done' ? t('schedule.status_done') : t('schedule.status_pending');
+  return `${t(`schedule.${item.titleKey}`)} - ${status}`;
+}
+
+function onSelect(item: ScheduleItem): void {
+  selectedId.value = item.id;
+  emit('select', item);
+}
+
+function onScroll(): void {
+  updateScrollState();
+}
+
+function updateScrollState(): void {
+  const el = trackRef.value;
   if (!el) return;
-  el.scrollBy({ left: direction * el.clientWidth * 0.7, behavior: 'smooth' });
+  canScrollLeft.value = el.scrollLeft > 4;
+  canScrollRight.value = el.scrollLeft + el.clientWidth < el.scrollWidth - 4;
+}
+
+function scrollBy(delta: number): void {
+  const el = trackRef.value;
+  if (!el) return;
+  el.scrollBy({ left: delta, behavior: 'smooth' });
+}
+
+function scrollToCurrent(): void {
+  const el = trackRef.value;
+  if (!el) return;
+  const target = el.querySelector('.node.current, .node.selected') as HTMLElement | null;
+  if (target) {
+    const left = target.offsetLeft - el.clientWidth / 2 + target.clientWidth / 2;
+    el.scrollTo({ left: Math.max(0, left), behavior: 'smooth' });
+  }
 }
 </script>
 
 <style scoped>
-.rail-row {
-  width: 100%;
+.timeline-rail-wrap {
   display: flex;
   align-items: center;
   gap: 4px;
+  width: 100%;
 }
 
 .rail-chevron {
-  border: none;
   background: transparent;
+  border: none;
   color: var(--color-card-text, #1a1a1a);
   cursor: pointer;
   padding: 4px;
@@ -235,7 +204,7 @@ function scrollBy(direction: 1 | -1): void {
   top: 50%;
   height: 2px;
   transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.2);
+  background: var(--color-card-border, rgba(0, 0, 0, 0.2));
   border-radius: 2px;
 }
 
@@ -262,7 +231,7 @@ function scrollBy(direction: 1 | -1): void {
 
 .node {
   border: 2.5px solid var(--color-card-text, #1a1a1a);
-  background: #fff;
+  background: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
   border-radius: 50%;
   padding: 0;
@@ -285,7 +254,7 @@ function scrollBy(direction: 1 | -1): void {
 
 .node.done {
   background: var(--color-card-text, #1a1a1a);
-  color: #fff;
+  color: var(--color-card-bg, #fff);
 }
 
 .node.current {

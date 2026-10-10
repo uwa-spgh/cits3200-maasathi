@@ -30,9 +30,9 @@ function toggle(): void {
 <style scoped>
 .expandable-card {
   border-radius: 20px;
-  background-color: #fff;
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  background-color: var(--color-card-bg, #fff);
+  border: 1.5px solid var(--color-card-border, rgba(0, 0, 0, 0.1));
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   overflow: hidden;
 }
 

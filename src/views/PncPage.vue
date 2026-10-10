@@ -125,9 +125,9 @@ function listenTopic(topic: Topic): void {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  color: #334155;
+  background: var(--color-card-border, rgba(0, 0, 0, 0.06));
+  border: 1px solid var(--color-card-border, #cbd5e1);
+  color: var(--color-card-text, #334155);
   padding: 5px 11px;
   border-radius: 8px;
   font-size: 0.78rem;
@@ -137,11 +137,11 @@ function listenTopic(topic: Topic): void {
 }
 
 .topic-listen-btn:active {
-  background: #e2e8f0;
+  opacity: 0.8;
 }
 
 .topic-link-btn {
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
@@ -149,7 +149,7 @@ function listenTopic(topic: Topic): void {
   font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
   display: flex;
   align-items: center;

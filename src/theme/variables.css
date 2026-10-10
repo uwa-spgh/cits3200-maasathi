@@ -1,26 +1,31 @@
 :root {
   --color-app-bg: #FBF7F5;
-  --color-card-bg: #EAEAEA;
+  --color-card-bg: #FFFFFF;
   --color-card-text: #1A1A1A;
+  --color-card-border: rgba(0, 0, 0, 0.08);
+  --color-subtext: #6B7280;
+  --color-nav-bg: #FFFFFF;
+  --color-shadow: rgba(0, 0, 0, 0.06);
   --color-btn-more-bg: #7BC62D;
   --color-btn-more-text: #000000;
   --color-emergency-bg: #FF5C5C;
-  --color-emergency-text: #000000;
+  --color-emergency-text: #FFFFFF;
   --color-reminders-bg: #F6C945;
-  --color-reminders-text: #000000;
+  --color-reminders-text: #1A1A1A;
   --color-information-bg: #7BC62D;
   --color-information-text: #000000;
   --color-profile-bg: #33A1DE;
-  --color-profile-text: #000000;
+  --color-profile-text: #FFFFFF;
 }
 
-*{
+* {
   font-family: "PublicSans";
+  box-sizing: border-box;
 }
 
 @font-face {
   font-family: "PublicSans";
-  src: url("../assets/font/PublicSans-VariableFont_wght.ttf")
+  src: url("../assets/font/PublicSans-VariableFont_wght.ttf");
 }
 
 html, body, #app {
@@ -29,6 +34,7 @@ html, body, #app {
   margin: 0;
   padding: 0;
   background-color: var(--color-app-bg, #FBF7F5);
+  color: var(--color-card-text, #1A1A1A);
 }
 
 ion-app {
@@ -36,8 +42,51 @@ ion-app {
   height: 100%;
   --background: var(--color-app-bg, #FBF7F5);
   background-color: var(--color-app-bg, #FBF7F5);
+  color: var(--color-card-text, #1A1A1A);
 }
 
 ion-content {
   --background: var(--color-app-bg, #FBF7F5);
+  --color: var(--color-card-text, #1A1A1A);
+}
+
+/* Ionic components styling adapt with the active theme */
+ion-item {
+  --background: transparent;
+  --color: var(--color-card-text, #1A1A1A);
+}
+
+ion-label {
+  --color: var(--color-card-text, #1A1A1A);
+}
+
+ion-select {
+  --color: var(--color-card-text, #1A1A1A);
+  --placeholder-color: var(--color-subtext, #8C8C8C);
+}
+
+ion-input, ion-textarea {
+  --color: var(--color-card-text, #1A1A1A);
+  --placeholder-color: var(--color-subtext, #8C8C8C);
+}
+
+/* Ionic Action Sheet adaptive styling */
+:root.dark ion-action-sheet,
+:root.high-contrast ion-action-sheet {
+  --background: var(--color-card-bg, #1E1E24);
+  --button-background: var(--color-card-bg, #1E1E24);
+  --button-background-selected: rgba(255, 255, 255, 0.1);
+  --button-color: var(--color-card-text, #F3F4F6);
+  --button-color-selected: var(--color-profile-bg, #38BDF8);
+}
+
+:root.high-contrast ion-action-sheet {
+  border: 2px solid #FFFFFF;
+}
+
+/* Ionic Alert / Popover adaptive styling */
+:root.dark ion-alert,
+:root.high-contrast ion-alert {
+  --background: var(--color-card-bg, #1E1E24);
+  --color: var(--color-card-text, #F3F4F6);
 }

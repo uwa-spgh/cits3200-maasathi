@@ -44,9 +44,12 @@
         <LanguageSwitcher class="lang-inline" />
       </div>
 
-      <button class="menu-item" @click="router.push({ name: 'ProfileSettings' })">
-        <IonIcon :icon="settingsOutline" class="menu-icon" />
-        <span>{{ $t('profile.menu_settings') }}</span>
+      <button class="menu-item appearance-btn" @click="openAppearancePicker">
+        <IonIcon :icon="colorPaletteOutline" class="menu-icon" />
+        <span class="menu-label">
+          {{ $t('theme.title') }}
+          <span class="menu-sub">{{ currentThemeLabel }}</span>
+        </span>
         <IonIcon :icon="chevronForwardOutline" class="chev" />
       </button>
 
@@ -69,18 +72,18 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
-import { useIonRouter } from '@ionic/vue';
+import { computed, onMounted } from 'vue';
+import { actionSheetController, useIonRouter } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
 import { IonIcon } from '@ionic/vue';
 import {
   archiveOutline,
   bookmarkOutline,
   chevronForwardOutline,
+  colorPaletteOutline,
   languageOutline,
   medkitOutline,
   personOutline,
-  settingsOutline,
   shieldCheckmarkOutline
 } from 'ionicons/icons';
 
@@ -89,12 +92,54 @@ import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
 import { useHistory, type PregnancySummary } from '../composables/useHistory';
+import { useTheme } from '../composables/useTheme';
 
 const router = useIonRouter();
 const { t } = useI18n();
 const { activePregnancy, mode } = usePregnancy();
 const { isComplete, isUnknown } = useTt();
 const { historyList, loadAll } = useHistory();
+const { currentPresetKey, applyPreset } = useTheme();
+
+const currentThemeLabel = computed(() => {
+  if (currentPresetKey.value === 'dark') return t('theme.preset_dark');
+  if (currentPresetKey.value === 'contrast') return t('theme.preset_contrast');
+  return t('theme.preset_original');
+});
+
+async function openAppearancePicker(): Promise<void> {
+  const actionSheet = await actionSheetController.create({
+    header: t('theme.title'),
+    buttons: [
+      {
+        text: t('theme.preset_original'),
+        data: 'original',
+        handler: () => {
+          applyPreset('original');
+        }
+      },
+      {
+        text: t('theme.preset_dark'),
+        data: 'dark',
+        handler: () => {
+          applyPreset('dark');
+        }
+      },
+      {
+        text: t('theme.preset_contrast'),
+        data: 'contrast',
+        handler: () => {
+          applyPreset('contrast');
+        }
+      },
+      {
+        text: t('common.cancel'),
+        role: 'cancel'
+      }
+    ]
+  });
+  await actionSheet.present();
+}
 
 const ttShortStatus = computed(() => {
   if (isComplete.value) return t('tt.status_complete');
@@ -108,7 +153,9 @@ function historyTitle(summary: PregnancySummary): string {
 
 function openHistory(pregnancyId: string): void {
   router.push({ name: 'HistorySummary', params: { pregnancyId } });
-}onMounted(() => {
+}
+
+onMounted(() => {
   void loadAll();
 });
 </script>
@@ -125,16 +172,16 @@ function openHistory(pregnancyId: string): void {
   align-items: center;
   gap: 14px;
   width: 100%;
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  border: 1.5px solid var(--color-card-border, rgba(0, 0, 0, 0.1));
   border-radius: 18px;
   padding: 16px;
   font-size: 1rem;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -162,7 +209,7 @@ function openHistory(pregnancyId: string): void {
 .menu-sub {
   font-size: 0.78rem;
   font-weight: 600;
-  opacity: 0.65;
+  opacity: 0.7;
 }
 
 .chev {
@@ -190,11 +237,11 @@ function openHistory(pregnancyId: string): void {
   font-size: 0.85rem;
   font-style: italic;
   opacity: 0.6;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-subtext, #8c8c8c);
 }
 
 .history-row .menu-icon {
-  color: rgba(0, 0, 0, 0.4);
+  color: var(--color-subtext, rgba(0, 0, 0, 0.4));
 }
 
 .lang-row {

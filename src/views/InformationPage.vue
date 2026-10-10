@@ -151,7 +151,7 @@ const topics = computed(() => {
 }
 
 .topic-btn {
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
@@ -159,7 +159,7 @@ const topics = computed(() => {
   font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
   display: flex;
   align-items: center;

@@ -35,7 +35,7 @@
     "reminder_generic": "Reminder: #date",
     "channel_name": "Appointment reminders",
     "channel_description": "Reminders for your antenatal visits, postnatal contacts and vaccinations",
-    "in_days":"in #days days"
+    "in_days": "in #days days"
   },
   "placeholder": {
     "hint": "Placeholder — content will be added here"
@@ -757,20 +757,9 @@
   },
   "theme": {
     "title": "Appearance",
-    "open": "Customise",
-    "presets": "Theme presets",
-    "preset_vibrant": "Vibrant",
-    "preset_pastel": "Pastel",
-    "preset_contrast": "High contrast",
+    "preset_original": "Original",
     "preset_dark": "Dark",
-    "customize_colors": "Customise colours",
-    "background_color": "Background",
-    "card_color": "Card",
-    "emergency_color": "Emergency",
-    "reminders_color": "Reminders",
-    "information_color": "Information",
-    "profile_color": "Profile",
-    "reset": "Reset"
+    "preset_contrast": "High contrast"
   },
   "content": {
     "empty": "Content coming soon."

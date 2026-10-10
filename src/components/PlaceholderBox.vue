@@ -14,9 +14,9 @@ defineProps<{
 
 <style scoped>
 .placeholder-box {
-  background-color: #fff;
+  background-color: var(--color-card-bg, #fff);
   color: var(--color-card-text, #1a1a1a);
-  border: 1.5px dashed rgba(0, 0, 0, 0.2);
+  border: 1.5px dashed var(--color-card-border, rgba(0, 0, 0, 0.2));
   border-radius: 20px;
   padding: 18px 16px;
   text-align: center;
@@ -38,5 +38,6 @@ defineProps<{
   font-size: 0.8rem;
   opacity: 0.7;
   font-style: italic;
+  color: var(--color-subtext, #8c8c8c);
 }
 </style>

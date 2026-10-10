@@ -58,12 +58,13 @@ const groups = [
   margin: 0;
   padding: 14px 16px;
   border-radius: 18px;
-  background: #fff;
+  background: var(--color-card-bg, #fff);
   border: 2px solid var(--color-emergency-bg, #ff5c5c);
   color: var(--color-card-text, #1a1a1a);
   font-size: 0.95rem;
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 </style>
