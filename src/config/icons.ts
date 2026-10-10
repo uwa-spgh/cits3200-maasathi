@@ -11,6 +11,7 @@ import {
   chevronBackCircle,
   chevronForwardCircle,
   shieldCheckmarkOutline,
+  stopCircleOutline,
 } from 'ionicons/icons';
 
 import calender from '../assets/icons/calendar_month_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
@@ -52,6 +53,9 @@ export const homeIcons = {
   nodeTt: syringe,
   nodeMilestone: heartOutline,
 
+  /** Reminder widget title icon */
+  reminderTitle: clock,
+
   /** "How are you?" card title icon */
   wellbeingTitle: smile,
 
@@ -66,6 +70,7 @@ export const homeIcons = {
 
   /** Buttons */
   listen: listen,
+  stop: stopCircleOutline,
   learnMore: info,
 
   /** Bottom navigation */

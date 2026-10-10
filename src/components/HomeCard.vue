@@ -22,7 +22,7 @@
         </button>
       </div>
     </div>
-    <div v-if="listenLabel || learnMoreLabel" class="card-actions" :class="{ split: listenLabel && learnMoreLabel }">
+    <div v-if="listenText || learnMoreLabel" class="card-actions" :class="{ split: listenText && learnMoreLabel }">
       <button
         v-if="learnMoreLabel"
         class="pill-btn learn"
@@ -31,14 +31,7 @@
         <IonIcon :icon="homeIcons.learnMore" />
         <span>{{ learnMoreLabel }}</span>
       </button>
-      <button
-        v-if="listenLabel"
-        class="pill-btn listen"
-        @click.stop="$emit('listen')"
-      >
-        <IonIcon :icon="homeIcons.listen" />
-        <span>{{ listenLabel }}</span>
-      </button>
+      <ListenButton v-if="listenText" :text="listenText" :accent="accent" size="xs" />
     </div>
     <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
       <span
@@ -53,6 +46,7 @@
 
 <script setup lang="ts">
 import { IonIcon } from '@ionic/vue';
+import ListenButton from './ListenButton.vue';
 import { homeIcons } from '../config/icons';
 
 export type CardAccent = 'yellow' | 'blue' | 'green' | 'red';
@@ -67,7 +61,8 @@ defineProps<{
   graphicIconSecondary?: string | null;
   cornerArrowIcon?: string | null;
   cornerArrowLabel?: string;
-  listenLabel?: string | null;
+  /** Text read aloud by the Listen button; the button is hidden when empty. */
+  listenText?: string | null;
   learnMoreLabel?: string | null;
   dotCount?: number;
   activeDotIndex?: number;
@@ -75,7 +70,6 @@ defineProps<{
 
 defineEmits<{
   (e: 'open'): void;
-  (e: 'listen'): void;
   (e: 'learnMore'): void;
   (e: 'cornerArrow'): void;
 }>();
@@ -85,12 +79,13 @@ defineEmits<{
 .home-card {
   position: relative;
   width: 100%;
-  background: #fff;
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border-radius: 20px;
   padding: 14px 16px 12px 16px;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  border: 2px solid transparent;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  border: 2px solid var(--color-card-border, transparent);
 }
 
 .home-card:active {
@@ -175,6 +170,7 @@ defineEmits<{
   margin: -14px -16px 0 0;
   padding: 10px 14px 10px 16px;
   background: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
   border-radius: 0 18px 0 18px;
 }
 
@@ -197,7 +193,7 @@ defineEmits<{
   border: none;
   border-radius: 50%;
   background: var(--color-information-bg, #7bc62d);
-  color: #fff;
+  color: var(--color-information-text, #000);
   box-shadow: 0 2px 6px rgba(0, 0, 0, 0.18);
   display: flex;
   align-items: center;
@@ -214,10 +210,10 @@ defineEmits<{
   transform: scale(0.92);
 }
 
-.accent-yellow .corner-arrow-btn { background: var(--color-reminders-bg, #f6c945); }
-.accent-blue .corner-arrow-btn { background: var(--color-profile-bg, #33a1de); }
-.accent-green .corner-arrow-btn { background: var(--color-information-bg, #7bc62d); }
-.accent-red .corner-arrow-btn { background: var(--color-emergency-bg, #ff5c5c); }
+.accent-yellow .corner-arrow-btn { background: var(--color-reminders-bg, #f6c945); color: var(--color-reminders-text, #000); }
+.accent-blue .corner-arrow-btn { background: var(--color-profile-bg, #33a1de); color: var(--color-profile-text, #000); }
+.accent-green .corner-arrow-btn { background: var(--color-information-bg, #7bc62d); color: var(--color-information-text, #000); }
+.accent-red .corner-arrow-btn { background: var(--color-emergency-bg, #ff5c5c); color: var(--color-emergency-text, #000); }
 
 .card-actions {
   display: flex;
@@ -229,17 +225,23 @@ defineEmits<{
   justify-content: space-between;
 }
 
+/* Same box as ListenButton size="xs" so the two buttons on a card line up. */
 .pill-btn {
-  border: none;
+  min-height: 34px;
+  padding: 0 14px;
+  border: 2px solid var(--color-card-border, transparent);
   border-radius: 999px;
-  padding: 6px 16px;
   display: inline-flex;
   align-items: center;
+  justify-content: center;
   gap: 6px;
   font-size: 0.82rem;
   font-weight: 800;
+  line-height: 1.2;
+  white-space: nowrap;
   cursor: pointer;
   color: var(--color-card-text, #1a1a1a);
+  transition: transform 0.1s ease;
 }
 
 .pill-btn:active {
@@ -248,12 +250,13 @@ defineEmits<{
 
 .pill-btn ion-icon {
   font-size: 1.1rem;
+  flex-shrink: 0;
 }
 
-.accent-yellow .pill-btn { background: var(--color-reminders-bg, #f6c945); }
-.accent-blue .pill-btn { background: var(--color-profile-bg, #33a1de); }
-.accent-green .pill-btn { background: var(--color-information-bg, #7bc62d); }
-.accent-red .pill-btn { background: var(--color-emergency-bg, #ff5c5c); color: #fff; }
+.accent-yellow .pill-btn { background: var(--color-reminders-bg, #f6c945); color: var(--color-reminders-text, #000); }
+.accent-blue .pill-btn { background: var(--color-profile-bg, #33a1de); color: var(--color-profile-text, #000); }
+.accent-green .pill-btn { background: var(--color-information-bg, #7bc62d); color: var(--color-information-text, #000); }
+.accent-red .pill-btn { background: var(--color-emergency-bg, #ff5c5c); color: var(--color-emergency-text, #000); }
 
 .dot-indicator {
   display: flex;
@@ -267,7 +270,7 @@ defineEmits<{
   width: 6px;
   height: 6px;
   border-radius: 50%;
-  background: rgba(0, 0, 0, 0.15);
+  background: var(--color-text-muted, #5c5c5c);
   transition: background-color 0.15s ease, transform 0.15s ease;
 }
 

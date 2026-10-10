@@ -17,7 +17,8 @@
     "no": "না",
     "not_sure": "আমি নিশ্চিত নই",
     "mode_anc": "অ্যানসি মোড",
-    "mode_pnc": "পিএনসি মোড"
+    "mode_pnc": "পিএনসি মোড",
+    "part_of": "{total} এর মধ্যে অংশ {current}"
   },
   "nav": {
     "home": "হোম",
@@ -58,6 +59,7 @@
       "ordinal_4": "চতুর্থ",
       "wellbeing_title": "তথ্য",
       "listen": "শুনুন",
+      "stop": "থামান",
       "learn_more": "আরও জানুন",
       "wellbeing_placeholder": "আপনার বর্তমান স্বাস্থ্য ও পরামর্শ এখানে দেখা যাবে।",
       "now_placeholder": "এই মুহূর্তে নতুন কিছু জানার নেই।",
@@ -182,6 +184,8 @@
   },
   "timeline": {
     "empty": "এখানে কোনো স্মারক নেই",
+    "status_completed": "সম্পন্ন",
+    "completed_on": "{date} তারিখে সম্পন্ন",
     "mark_completed": "সম্পন্ন চিহ্নিত করুন",
     "mark_upcoming": "আসন্ন হিসেবে চিহ্নিত করুন",
     "due_today": "আজ নির্ধারিত",
@@ -629,7 +633,6 @@
     "menu_pregnancy": "আমার গর্ভাবস্থা",
     "menu_vaccination": "আমার টিকাদান",
     "menu_birth_plan": "আমার জন্ম পরিকল্পনা",
-    "menu_settings": "সেটিংস",
     "menu_history": "পূর্ববর্তী গর্ভাবস্থা",
     "data_section": "ডেটা",
     "name_label": "আপনার নাম",
@@ -716,10 +719,6 @@
     "close_pregnancy_btn": "বর্তমান গর্ভাবস্থা আগেই বন্ধ করুন",
     "close_confirm_title": "গর্ভাবস্থা বন্ধ করবেন?",
     "close_confirm_message": "এই গর্ভাবস্থা এবং এর স্মারকগুলো আপনার ইতিহাসে স্থানান্তরিত হবে। এটি আর ফেরানো যাবে না।",
-    "nav_mode_label": "নেভিগেশন স্টাইল",
-    "nav_mode_hint": "ডেভেলপার অপশন — প্রয়োগ করতে অ্যাপ রিস্টার্ট হবে",
-    "nav_home_bar": "হোম বাটন বার",
-    "nav_tab_bar": "ট্যাব বার",
     "reset_data_btn": "সব ডেটা মুছে ফেলুন",
     "reset_confirm_title": "সব ডেটা মুছে ফেলবেন?",
     "reset_confirm_message": "এই ডিভাইস থেকে সব প্রোফাইল, গর্ভাবস্থা এবং স্মারকের ডেটা স্থায়ীভাবে মুছে যাবে।"
@@ -758,20 +757,9 @@
   },
   "theme": {
     "title": "সাজসজ্জা",
-    "open": "কাস্টমাইজ",
-    "presets": "থিম প্রিসেট",
-    "preset_vibrant": "ভাইব্র্যান্ট",
-    "preset_pastel": "প্যাস্টেল",
-    "preset_contrast": "হাই কনট্রাস্ট",
-    "preset_dark": "ডার্ক",
-    "customize_colors": "রঙ কাস্টমাইজ করুন",
-    "background_color": "পটভূমি",
-    "card_color": "কার্ড",
-    "emergency_color": "জরুরি",
-    "reminders_color": "স্মারক",
-    "information_color": "তথ্য",
-    "profile_color": "প্রোফাইল",
-    "reset": "রিসেট"
+    "normal": "স্বাভাবিক",
+    "contrast": "হাই কনট্রাস্ট",
+    "dark": "ডার্ক"
   },
   "content": {
     "empty": "বিষয়বস্তু শীঘ্রই আসছে।"

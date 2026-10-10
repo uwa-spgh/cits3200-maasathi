@@ -1,3 +1,6 @@
+<!--
+  ProfilePlan — birth plan form (facility, birth attendant, transport, emergency contact) saved on demand, with mother's and baby's bag checklists and advice. Reached from the Profile menu and the ANC birth preparedness card.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -33,17 +36,24 @@
       <section class="form-card">
         <h2 class="form-title">{{ $t('profile.plan_bag_title') }}</h2>
         <h3 class="bag-subtitle first">{{ $t('profile.plan_bag_mother_title') }}</h3>
-        <ul class="bag-list">
-          <li v-for="n in 7" :key="n">{{ $t(`profile.plan_bag_items.item${n}`) }}</li>
-        </ul>
+        <ListenList
+          :title="$t('profile.plan_bag_mother_title')"
+          :points="bagTexts('plan_bag_items', 7)"
+          accent="blue"
+        />
         <h3 class="bag-subtitle">{{ $t('profile.plan_bag_baby_title') }}</h3>
-        <ul class="bag-list">
-          <li v-for="n in 4" :key="n">{{ $t(`profile.plan_bag_baby_items.item${n}`) }}</li>
-        </ul>
+        <ListenList
+          :title="$t('profile.plan_bag_baby_title')"
+          :points="bagTexts('plan_bag_baby_items', 4)"
+          accent="blue"
+        />
       </section>
 
       <section class="advice-card">
         <p class="advice-text">{{ $t('profile.plan_advice_text') }}</p>
+        <div class="advice-listen">
+          <ListenButton size="sm" accent="blue" :text="$t('profile.plan_advice_text')" />
+        </div>
       </section>
     </div>
   </PageShell>
@@ -61,6 +71,8 @@ import {
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
+import ListenButton from '../../components/ListenButton.vue';
+import ListenList from '../../components/ListenList.vue';
 import { settingsRepo } from '../../db/database';
 
 const FACILITY_KEY = 'maasathi_birth_plan_facility';
@@ -76,6 +88,11 @@ const form = ref<{ facility: string; attendant: string; transport: string; emerg
   transport: '',
   emergencyContact: ''
 });
+
+/** Translated bag items for one list, in display order (item1 .. itemN). */
+function bagTexts(key: string, count: number): string[] {
+  return Array.from({ length: count }, (_, i) => t(`profile.${key}.item${i + 1}`));
+}
 
 onMounted(async () => {
   form.value.facility = (await settingsRepo.get(FACILITY_KEY)) ?? '';
@@ -109,6 +126,15 @@ async function save(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
 }
 
 .form-title {
@@ -119,11 +145,11 @@ async function save(): Promise<void> {
 }
 
 .advice-card {
-  background: #fff;
+  background: var(--color-surface, #fff);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 20px;
   padding: 14px 16px 12px 16px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 
 .advice-text {
@@ -131,18 +157,14 @@ async function save(): Promise<void> {
   font-size: 0.88rem;
   font-weight: 600;
   line-height: 1.4;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
   text-align: center;
 }
 
-.bag-list {
-  margin: 0;
-  padding-left: 20px;
-  color: var(--color-card-text, #1a1a1a);
-  font-size: 0.9rem;
+.advice-listen {
   display: flex;
-  flex-direction: column;
-  gap: 6px;
+  justify-content: center;
+  margin-top: 10px;
 }
 
 .bag-subtitle {

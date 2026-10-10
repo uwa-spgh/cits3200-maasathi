@@ -4,9 +4,8 @@ import { usePregnancy } from './composables/usePregnancy';
 import { useTt } from './composables/useTt';
 import { useSchedule } from './composables/useSchedule';
 import { useUser } from './composables/useUser';
-import { useTheme, type ThemeColors } from './composables/useTheme';
+import { useTheme, isThemeMode, THEME_STORAGE_KEY } from './composables/useTheme';
 import { i18n } from './i18n';
-import { getNavMode, setNavMode } from './config/app';
 
 let appData: Promise<void> | null = null;
 
@@ -42,20 +41,10 @@ async function restoreSettings(): Promise<void> {
   }
 
   // Theme
-  const savedTheme = await settingsRepo.getJson<ThemeColors | null>('maasathi_theme_colors', null);
-  if (savedTheme && typeof savedTheme === 'object' && 'appBg' in savedTheme) {
-    const { theme, applyThemeToDOM } = useTheme();
-    Object.assign(theme, savedTheme);
-    applyThemeToDOM();
-    mirrorToLocalStorage('maasathi_theme_colors', JSON.stringify(savedTheme));
-  }
-
-  // Navigation mode (applies from next launch if it differs)
-  const savedNav = await settingsRepo.get('maasathi_nav_mode');
-  if (savedNav === 'homeBar' || savedNav === 'tabBar') {
-    if (savedNav !== getNavMode()) {
-      setNavMode(savedNav);
-    }
+  const savedTheme = await settingsRepo.get(THEME_STORAGE_KEY);
+  if (isThemeMode(savedTheme)) {
+    const { setMode } = useTheme();
+    setMode(savedTheme);
   }
 }
 

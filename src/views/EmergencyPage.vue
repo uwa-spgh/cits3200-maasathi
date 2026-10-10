@@ -1,3 +1,6 @@
+<!--
+  EmergencyPage — tap-to-call emergency contacts, a placeholder for the nearest facility, and danger-sign checklists. Checklists depend on stage: pregnancy, labour signs from week 36, or postpartum and newborn in PNC mode.
+-->
 <template>
   <PageShell
     nav="danger"
@@ -33,11 +36,11 @@
           :key="group.key"
           :title="$t(`danger_signs.${group.key}.title`)"
         >
-          <ul class="danger-list">
-            <li v-for="sign in group.signs" :key="sign">
-              {{ $t(`danger_signs.${group.key}.signs.${sign}`) }}
-            </li>
-          </ul>
+          <ListenList
+            :title="$t(`danger_signs.${group.key}.title`)"
+            :points="signTexts(group)"
+            accent="red"
+          />
         </ExpandableCard>
       </div>
     </div>
@@ -51,6 +54,7 @@ import { callOutline, warningOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import PlaceholderBox from '../components/PlaceholderBox.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 import { useEmergencyContacts } from '../composables/useEmergencyContacts';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useI18n } from 'vue-i18n';
@@ -75,6 +79,11 @@ onMounted(() => {
     signs: Array.from({ length: SIGN_COUNTS[key] }, (_, i) => `sign${i + 1}`)
   }));
 });
+
+/** The translated sign texts for one danger-sign group, in display order. */
+function signTexts(group: { key: string; signs: string[] }): string[] {
+  return group.signs.map((sign) => t(`danger_signs.${group.key}.signs.${sign}`));
+}
 
 /** Context-relevant checklists for all four stages:
  *  - ANC: pregnancy signs, plus labour signs from week 36 (Visit 4 guidance).
@@ -107,13 +116,13 @@ void t;
   display: flex;
   align-items: center;
   gap: 12px;
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-emergency-bg, #ff5c5c);
   border-radius: 20px;
   padding: 12px 18px;
   text-decoration: none;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -137,7 +146,7 @@ void t;
 
 .call-number {
   font-size: 0.8rem;
-  opacity: 0.8;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .danger-box {
@@ -152,15 +161,5 @@ void t;
   font-size: 1.05rem;
   color: var(--color-card-text, #1a1a1a);
   text-align: center;
-}
-
-.danger-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  color: var(--color-card-text, #1a1a1a);
-  font-size: 0.9rem;
 }
 </style>

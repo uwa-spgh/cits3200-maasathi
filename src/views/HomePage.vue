@@ -1,3 +1,6 @@
+<!--
+  HomePage — main dashboard: greeting, a timeline rail of visits, and cards for the next reminder, a wellbeing article, and a daily "What to know right now" topic. Cards open Reminders, Information or the topic page.
+-->
 <template>
   <IonPage>
     <IonHeader class="home-header ion-no-border">
@@ -26,10 +29,9 @@
           :body="reminderBody"
           :badge="reminderBadge"
           :graphic-icon="reminderGraphic"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="reminderBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
-          @listen="listen(reminderBody)"
           @learn-more="onRemindersTap"
         />
 
@@ -38,10 +40,9 @@
           :title="$t('home.cards.wellbeing_title')"
           :title-icon="homeIcons.wellbeingTitle"
           :body="wellbeingBody"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="wellbeingBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onInformationTap"
-          @listen="listen(wellbeingBody)"
           @learn-more="onInformationTap"
         />
 
@@ -56,12 +57,11 @@
           :body="nowExcerpt"
           :corner-arrow-icon="nowTopics.length > 1 ? homeIcons.nowNext : null"
           :corner-arrow-label="$t('home.cards.now_next')"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="nowExcerpt"
           :learn-more-label="$t('home.cards.learn_more')"
           :dot-count="nowTopics.length"
           :active-dot-index="nowIndex"
           @open="onNowLearnMore"
-          @listen="listen(nowExcerpt)"
           @learn-more="onNowLearnMore"
           @corner-arrow="nowNext"
         />
@@ -91,7 +91,6 @@ import HomeTimelineRail from '../components/HomeTimelineRail.vue';
 import { homeIcons } from '../config/icons';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
 import type { ScheduleItem } from '../db/schemas';
@@ -105,7 +104,6 @@ const { userName } = useUser();
 const { activePregnancy, mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
 const { load: loadTt } = useTt();
-const { speak } = useSpeech();
 
 onMounted(() => {
   void loadSchedule();
@@ -114,10 +112,6 @@ onMounted(() => {
 
 function go(routeName: string): void {
   ionRouter.push({ name: routeName });
-}
-
-function listen(text: string): void {
-  speak(text, locale.value);
 }
 
 // ---- Reminder card: the next thing needing attention ----
@@ -150,12 +144,12 @@ function openEvent(id: string): void {
 
 const reminderGraphic = computed(() => {
   const e = shownEvent.value;
-  if (!e) return homeIcons.reminderGraphic;
+  if (!e) return homeIcons.nodeAnc;
   if (e.type === 'ANC') return homeIcons.nodeAnc;
   if (e.type === 'PNC') return homeIcons.nodePnc;
   if (e.type === 'TT') return homeIcons.nodeTt;
   if (e.ref === 'edd') return homeIcons.nodeMilestone;
-  return homeIcons.reminderGraphic;
+  return homeIcons.nodeAnc;
 });
 
 const reminderBadge = computed<string | null>(() => {
@@ -296,7 +290,7 @@ function onNowLearnMore(): void {
 .brand-tag {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #8c8c8c;
+  color: var(--color-text-muted, #5c5c5c);
   margin: 0 0 4px 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -305,12 +299,12 @@ function onNowLearnMore(): void {
 .greeting {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--color-card-text, #1a1a1a);
   margin: 0;
 }
 
 .nav-footer {
   background: var(--color-app-bg, #fbf7f5);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 -4px 16px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 </style>

@@ -1,3 +1,6 @@
+<!--
+  AncTrimesterPage — ANC guidance for one trimester (?trimester=1, 2 or 3): the visits due in that trimester, danger signs, nutrition, and tests once that content exists.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"
@@ -11,21 +14,20 @@
         :key="visit"
         :title="$t(`anc.visits.${visit}`)"
       >
-        <ContentText :text="$t(`anc.visit_body.${visit}`) || $t('content.empty')" />
+        <ListenText :title="$t(`anc.visits.${visit}`)" :text="$t(`anc.visit_body.${visit}`)" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('danger_signs.section_title')">
-        <ul class="sign-list">
-          <li v-for="n in 5" :key="n">{{ $t(`danger_signs.pregnancy.signs.sign${n}`) }}</li>
-        </ul>
+        <ListenList :title="$t('danger_signs.section_title')" :points="dangerSigns" />
       </ExpandableCard>
 
       <ExpandableCard :title="$t('nutrition.section_title')">
-        <ContentText :text="$t('anc.nutrition_body') || $t('content.empty')" />
+        <ListenText :title="$t('nutrition.section_title')" :text="$t('anc.nutrition_body')" />
       </ExpandableCard>
 
-      <ExpandableCard :title="$t('anc.tests_title')">
-        <ContentText :text="$t('anc.tests_body') || $t('content.empty')" />
+      <!-- Only shown once tests content exists; the empty placeholder is not worth a card. -->
+      <ExpandableCard v-if="hasTests" :title="$t('anc.tests_title')">
+        <ListenText :title="$t('anc.tests_title')" :text="$t('anc.tests_body')" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -37,7 +39,8 @@ import { useI18n } from 'vue-i18n';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
-import ContentText from '../components/ContentText.vue';
+import ListenList from '../components/ListenList.vue';
+import ListenText from '../components/ListenText.vue';
 
 const props = defineProps<{ trimester?: string }>();
 
@@ -54,6 +57,13 @@ const visits = computed(() => TRIMESTER_VISITS[props.trimester ?? '1'] ?? ['visi
 const breadcrumb = computed(() =>
   `${t('information.topics.anc')} - ${t('anc.trimester', { n: props.trimester ?? '1' })}`
 );
+
+/** The first five danger signs shown on this page. */
+const dangerSigns = computed(() =>
+  Array.from({ length: 5 }, (_, i) => t(`danger_signs.pregnancy.signs.sign${i + 1}`))
+);
+
+const hasTests = computed(() => t('anc.tests_body').trim() !== '');
 </script>
 
 <style scoped>
@@ -61,15 +71,5 @@ const breadcrumb = computed(() =>
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
 }
 </style>

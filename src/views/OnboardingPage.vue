@@ -1,3 +1,6 @@
+<!--
+  OnboardingPage — first-run setup: language, name, pregnancy dates (known LMP/EDD or a month estimate) and tetanus history. Saves the profile and pregnancy, then opens Home. Back steps through earlier answers.
+-->
 <template>
   <IonPage>
     <IonContent class="onboarding-content">
@@ -13,6 +16,7 @@
           <IonIcon :icon=onBoardingIcons.wavingHand class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.welcome_text')" />
           <LanguageSwitcher class="language-picker" />
           <button class="answer-btn primary" @click="advance('name')">
             {{ $t('common.next') }}
@@ -94,6 +98,7 @@
             </button>
           </div>
           <p class="step-hint">{{ $t('onboarding.estimate_hint') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.estimate_hint')" />
           <button
             class="answer-btn primary"
             :disabled="estimateMonths === null"
@@ -158,6 +163,7 @@
         <section v-else class="step-card">
           <h1 class="step-title">{{ $t('onboarding.done_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.done_text') }}</p>
+          <ListenButton class="step-listen" size="sm" accent="green" :text="$t('onboarding.done_text')" />
           <IonIcon :icon="heartCircleOutline" class="done-icon" />
           <button class="answer-btn primary" @click="finish">
             {{ $t('onboarding.start_app') }}
@@ -176,6 +182,7 @@ import { arrowBackOutline, heartCircleOutline } from 'ionicons/icons';
 import { onBoardingIcons } from '../config/icons.js';
 
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
+import ListenButton from '../components/ListenButton.vue';
 import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
@@ -312,6 +319,7 @@ async function finish(): Promise<void> {
   border-radius: 50%;
   border: none;
   background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   color: var(--color-card-text, #1a1a1a);
   display: flex;
   align-items: center;
@@ -325,6 +333,7 @@ async function finish(): Promise<void> {
 
 .step-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 24px;
   padding: 28px 22px;
   text-align: center;
@@ -358,11 +367,13 @@ async function finish(): Promise<void> {
 
 .step-input {
   --background: var(--color-app-bg, #fbf7f5);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 14px;
   padding: 4px 8px;
 }
 
-.language-picker {
+.language-picker,
+.step-listen {
   align-self: center;
 }
 
@@ -380,7 +391,8 @@ async function finish(): Promise<void> {
 
 .answer-btn:active {
   transform: scale(0.97);
-  background-color: #33a1de;
+  background-color: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000);
 }
 
 .answer-btn:disabled {
@@ -396,16 +408,15 @@ async function finish(): Promise<void> {
   border: 0;
   width: auto;
   background: var(--color-app-bg, #fbf7f5);
-  color: var(--color-card-text, #1a1a1a);
   border-radius: 999px;
   font-size: 0.8rem;
   align-self: center;
-  opacity: 0.80;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .done-icon {
   font-size: 4rem;
-  color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-information-bg, #7bc62d);
   align-self: center;
 }
 
@@ -422,7 +433,7 @@ async function finish(): Promise<void> {
   height: 48px; 
   width: 48px; 
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--color-border, rgba(0, 0, 0, 0.2));
   background: var(--color-app-bg, #fbf7f5);
   color: var(--color-card-text, #1a1a1a);
   font-size: 1.4rem;
@@ -440,7 +451,6 @@ async function finish(): Promise<void> {
   margin: 0;
   font-size: 0.8rem;
   font-style: italic;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

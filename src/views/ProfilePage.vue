@@ -1,3 +1,6 @@
+<!--
+  ProfilePage — profile menu: links to personal details, pregnancy, vaccination and birth plan; language and appearance settings; archived pregnancies; and a reset-all-data action behind a confirmation.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -44,11 +47,24 @@
         <LanguageSwitcher class="lang-inline" />
       </div>
 
-      <button class="menu-item" @click="router.push({ name: 'ProfileSettings' })">
-        <IonIcon :icon="settingsOutline" class="menu-icon" />
-        <span>{{ $t('profile.menu_settings') }}</span>
-        <IonIcon :icon="chevronForwardOutline" class="chev" />
-      </button>
+      <div class="menu-item appearance-row" role="radiogroup" :aria-label="$t('theme.title')">
+        <IonIcon :icon="colorPaletteOutline" class="menu-icon" />
+        <span class="appearance-label">{{ $t('theme.title') }}</span>
+        <div class="appearance-options">
+          <button
+            v-for="option in themeOptions"
+            :key="option"
+            type="button"
+            role="radio"
+            class="appearance-option"
+            :class="{ active: themeMode === option }"
+            :aria-checked="themeMode === option"
+            @click="setThemeMode(option)"
+          >
+            {{ $t(`theme.${option}`) }}
+          </button>
+        </div>
+      </div>
 
       <section class="history-block">
         <h2 class="history-title">{{ $t('profile.history_section') }}</h2>
@@ -64,6 +80,11 @@
           <IonIcon :icon="chevronForwardOutline" class="chev" />
         </button>
       </section>
+
+      <button class="menu-item reset-row" @click="confirmReset">
+        <IonIcon :icon="trashOutline" class="menu-icon" />
+        <span>{{ $t('profile.reset_data_btn') }}</span>
+      </button>
     </div>
   </PageShell>
 </template>
@@ -72,25 +93,31 @@
 import { computed, onMounted, ref } from 'vue';
 import { useIonRouter } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
-import { IonIcon } from '@ionic/vue';
+import { IonIcon, alertController } from '@ionic/vue';
 import {
   archiveOutline,
   bookmarkOutline,
+  colorPaletteOutline,
   chevronForwardOutline,
   languageOutline,
   medkitOutline,
   personOutline,
-  settingsOutline,
-  shieldCheckmarkOutline
+  shieldCheckmarkOutline,
+  trashOutline
 } from 'ionicons/icons';
 
 import PageShell from '../components/PageShell.vue';
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
+import { useTheme, THEME_MODES } from '../composables/useTheme';
 import { useHistory, type PregnancySummary } from '../composables/useHistory';
+import { clearAllData } from '../db/database';
+import { forceCancelAllReminders } from '../services/notifications.js';
 
 const router = useIonRouter();
+const { mode: themeMode, setMode: setThemeMode } = useTheme();
+const themeOptions = THEME_MODES;
 const { t } = useI18n();
 const { activePregnancy, mode } = usePregnancy();
 const { isComplete, isUnknown } = useTt();
@@ -108,7 +135,35 @@ function historyTitle(summary: PregnancySummary): string {
 
 function openHistory(pregnancyId: string): void {
   router.push({ name: 'HistorySummary', params: { pregnancyId } });
-}onMounted(() => {
+}
+
+async function confirmReset(): Promise<void> {
+  const alert = await alertController.create({
+    header: t('profile.reset_confirm_title'),
+    message: t('profile.reset_confirm_message'),
+    buttons: [
+      { text: t('common.cancel'), role: 'cancel' },
+      {
+        text: t('common.confirm'),
+        role: 'destructive',
+        handler: () => {
+          void clearAllData().then(async () => {
+            try {
+              localStorage.clear();
+              await forceCancelAllReminders();
+            } catch (e) {
+              console.error('reset failed', e);
+            }
+            window.location.href = '/onboarding';
+          });
+        }
+      }
+    ]
+  });
+  await alert.present();
+}
+
+onMounted(() => {
   void loadAll();
 });
 </script>
@@ -125,16 +180,16 @@ function openHistory(pregnancyId: string): void {
   align-items: center;
   gap: 14px;
   width: 100%;
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid rgba(0, 0, 0, 0.1);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 18px;
   padding: 16px;
   font-size: 1rem;
   font-weight: 700;
   text-align: left;
   cursor: pointer;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.08));
   transition: transform 0.15s ease;
 }
 
@@ -162,12 +217,12 @@ function openHistory(pregnancyId: string): void {
 .menu-sub {
   font-size: 0.78rem;
   font-weight: 600;
-  opacity: 0.65;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .chev {
   margin-left: auto;
-  opacity: 0.5;
+  color: color-mix(in srgb, var(--color-surface-text, #1a1a1a) 50%, var(--color-surface, #fff));
 }
 
 .history-block {
@@ -189,12 +244,11 @@ function openHistory(pregnancyId: string): void {
   margin: 0 4px;
   font-size: 0.85rem;
   font-style: italic;
-  opacity: 0.6;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .history-row .menu-icon {
-  color: rgba(0, 0, 0, 0.4);
+  color: color-mix(in srgb, var(--color-surface-text, #1a1a1a) 40%, var(--color-surface, #fff));
 }
 
 .lang-row {
@@ -203,5 +257,47 @@ function openHistory(pregnancyId: string): void {
 
 .lang-row .lang-inline {
   margin-left: auto;
+}
+
+.appearance-row {
+  flex-wrap: wrap;
+  cursor: default;
+}
+
+.appearance-label {
+  flex: 1;
+}
+
+.appearance-options {
+  display: flex;
+  width: 100%;
+  gap: 8px;
+}
+
+.appearance-option {
+  flex: 1;
+  padding: 10px 6px;
+  border-radius: 12px;
+  border: 1.5px solid var(--color-border);
+  background: transparent;
+  color: var(--color-surface-text);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.appearance-option.active {
+  background: var(--color-profile-bg);
+  border-color: var(--color-profile-bg);
+  color: var(--color-profile-text);
+}
+
+.reset-row {
+  margin-top: 8px;
+  color: var(--color-danger, #c0392b);
+}
+
+.reset-row .menu-icon {
+  color: var(--color-danger, #c0392b);
 }
 </style>

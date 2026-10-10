@@ -1,3 +1,6 @@
+<!--
+  RemindersPage — timeline of upcoming and overdue visits (first three shown, expandable) and completed visits, where items can be marked done or undone. A TT banner links to vaccination while status is unknown. ?focus=<id> opens a specific item.
+-->
 <template>
   <PageShell
     :title="$t('reminders.title')"
@@ -18,6 +21,7 @@
             {{ $t('profile.menu_vaccination') }}
           </button>
         </p>
+        <ListenButton size="sm" class="tt-banner-listen" :text="ttNoticeText" />
       </div>
 
       <!-- Active / Upcoming / Overdue visits -->
@@ -74,10 +78,11 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useIonRouter } from '@ionic/vue';
 import { timeOutline } from 'ionicons/icons';
+import ListenButton from '../components/ListenButton.vue';
 import PageShell from '../components/PageShell.vue';
 import TimelineList from '../components/TimelineList.vue';
 import { ttDoseNumber, useSchedule } from '../composables/useSchedule';
@@ -99,6 +104,7 @@ const showPast = ref(false);
 const showAllUpcoming = ref(false);
 
 const ttNotice = computed(() => isUnknown.value && activePregnancy.value !== null);
+const ttNoticeText = computed(() => t('tt.unknown_banner'));
 
 /** Dose-specific info for the TT reminder (no "coming soon" placeholder). */
 function infoForItem(item: ScheduleItem): ItemInfo | null {
@@ -156,115 +162,143 @@ async function onUndo(item: ScheduleItem): Promise<void> {
   await markUpcoming(item);
 }
 
+/** Expands a reminder, first revealing it if it sits outside the collapsed lists. */
+function focusItem(id: string): void {
+  const upcomingIndex = upcomingAll.value.findIndex((i) => i.id === id);
+  if (upcomingIndex >= 3) showAllUpcoming.value = true;
+  if (pastItems.value.some((i) => i.id === id)) showPast.value = true;
+  expandedId.value = id;
+  void nextTick(() => {
+    const el = document.querySelector('.timeline-item.expanded');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
 // Deep-link handling: if ?focus=<id> is provided, expand that item
 watch(
   () => route.query.focus,
   (focusId) => {
-    if (typeof focusId === 'string' && focusId) {
-      expandedId.value = focusId;
-      void nextTick(() => {
-        const el = document.querySelector('.timeline-item.expanded');
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-    }
+    if (typeof focusId === 'string' && focusId) focusItem(focusId);
   },
   { immediate: true }
 );
-
-onMounted(() => {
-  const focusId = route.query.focus;
-  if (typeof focusId === 'string' && focusId) {
-    expandedId.value = focusId;
-  }
-});
 </script>
 
 <style scoped>
+/* Soft yellow edge for the page's outlined cards and buttons (solid black in high contrast) */
 .reminders-page {
+  --edge-soft: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 45%, var(--color-border, rgba(0, 0, 0, 0.1)));
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
+/* TT notice: same surface card as the timeline rows; only its link pill is solid yellow */
 .tt-banner {
-  background: #fff;
-  border: 2px solid var(--color-reminders-bg, #f6c945);
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--edge-soft);
   border-radius: 20px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
-  padding: 10px 10px 10px 14px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  padding: 14px 14px 14px 16px;
   display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .tt-banner-text {
-  flex: 1;
-  min-width: 0;
   display: flow-root;
   margin: 0;
   font-size: 0.88rem;
-  font-weight: 600;
+  font-weight: 700;
   line-height: 1.45;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
+.tt-banner-listen {
+  align-self: flex-start;
+}
+
+/* Primary pill, same height as the other action buttons */
 .tt-banner-link {
   float: right;
-  margin: 2px 0 0 10px;
+  margin: 0 0 0 12px;
   background: var(--color-reminders-bg, #f6c945);
   color: var(--color-reminders-text, #000);
   border: none;
   border-radius: 999px;
-  padding: 0 18px;
-  height: 36px;
+  padding: 0 16px;
+  height: 40px;
+  min-height: 40px;
+  font-family: inherit;
   font-weight: 800;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   cursor: pointer;
   white-space: nowrap;
 }
 
 .tt-banner-link:active {
-  transform: scale(0.95);
+  transform: scale(0.96);
 }
 
 .section {
   display: flex;
   flex-direction: column;
-  gap: 8px;
+  gap: 12px;
 }
 
+/* Secondary pill: surface with a soft yellow outline, 44px touch height (solid yellow is reserved for Mark completed) */
 .see-more-btn {
-  background: #fff;
-  border: 1.5px solid #e5e7eb;
-  border-radius: 12px;
-  padding: 10px 14px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  color: #4b5563;
-  cursor: pointer;
   align-self: center;
-  margin-top: 4px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.03);
-  transition: all 0.15s ease;
+  min-height: 44px;
+  padding: 0 18px;
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--edge-soft);
+  border-radius: 999px;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .see-more-btn:active {
-  background: #f9fafb;
+  transform: scale(0.97);
 }
 
 .past-section {
-  margin-top: 8px;
+  margin-top: 4px;
 }
 
+/* Collapsible header styled exactly like the app's expandable cards */
 .past-toggle {
-  background: #f3f4f6;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 14px;
+  width: 100%;
+  min-height: 52px;
+  padding: 0 16px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 0.88rem;
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--edge-soft);
+  border-radius: 20px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  font-family: inherit;
+  font-size: 1rem;
   font-weight: 700;
-  color: #4b5563;
   cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.past-toggle:active {
+  transform: scale(0.99);
+}
+</style>
+
+<!-- High contrast override, unscoped for the same reason as in TimelineItem.vue -->
+<style>
+:root[data-theme='contrast'] .reminders-page {
+  --edge-soft: var(--color-border, #000);
 }
 </style>

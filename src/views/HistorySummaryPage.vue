@@ -1,3 +1,6 @@
+<!--
+  HistorySummaryPage — read-only summary of an archived pregnancy: delivery details, child DOB, visit tracking, care and TT counts, schedule record and notes. Opened from the history list on the Profile page.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -151,6 +154,7 @@ onMounted(async () => {
 
 .card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   padding: 16px;
   color: var(--color-card-text, #1a1a1a);
@@ -172,7 +176,7 @@ onMounted(async () => {
 }
 
 .row span:first-child {
-  opacity: 0.75;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .schedule-list {
@@ -189,11 +193,11 @@ onMounted(async () => {
   display: flex;
   justify-content: space-between;
   gap: 10px;
-  opacity: 0.8;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .schedule-list li.done {
-  opacity: 1;
+  color: var(--color-card-text, #1a1a1a);
   font-weight: 700;
 }
 
@@ -205,7 +209,7 @@ onMounted(async () => {
 }
 
 .visit-block {
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.12);
+  border-bottom: 1px dashed var(--color-border, rgba(0, 0, 0, 0.12));
   padding-bottom: 8px;
   margin-bottom: 8px;
 }
@@ -225,6 +229,6 @@ onMounted(async () => {
   margin: 0;
   font-size: 0.9rem;
   font-style: italic;
-  opacity: 0.8;
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

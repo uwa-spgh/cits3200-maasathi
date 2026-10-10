@@ -1,3 +1,6 @@
+<!--
+  InformationPage — information hub: "What to know right now" topics for the current stage, plus links to browse ANC, breastfeeding, PNC, nutrition and vaccination. PNC mode lists PNC first.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"
@@ -23,9 +26,11 @@
             v-else
             :title="$t(`${topic.ns}.${topic.key}_title`)"
           >
-            <ul class="sign-list">
-              <li v-for="n in topic.points" :key="n">{{ $t(`${topic.ns}.${topic.key}.point${n}`) }}</li>
-            </ul>
+            <ListenList
+              :title="$t(`${topic.ns}.${topic.key}_title`)"
+              :points="topicPoints(topic)"
+              accent="blue"
+            />
           </ExpandableCard>
         </template>
       </section>
@@ -48,6 +53,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
+import { useI18n } from 'vue-i18n';
 import { useIonRouter } from '@ionic/vue';
 import { IonIcon } from '@ionic/vue';
 import {
@@ -57,10 +63,13 @@ import {
 } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { currentStageRef, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import type { NowTopic } from '../utils/stageArticle';
 
+const { t } = useI18n();
 const ionRouter = useIonRouter();
 const { mode } = usePregnancy();
 const { items, load: loadSchedule } = useSchedule();
@@ -75,6 +84,11 @@ const nowTopics = computed(() => {
   if (!currentStage.value) return [];
   return STAGE_NOW_TOPICS[currentStage.value.stageKey] ?? [];
 });
+
+/** The bullet points shown inline for a "Now" topic card, in display order. */
+function topicPoints(topic: NowTopic): string[] {
+  return Array.from({ length: topic.points }, (_, i) => t(`${topic.ns}.${topic.key}.point${i + 1}`));
+}
 
 const topics = computed(() => {
   const base = [
@@ -122,20 +136,6 @@ const topics = computed(() => {
   color: var(--color-card-text, #1a1a1a);
 }
 
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
-}
-
-.sign-list li {
-  white-space: pre-line;
-}
-
 .browse-section {
   display: flex;
   flex-direction: column;
@@ -151,15 +151,15 @@ const topics = computed(() => {
 }
 
 .topic-btn {
-  background-color: #fff;
-  color: var(--color-card-text, #1a1a1a);
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
   border: 2px solid var(--color-profile-bg, #33a1de);
   border-radius: 18px;
   padding: 14px 18px;
   font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
   display: flex;
   align-items: center;
@@ -173,6 +173,6 @@ const topics = computed(() => {
 
 .arrow-icon {
   font-size: 1.2rem;
-  opacity: 0.6;
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>
