@@ -256,6 +256,10 @@ function scrollBy(direction: 1 | -1): void {
   color: var(--color-card-text, #1a1a1a);
 }
 
+.node.done ion-icon {
+  filter: invert(1);
+}
+
 .node {
   border: 2.5px solid var(--color-card-text, #1a1a1a);
   background: #fff;
