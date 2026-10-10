@@ -258,11 +258,17 @@ const epiSpeech = computed(() =>
 
 <style scoped>
 /* One row per visit: a narrow track (dot + line) beside a single card.
-   Every card shares the same radius, border width, padding and shadow.
-   Neutral by default like the rest of the app. Yellow is an accent only:
-   the due-today dot, the due-today card edge and the DUE TODAY badge.
-   Overdue gets a small emergency badge; completed drops to muted. */
+   Every card shares the same radius, padding and shadow. The section is a
+   soft yellow family: edges, line, dots and pills are tints of the reminders
+   yellow over the surface. Due today gets the strongest yellow (2px edge and
+   a full dot) and the DUE TODAY badge; overdue keeps its emergency red badge
+   and dot; completed drops to muted. High contrast drops the tints for solid
+   black edges and keeps orange only on the dots, the badge and the primary button. */
 .timeline-item {
+  --edge-soft: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 45%, var(--color-border, rgba(0, 0, 0, 0.1)));
+  --edge-due: var(--color-reminders-bg, #f6c945);
+  --tint-pill: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 20%, var(--color-surface, #fff));
+  --tint-panel: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 11%, var(--color-surface, #fff));
   display: flex;
   position: relative;
   padding-bottom: 12px;
@@ -286,7 +292,7 @@ const epiSpeech = computed(() =>
   left: 50%;
   width: 2px;
   margin-left: -1px;
-  background-color: var(--color-border, rgba(0, 0, 0, 0.1));
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 35%, var(--color-border, rgba(0, 0, 0, 0.1)));
 }
 
 /* First row starts its line at its own dot */
@@ -295,7 +301,8 @@ const epiSpeech = computed(() =>
 }
 
 /* Every dot is the same size; the ring masks the line behind it.
-   Dot centre sits on the centre of the due pill (card padding 14px + 12px). */
+   Dot centre sits on the centre of the due pill (card padding 14px + 12px).
+   Upcoming is a softer yellow, due today the full yellow, completed a muted yellow-grey. */
 .track-dot {
   position: absolute;
   top: 20px;
@@ -304,13 +311,13 @@ const epiSpeech = computed(() =>
   height: 12px;
   margin-left: -6px;
   border-radius: 50%;
-  background-color: var(--color-text-muted, #5c5c5c);
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
   box-shadow: 0 0 0 3px var(--color-app-bg, #fbf7f5);
   z-index: 1;
 }
 
-/* Neutral card: same border as the expandable cards elsewhere in the app.
-   The border is solid in high contrast because --color-border is black there. */
+/* Soft yellow edge on every card; the due-today card takes the full yellow at 2px.
+   In high contrast both are solid black (--edge-soft / --edge-due). */
 .item-card {
   flex: 1;
   min-width: 0;
@@ -318,7 +325,7 @@ const epiSpeech = computed(() =>
   padding: 14px 16px;
   background-color: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 1.5px solid var(--edge-soft);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   cursor: pointer;
@@ -329,16 +336,22 @@ const epiSpeech = computed(() =>
   transform: scale(0.99);
 }
 
-/* Due today is the one state that gets a yellow edge: a thick left bar
-   drawn inside the card, so the neutral border (and high-contrast black) stays. */
 .status-today .item-card {
-  box-shadow: inset 4px 0 0 var(--color-reminders-bg, #f6c945), 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
+  border-width: 2px;
+  border-color: var(--edge-due);
 }
 
 /* Dots: due today is yellow, overdue is emergency, everything else muted */
 .status-today .track-dot { background-color: var(--color-reminders-bg, #f6c945); }
 .status-overdue .track-dot { background-color: var(--color-emergency-bg, #ff5c5c); }
-.status-done .track-dot { background-color: var(--color-text-muted, #5c5c5c); }
+.status-done .track-dot {
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 40%, var(--color-text-muted, #5c5c5c));
+}
+
+/* Completed card keeps the neutral edge so it reads as lower emphasis */
+.status-done .item-card {
+  border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+}
 
 .status-done .item-title {
   color: var(--color-text-muted, #5c5c5c);
@@ -375,22 +388,25 @@ const epiSpeech = computed(() =>
   white-space: nowrap;
 }
 
+/* Upcoming due pill and the date chip: light yellow tint, dark text on the surface */
 .due-badge {
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  background-color: var(--color-card-bg, #eaeaea);
-  color: var(--color-card-text, #1a1a1a);
+  border-color: var(--edge-soft);
+  background-color: var(--tint-pill);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .date-chip {
-  background-color: var(--color-card-bg, #eaeaea);
-  color: var(--color-text-muted, #5c5c5c);
+  border-color: var(--edge-soft);
+  background-color: var(--tint-pill);
+  color: var(--color-surface-text, #1a1a1a);
   font-size: 0.75rem;
   letter-spacing: 0;
   text-transform: none;
 }
 
-/* Due pill: neutral when upcoming, solid yellow when due today,
+/* Due pill: tinted when upcoming, solid yellow when due today,
    a small emergency label only when overdue, muted when completed.
    Text on solid fills is the -text token. */
 .status-today .due-badge {
@@ -442,13 +458,13 @@ const epiSpeech = computed(() =>
 }
 
 /* Shared inner panel for the prep box, EPI box and open-page buttons:
-   a neutral card-coloured panel with a neutral outline */
+   a very light yellow tint on the surface with a soft yellow outline */
 .prep-box,
 .epi-reminder-box,
 .open-page-btn {
-  background-color: var(--color-card-bg, #eaeaea);
+  background-color: var(--tint-panel);
   color: var(--color-card-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 1.5px solid var(--edge-soft);
   border-radius: 14px;
 }
 
@@ -574,13 +590,25 @@ const epiSpeech = computed(() =>
   --border-style: solid;
 }
 
-/* Secondary: outlined */
+/* Secondary: outlined with the soft yellow edge */
 .undo-btn {
   --background: transparent;
-  --background-hover: var(--color-card-bg, #eaeaea);
-  --color: var(--color-card-text, #1a1a1a);
-  --border-color: var(--color-text-muted, #5c5c5c);
+  --background-hover: var(--tint-panel);
+  --color: var(--color-surface-text, #1a1a1a);
+  --border-color: var(--edge-soft);
   --border-width: 1.5px;
   --border-style: solid;
+}
+</style>
+
+<!-- High contrast overrides live outside the scoped block: Vue's scoped compiler
+     drops the descendant part of a :global(...) selector, so they are written here
+     as plain selectors (the .timeline-item class is unique to this component). -->
+<style>
+:root[data-theme='contrast'] .timeline-item {
+  --edge-soft: var(--color-border, #000);
+  --edge-due: var(--color-border, #000);
+  --tint-pill: var(--color-surface, #fff);
+  --tint-panel: var(--color-surface, #fff);
 }
 </style>

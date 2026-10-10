@@ -183,17 +183,19 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* Soft yellow edge for the page's outlined cards and buttons (solid black in high contrast) */
 .reminders-page {
+  --edge-soft: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 45%, var(--color-border, rgba(0, 0, 0, 0.1)));
   display: flex;
   flex-direction: column;
   gap: 16px;
 }
 
-/* TT notice: same neutral card as the timeline rows; only its link pill is yellow */
+/* TT notice: same surface card as the timeline rows; only its link pill is solid yellow */
 .tt-banner {
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 1.5px solid var(--edge-soft);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   padding: 14px 14px 14px 16px;
@@ -243,14 +245,14 @@ onMounted(() => {
   gap: 12px;
 }
 
-/* Secondary pill: neutral outline, 44px touch height (the yellow pill is reserved for Mark completed) */
+/* Secondary pill: surface with a soft yellow outline, 44px touch height (solid yellow is reserved for Mark completed) */
 .see-more-btn {
   align-self: center;
   min-height: 44px;
   padding: 0 18px;
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-text-muted, #5c5c5c);
+  border: 1.5px solid var(--edge-soft);
   border-radius: 999px;
   font-family: inherit;
   font-size: 0.9rem;
@@ -277,7 +279,7 @@ onMounted(() => {
   align-items: center;
   background: var(--color-surface, #fff);
   color: var(--color-surface-text, #1a1a1a);
-  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border: 1.5px solid var(--edge-soft);
   border-radius: 20px;
   box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   font-family: inherit;
@@ -289,5 +291,12 @@ onMounted(() => {
 
 .past-toggle:active {
   transform: scale(0.99);
+}
+</style>
+
+<!-- High contrast override, unscoped for the same reason as in TimelineItem.vue -->
+<style>
+:root[data-theme='contrast'] .reminders-page {
+  --edge-soft: var(--color-border, #000);
 }
 </style>
