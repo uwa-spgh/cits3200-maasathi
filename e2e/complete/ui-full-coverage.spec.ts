@@ -92,7 +92,7 @@ test.describe('Complete UI coverage', () => {
       { name: 'Personal information', url: /profile\/personal/i },
       { name: 'My pregnancy', url: /profile\/pregnancy/i },
       { name: 'My vaccinations', url: /profile\/vaccination/i },
-      { name: 'Settings', url: /profile\/settings/i }
+      { name: 'My Birth Plan', url: /profile\/plan/i }
     ];
 
     for (const item of items) {

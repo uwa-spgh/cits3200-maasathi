@@ -9,7 +9,7 @@ import {
 import { uuid, type CareMode, type Pregnancy } from '../db/schemas';
 import { cancelAllReminders } from '../services/notifications';
 import { PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, gestationalWeek, lmpFromEdd, postpartumDays, todayIso } from '../utils/date';
-import { regenerateSchedule } from './useSchedule';
+import { regenerateSchedule, useSchedule } from './useSchedule';
 
 const PNC_END_DAY = PNC_CONTACT_OFFSET_DAYS['contact4'];
 
@@ -194,6 +194,9 @@ export function usePregnancy() {
     await archive(pregnancyId);
     activePregnancy.value = null;
     pastPregnancies.value = (await pregnancyRepo.all()).filter((p) => p.status === 'archived');
+    // Drop the closed pregnancy's reminders from the in-memory schedule, so
+    // Home and Reminders stop showing them without a reload
+    await useSchedule().load();
   }
 
   async function refresh(): Promise<void> {
