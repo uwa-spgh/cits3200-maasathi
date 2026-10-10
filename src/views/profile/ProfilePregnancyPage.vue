@@ -116,7 +116,7 @@
       </section>
 
       <!-- Birth registration -->
-      <section v-if="activePregnancy && mode === 'ANC'" class="form-card">
+      <section v-if="activePregnancy && mode === 'ANC'" ref="birthSection" class="form-card">
         <h2 class="form-title">{{ $t('profile.birth_registration') }}</h2>
         <p class="field-hint">{{ $t('profile.birth_registration_hint') }}</p>
         <div class="hint-listen">
@@ -188,6 +188,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   IonButton,
@@ -199,6 +200,7 @@ import {
   IonTextarea,
   IonToggle,
   alertController,
+  onIonViewDidEnter,
   toastController
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
@@ -209,7 +211,17 @@ import { lmpFromEdd, eddFromLmp, formatDate } from '../../utils/date';
 import type { DeliveryMode, BirthOutcome } from '../../db/schemas';
 
 const { t } = useI18n();
+const route = useRoute();
 const { activePregnancy, mode, registerPregnancy, registerBirth, closePregnancyEarly } = usePregnancy();
+
+// ?section=birth (e.g. after marking "Give Birth" completed in Reminders)
+// scrolls straight to the birth registration form.
+// Runs once the page has finished sliding in, so the scroll isn't lost.
+const birthSection = ref<HTMLElement | null>(null);
+onIonViewDidEnter(() => {
+  if (route.query.section !== 'birth') return;
+  birthSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 const form = ref({
   lmp: '',

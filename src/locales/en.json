@@ -48,10 +48,11 @@
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "cards": {
       "reminder_title": "Reminder",
+      "no_reminders": "No current reminders",
       "reminder_anc": "You have your {ordinal} ANC visit on {date}",
       "reminder_pnc": "You have your {ordinal} postnatal contact on {date}",
       "reminder_tt": "Your tetanus vaccination is due on {date}. Remember to bring your EPI card.",
-      "reminder_edd": "Your due date is {date}",
+      "reminder_edd": "Your expected due date is {date}. Register your birth before starting PNC care.",
       "reminder_generic": "{title} · {date}",
       "ordinal_1": "first",
       "ordinal_2": "second",
@@ -62,8 +63,16 @@
       "stop": "Stop",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "child_epi_stage": "Your baby's vaccinations are starting. Keep the vaccination card safe.",
+      "journey_ended_early": "Your pregnancy record is closed and saved in Profile. Please talk to your health worker if you need support.",
+      "journey_complete": "This completes your ANC and PNC guidance. Thank you for using the MaaSathi app!",
+      "after_birth_congrats": "Congratulations on your new baby! Rest, keep your baby warm and breastfeed in the first hour.",
       "now_placeholder": "Nothing new to know right now.",
       "now_birth_plan": "Start your birth plan: where to give birth, how to get there and who to call.",
+      "now_new_pregnancy_title": "Future pregnancies",
+      "now_new_pregnancy": "To register a new pregnancy in the future, go to My pregnancy in Profile.",
+      "now_register_birth_title": "Register Birth",
+      "now_register_birth": "To switch to postnatal care, please register your birth in Profile.",
       "now_birth_plan_review": "Make sure to review your birth preparedness plan.",
       "now_prev": "Previous",
       "now_next": "Next",
@@ -229,7 +238,7 @@
       "dose5": "Tetanus (TT) vaccination — dose 5 of 5"
     },
     "milestone": {
-      "edd": "Expected date of delivery",
+      "edd": "Give Birth",
       "child_epi_start": "Child immunisation (EPI) module starts"
     },
     "journey": {
