@@ -75,7 +75,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref, watch } from 'vue';
+import { computed, nextTick, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { useIonRouter } from '@ionic/vue';
 import { timeOutline } from 'ionicons/icons';
@@ -159,27 +159,26 @@ async function onUndo(item: ScheduleItem): Promise<void> {
   await markUpcoming(item);
 }
 
+/** Expands a reminder, first revealing it if it sits outside the collapsed lists. */
+function focusItem(id: string): void {
+  const upcomingIndex = upcomingAll.value.findIndex((i) => i.id === id);
+  if (upcomingIndex >= 3) showAllUpcoming.value = true;
+  if (pastItems.value.some((i) => i.id === id)) showPast.value = true;
+  expandedId.value = id;
+  void nextTick(() => {
+    const el = document.querySelector('.timeline-item.expanded');
+    el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
 // Deep-link handling: if ?focus=<id> is provided, expand that item
 watch(
   () => route.query.focus,
   (focusId) => {
-    if (typeof focusId === 'string' && focusId) {
-      expandedId.value = focusId;
-      void nextTick(() => {
-        const el = document.querySelector('.timeline-item.expanded');
-        el?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      });
-    }
+    if (typeof focusId === 'string' && focusId) focusItem(focusId);
   },
   { immediate: true }
 );
-
-onMounted(() => {
-  const focusId = route.query.focus;
-  if (typeof focusId === 'string' && focusId) {
-    expandedId.value = focusId;
-  }
-});
 </script>
 
 <style scoped>
