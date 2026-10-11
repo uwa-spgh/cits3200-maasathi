@@ -183,6 +183,9 @@ cd android && ./gradlew assembleDebug
 npx cap open android
 ```
 
+## Listen audio
+Listen buttons play pre-recorded English and Bengali clips, falling back to the device voice when a clip is missing. See [docs/AUDIO.md](docs/AUDIO.md) for how the clips are generated and kept in step with the text.
+
 ## Update Server
 `server/update_server.py` is a minimal, optional update server, kept small for users with limited mobile data. It is **not hosted yet**, and the app's check (`src/services/updateCheck.ts`) stays off until `UPDATE_CHECK_URL` is set.
 
