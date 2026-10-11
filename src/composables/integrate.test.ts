@@ -73,7 +73,7 @@ describe('pregnancy schedule', () => {
     expect((await ttHistoryRepo.get())?.status).toBe('known');
     expect(await ttDoseRepo.all()).toHaveLength(1);
     expectAncFromLmp(items, saved.registeredAt);
-    expect(byRef(items, 'TT', 'next').dueDate).toBe('2026-01-29'); // last dose + 28 days
+    expect(byRef(items, 'TT', 'dose2').dueDate).toBe('2026-01-29');
   });
 
   it('case 3: two known doses schedule the next TT 6 months later', async () => {
@@ -88,7 +88,7 @@ describe('pregnancy schedule', () => {
     });
     const saved = await usePregnancy().registerPregnancy({ lmp: LMP });
     const items = await scheduleRepo.byPregnancy(saved.id);
-    expect(byRef(items, 'TT', 'next').dueDate).toBe('2026-07-01');
+    expect(byRef(items, 'TT', 'dose3').dueDate).toBe('2026-07-01');
   });
 
   it('case 4: three known doses schedule the next TT 1 year later', async () => {
@@ -103,7 +103,7 @@ describe('pregnancy schedule', () => {
     });
     const saved = await usePregnancy().registerPregnancy({ lmp: LMP });
     const items = await scheduleRepo.byPregnancy(saved.id);
-    expect(byRef(items, 'TT', 'next').dueDate).toBe('2027-01-01');
+    expect(byRef(items, 'TT', 'dose4').dueDate).toBe('2027-01-01');
   });
 
   it('case 5: five known doses are complete', async () => {
@@ -155,7 +155,7 @@ describe('pregnancy schedule', () => {
     expect((await ttHistoryRepo.get())?.status).toBe('never');
     expect((await ttHistoryRepo.get())?.dosesReceived).toBe(0);
     expect(await ttDoseRepo.all()).toHaveLength(0);
-    expect(byRef(items, 'TT', 'next').dueDate).toBe(saved.registeredAt.slice(0, 10));
+    expect(byRef(items, 'TT', 'dose1').dueDate).toBe(saved.registeredAt.slice(0, 10));
   });
 
   it('case 8: LMP unknown, EDD entered — LMP is derived and ANC is still built', async () => {
