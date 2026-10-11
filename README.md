@@ -25,6 +25,12 @@ maasathi/
 ├── vite.config.ts               # Configuration file for Vite, including the Vue plugin integration.
 ├── index.html                   # The root HTML document that Vite serves and where the Vue app is mounted.
 │
+├── server/                      # Optional update server (not hosted yet); see server/README.md.
+│   ├── update_server.py         # Python stdlib-only server: GET /v1/check?code=<versionCode> answers 204 (up to date) or the latest build.
+│   ├── latest.json              # The latest stable build: versionCode, version, release link, size and short notes. Placeholder never offers an update.
+│   ├── test_update_server.py    # unittest suite: python3 -m unittest discover -s server
+│   └── README.md                # How it works, running it, publishing an update, and hosting behind HTTPS.
+│
 └── src/                         # Core Application Source Code
     ├── main.ts                  # The primary entry point. Initializes Vue, Ionic, the router, and localization plugins before mounting the app.
     ├── App.vue                  # The root Vue component. Serves as the base container for the application and houses the router outlet.
@@ -82,7 +88,8 @@ maasathi/
     │   └── database.ts          # Driver-based storage layer: Capacitor SQLite on device, localStorage in the browser. Exposes typed repositories.
     │
     ├── services/
-    │   └── notifications.ts     # Local notification scheduling: 7/3/1/0-day reminders before each upcoming schedule item.
+    │   ├── notifications.ts     # Local notification scheduling: 7/3/1/0-day reminders before each upcoming schedule item.
+    │   └── updateCheck.ts       # Once-a-day check for a newer stable build (off until UPDATE_CHECK_URL is set); see server/README.md.
     │
     ├── i18n/
     │   └── index.ts             # Shared vue-i18n instance; also exports t() for use outside components (e.g., notification text).
@@ -104,6 +111,7 @@ maasathi/
 *   **PNC:** Registering a birth switches the app from ANC to PNC mode and generates the 4 WHO postnatal contacts (24h, 48–72h, 7–14 days, 6 weeks) plus a child EPI module milestone.
 *   **Archiving:** After the 6-week PNC contact date passes, the pregnancy is automatically moved to history (accessible under Profile → Past pregnancies) with a full appointment record. It can also be closed early manually, and a new pregnancy registered at any time.
 *   **Reminders:** Local notifications are scheduled 7, 3, 1 and 0 days before every upcoming appointment or vaccination.
+*   **Updates:** Release builds can ask an update server, at most once a day, whether a newer stable version exists, and offer to open its download page. The check is off until a server is configured. See [Update Server](#update-server).
 
 ## App Content (en.json / bn.json)
 All user-facing information lives in `src/locales/en.json` and `src/locales/bn.json` — there is no other content store. To write or correct app content, edit the values (never the keys) in both files:
@@ -118,6 +126,7 @@ All user-facing information lives in `src/locales/en.json` and `src/locales/bn.j
 *   `danger_signs.*` — danger-sign titles and lists (already filled in).
 *   `home.cards.*` — home-screen card sentences and reminder templates (`{ordinal}` / `{date}` / `{week}` / `{day}` are filled in automatically — keep them in the text).
 *   `content.empty` — shown wherever a content value is still blank ("Content coming soon.").
+*   `update.*` — the "update available" prompt (`{version}` and `{size}` are filled in automatically).
 
 Use `\n` inside a value for paragraph breaks — pages render each line as its own paragraph. UI chrome (titles, buttons, labels) lives alongside the content under the other keys; content articles are the `*_body` keys and the lists above.
 
@@ -171,5 +180,15 @@ cd android && ./gradlew assembleDebug
 npx cap open android
 ```
 
+## Update Server
+`server/update_server.py` is a minimal, optional update server, kept small for users with limited mobile data. It is **not hosted yet**, and the app's check (`src/services/updateCheck.ts`) stays off until `UPDATE_CHECK_URL` is set.
+
+*   **The check:** release builds on a phone call `GET /v1/check?code=<versionCode>` at most once a day, after onboarding. The phone sends only its build number.
+*   **The reply:** an empty `204` when up to date, otherwise about 200 bytes of JSON from `server/latest.json`.
+*   **The prompt:** the user is asked, never forced. **Download** opens the latest stable GitHub release in the browser, and **Later** hides that version until a newer one appears.
+*   **Offline:** if the server can't be reached, nothing is shown and the app checks again next launch.
+*   **Publishing:** after each stable release, update `server/latest.json` (see [docs/RELEASING.md](docs/RELEASING.md#telling-phones-about-a-release)).
+*   **Hosting:** run it behind HTTPS; Android blocks plain HTTP. See [server/README.md](server/README.md) for running, hosting and testing.
+
 ## Privacy
-All tracked data remains stored locally on the device (sandboxed SQLite). No data is sent to any external server.
+All tracked data remains stored locally on the device (sandboxed SQLite). No personal data is sent to any external server. The optional update check (`server/`, off until a server is configured) sends only the app's build number.

@@ -29,6 +29,20 @@ The workflow derives the version from the tag, checks the APK is genuinely signe
 aligned, runs the test suite, and only then publishes. A failure at any of those steps stops the
 release rather than shipping something broken.
 
+## Telling phones about a release
+
+Once the update server is hosted ([server/README.md](../server/README.md)), phones on an older
+build are offered a new **stable** release after you update `server/latest.json`:
+
+- `code` — the release's versionCode, printed by the workflow as `versionCode=…`
+- `name` — the version, for example `1.1.0`
+- `size_mb` — the APK size in MB
+- `notes` — one short sentence each in `en` and `bn`
+
+Leave `url` as `https://github.com/uwa-spgh/cits3200-maasathi/releases/latest`, which always
+points at the newest non-prerelease. Never set it for a nightly. Until the server is hosted this
+step does nothing; the checked-in placeholder (`code: 1`) never offers an update.
+
 ## Nightly builds
 
 These need no action — one appears each night, tagged
