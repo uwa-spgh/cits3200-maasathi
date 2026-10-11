@@ -6,6 +6,7 @@
   "user_default": "User",
   "common": {
     "back": "Back",
+    "date_out_of_range": "That date is outside the range this app accepts.",
     "home": "Home",
     "save": "Save",
     "saved": "Saved",
@@ -19,12 +20,6 @@
     "mode_anc": "ANC mode",
     "mode_pnc": "PNC mode",
     "part_of": "Part {current} of {total}"
-  },
-  "nav": {
-    "home": "Home",
-    "reminders": "Reminders",
-    "information": "Info",
-    "profile": "Profile"
   },
   "notification": {
     "title": "MaaSathi reminder",
@@ -45,13 +40,16 @@
     "profile": "Profile"
   },
   "home": {
+    "brand_tag": "MaaSathi app",
+    "default_name": "there",
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "cards": {
       "reminder_title": "Reminder",
+      "no_reminders": "No current reminders",
       "reminder_anc": "You have your {ordinal} ANC visit on {date}",
       "reminder_pnc": "You have your {ordinal} postnatal contact on {date}",
       "reminder_tt": "Your tetanus vaccination is due on {date}. Remember to bring your EPI card.",
-      "reminder_edd": "Your due date is {date}",
+      "reminder_edd": "Your expected due date is {date}. Register your birth before starting PNC care.",
       "reminder_generic": "{title} · {date}",
       "ordinal_1": "first",
       "ordinal_2": "second",
@@ -62,8 +60,16 @@
       "stop": "Stop",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "child_epi_stage": "Your baby's vaccinations are starting. Keep the vaccination card safe.",
+      "journey_ended_early": "Your pregnancy record is closed and saved in Profile. Please talk to your health worker if you need support.",
+      "journey_complete": "This completes your ANC and PNC guidance. Thank you for using the MaaSathi app!",
+      "after_birth_congrats": "Congratulations on your new baby! Rest, keep your baby warm and breastfeed in the first hour.",
       "now_placeholder": "Nothing new to know right now.",
       "now_birth_plan": "Start your birth plan: where to give birth, how to get there and who to call.",
+      "now_new_pregnancy_title": "Future pregnancies",
+      "now_new_pregnancy": "To register a new pregnancy in the future, go to My pregnancy in Profile.",
+      "now_register_birth_title": "Register Birth",
+      "now_register_birth": "To switch to postnatal care, please register your birth in Profile.",
       "now_birth_plan_review": "Make sure to review your birth preparedness plan.",
       "now_prev": "Previous",
       "now_next": "Next",
@@ -106,17 +112,6 @@
     "day_after_birth": "Day {day} after birth",
     "body_stage": "",
     "body_milestones": ""
-  },
-  "emergency": {
-    "title": "Emergency",
-    "no_number": "No number saved — add one in Profile",
-    "nearest_facility_placeholder": "Nearest health facility (offline)",
-    "danger_signs": "Relevant danger signs",
-    "contacts": {
-      "national": "Call emergency services",
-      "hospital": "Call hospital",
-      "doctor": "Call doctor"
-    }
   },
   "danger_signs": {
     "section_title": "Danger signs — go to the health facility immediately",
@@ -229,7 +224,7 @@
       "dose5": "Tetanus (TT) vaccination — dose 5 of 5"
     },
     "milestone": {
-      "edd": "Expected date of delivery",
+      "edd": "Give Birth",
       "child_epi_start": "Child immunisation (EPI) module starts"
     },
     "journey": {
@@ -663,7 +658,6 @@
       "item3": "Clean soft cloths",
       "item4": "Baby blanket"
     },
-    "plan_advice_text": "Remember to go over your birth plan with family and others supporting you.",
     "age_label": "Age",
     "age_placeholder": "Enter your age",
     "pregnancy_info": "Current pregnancy",
@@ -720,7 +714,8 @@
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
     "reset_data_btn": "Reset all data",
     "reset_confirm_title": "Reset all data?",
-    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
+    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device.",
+    "reset_failed": "Could not reset your data. Please try again."
   },
   "history": {
     "pregnancy_details": "Pregnancy details",
@@ -739,6 +734,12 @@
     "no_notes": "No notes recorded",
     "not_found": "Record not found"
   },
+  "update": {
+    "title": "Update available",
+    "message": "MaaSathi {version} is available ({size} MB).",
+    "download": "Download",
+    "later": "Later"
+  },
   "onboarding": {
     "welcome_title": "Welcome to MaaSathi",
     "welcome_text": "Your companion for a safe pregnancy and a healthy baby. Choose your language to begin.",
@@ -752,7 +753,8 @@
     "q_tt_count": "Do you know how many doses you have had?",
     "done_title": "You are all set",
     "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
-    "start_app": "Start using MaaSathi"
+    "start_app": "Start using MaaSathi",
+    "save_failed": "We could not save your details. Please try again."
   },
   "theme": {
     "title": "Appearance",

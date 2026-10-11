@@ -1,17 +1,24 @@
 import { expect, type Page } from '@playwright/test';
 import { clearAppStorage } from './storage';
+import { addDays, browserToday } from './dates';
 
-/** Sample data from docs/e2e-p0-acceptance-journeys.md */
 export const MVP_SAMPLE = {
   name: 'Ayesha Rahman',
-  lmp: '2026-03-01'
+  /** LMP this many days before today: about 20 weeks pregnant, inside the app's LMP bounds on any run date. */
+  lmpDaysAgo: 140
 } as const;
 
 /**
- * Completes the shortest onboarding path (EN → name → LMP known → TT never → Start).
- * Leaves the app on Home.
+ * Fixed sample LMP for tests that also fix the browser clock and expect exact dates
+ * (EDD 2026-12-06). Without a fixed clock it drifts outside the app's LMP limits.
  */
-export async function completeOnboardingMvp(page: Page): Promise<void> {
+export const FIXED_SAMPLE_LMP = '2026-03-01';
+
+/**
+ * Completes the shortest onboarding path (EN → name → LMP known → TT never → Start).
+ * Leaves the app on Home. Pass `lmp` (e.g. FIXED_SAMPLE_LMP with page.clock) for exact dates.
+ */
+export async function completeOnboardingMvp(page: Page, options: { lmp?: string } = {}): Promise<void> {
   await clearAppStorage(page);
   await page.goto('/');
   await expect(page).toHaveURL(/onboarding/i);
@@ -31,7 +38,8 @@ export async function completeOnboardingMvp(page: Page): Promise<void> {
   await expect(
     page.getByRole('heading', { name: 'When did your last period start?' })
   ).toBeVisible();
-  await page.locator('ion-input input[type="date"]').fill(MVP_SAMPLE.lmp);
+  const lmp = options.lmp ?? addDays(await browserToday(page), -MVP_SAMPLE.lmpDaysAgo);
+  await page.locator('ion-input input[type="date"]').fill(lmp);
   await page.getByRole('button', { name: 'Next' }).click();
 
   await expect(

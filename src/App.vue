@@ -11,12 +11,17 @@ import { useIonRouter } from '@ionic/vue';
 import { App as CapApp } from '@capacitor/app';
 import { useTheme } from './composables/useTheme';
 import { consumeBackHandler } from './utils/backHandler';
+import { ensureAppData } from './bootstrap';
+import { checkForUpdate } from './services/updateCheck';
 
 const ionRouter = useIonRouter();
 
 onMounted(() => {
   const { applyThemeToDOM } = useTheme();
   applyThemeToDOM();
+
+  // Background update check (off until a server is configured); never delays startup.
+  void ensureAppData().then(checkForUpdate, () => undefined);
 
   // Android hardware / gesture back. Runs at a higher priority than
   // Ionic's default handler so it fully owns the behaviour:

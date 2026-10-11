@@ -1,4 +1,8 @@
 node_modules
+.env.local
+audio/review.html
+audio/.cache
+audio/compare
 dist
 .DS_Store
 playwright-report
@@ -11,3 +15,6 @@ ios/DerivedData
 *.xcuserstate
 .DS_Store
 
+
+# Python
+__pycache__/

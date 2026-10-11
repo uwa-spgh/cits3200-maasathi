@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { completeOnboardingMvp } from '../support/onboarding';
+import { addDays, browserToday } from '../support/dates';
 
 /** Ionic keeps prior pages in the stack — prefer the visible page chrome. */
 function visiblePage(page: Page) {
@@ -8,7 +9,7 @@ function visiblePage(page: Page) {
 
 /**
  * MVP-05 — Birth registration switches ANC → PNC
- * Source: docs/e2e-p0-acceptance-journeys.md
+ * Source: docs/e2e-handoff-to-team.md
  *
  * Does not assert PNC contact day offsets (owned by date unit tests).
  */
@@ -25,14 +26,15 @@ test.describe('MVP-05 birth to PNC', () => {
     const root = visiblePage(page);
     await expect(root.locator('.mode-chip')).toContainText('ANC mode');
 
-    const birthSection = root.locator('section.form-card').filter({ hasText: 'Birth registration' });
+    const birthSection = root.locator('section.profile-card').filter({ hasText: 'Birth registration' });
     await expect(birthSection).toBeVisible();
-    await birthSection.locator('ion-input input[type="date"]').first().fill('2026-09-01');
+    // A recent delivery, so the pregnancy stays in PNC rather than auto-archiving after the 6-week contact.
+    await birthSection.locator('ion-input input[type="date"]').first().fill(addDays(await browserToday(page), -3));
     await birthSection.getByRole('button', { name: 'Register birth' }).click();
 
     await expect(visiblePage(page).locator('.mode-chip')).toContainText('PNC mode');
     await expect(
-      visiblePage(page).locator('section.form-card').filter({ hasText: 'Birth registration' })
+      visiblePage(page).locator('section.profile-card').filter({ hasText: 'Birth registration' })
     ).toHaveCount(0);
 
     await visiblePage(page).getByRole('button', { name: 'Home' }).click();

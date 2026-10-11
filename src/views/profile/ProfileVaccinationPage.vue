@@ -9,12 +9,12 @@
     :icon="personOutline"
     color="blue"
   >
-    <div class="stack">
-      <section class="form-card">
-        <h2 class="form-title">{{ $t('profile.tt_section') }}</h2>
+    <div class="profile-stack">
+      <section class="profile-card">
+        <h2 class="profile-card-title">{{ $t('profile.tt_section') }}</h2>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.tt_question') }}</IonLabel>
-          <IonSelect v-model="ttForm.status" interface="popover">
+          <IonSelect v-model="ttForm.status" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="known">{{ $t('profile.tt_known_count') }}</IonSelectOption>
             <IonSelectOption value="unknown">{{ $t('profile.tt_known_unsure') }}</IonSelectOption>
             <IonSelectOption value="never">{{ $t('profile.tt_never') }}</IonSelectOption>
@@ -30,19 +30,19 @@
           <IonInput v-model="ttForm.lastDoseDate" type="date" />
         </IonItem>
         <template v-if="ttForm.status === 'unknown'">
-          <p class="field-hint">{{ $t('profile.tt_unknown_hint') }}</p>
-          <div class="hint-listen">
+          <p class="profile-hint">{{ $t('profile.tt_unknown_hint') }}</p>
+          <div class="profile-hint-listen">
             <ListenButton size="sm" accent="blue" :text="$t('profile.tt_unknown_hint')" />
           </div>
         </template>
 
-        <IonButton expand="block" class="primary-action" @click="saveTt">
+        <IonButton expand="block" class="profile-action" @click="saveTt">
           {{ $t('common.save') }}
         </IonButton>
       </section>
 
-      <section v-if="activePregnancy && !ttIsComplete && !ttIsUnknown" class="form-card">
-        <h2 class="form-title">{{ $t('profile.record_dose_label') }}</h2>
+      <section v-if="activePregnancy && !ttIsComplete && !ttIsUnknown" class="profile-card">
+        <h2 class="profile-card-title">{{ $t('profile.record_dose_label') }}</h2>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.record_dose_label') }}</IonLabel>
           <IonInput v-model="recordDoseDate" type="date" />
@@ -53,7 +53,7 @@
         </IonItem>
         <IonButton
           expand="block"
-          class="secondary-action"
+          class="profile-action profile-action--secondary"
           :disabled="!recordDoseDate"
           @click="saveDose"
         >
@@ -61,10 +61,10 @@
         </IonButton>
       </section>
 
-      <section class="form-card">
-        <h2 class="form-title">{{ $t('tt.schedule_title') }}</h2>
-        <p v-if="doseCount === 0" class="field-hint">{{ $t('tt.no_doses') }}</p>
-        <div v-for="dose in sortedDoses" :key="dose.id" class="dose-row">
+      <section class="profile-card">
+        <h2 class="profile-card-title">{{ $t('tt.schedule_title') }}</h2>
+        <p v-if="doseCount === 0" class="profile-hint">{{ $t('tt.no_doses') }}</p>
+        <div v-for="dose in sortedDoses" :key="dose.id" class="profile-dose-row">
           <span>{{ $t('tt.dose_item', { n: dose.doseNumber, date: dose.dateGiven ? formatDate(dose.dateGiven) : $t('tt.date_unknown') }) }}</span>
         </div>
       </section>
@@ -88,12 +88,14 @@ import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
 import ListenButton from '../../components/ListenButton.vue';
 import { useTt } from '../../composables/useTt';
+import { usePregnancy } from '../../composables/usePregnancy';
 import { regenerateSchedule } from '../../composables/useSchedule';
 import { pregnancyRepo } from '../../db/database';
 import { formatDate } from '../../utils/date';
 import type { TtStatus } from '../../db/schemas';
 
 const { t } = useI18n();
+const { activePregnancy } = usePregnancy();
 const {
   history: ttHistory,
   doses,
@@ -163,72 +165,3 @@ async function regenerateActive(): Promise<void> {
   if (active) await regenerateSchedule(active);
 }
 </script>
-
-<style scoped>
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-card {
-  background-color: var(--color-card-bg, #eaeaea);
-  border-radius: 20px;
-  padding: 16px 14px 18px 14px;
-  outline: 1.5px solid var(--color-card-border, transparent);
-}
-
-/* Ionic field placeholders: readable in every theme. */
-.form-card ion-input,
-.form-card ion-select,
-.form-card ion-textarea {
-  --placeholder-color: var(--color-text-muted, #5c5c5c);
-  --placeholder-opacity: 1;
-}
-
-.form-title {
-  margin: 0 4px 8px 4px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--color-card-text, #1a1a1a);
-}
-
-.field-hint {
-  margin: 4px 8px 8px 8px;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #5c5c5c);
-}
-
-.hint-listen {
-  margin: 0 8px 8px 8px;
-}
-
-.primary-action {
-  margin: 12px 4px 0 4px;
-  --background: var(--color-profile-bg, #33a1de);
-  --color: var(--color-profile-text, #000);
-  --border-radius: 999px;
-  font-weight: 700;
-}
-
-.secondary-action {
-  margin: 8px 4px 0 4px;
-  --background: var(--color-btn-more-bg, #7bc62d);
-  --color: var(--color-btn-more-text, #000);
-  --border-radius: 999px;
-  font-weight: 700;
-}
-
-.dose-row {
-  display: flex;
-  justify-content: space-between;
-  padding: 8px 8px;
-  font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
-  border-bottom: 1px dashed var(--color-border, rgba(0, 0, 0, 0.1));
-}
-
-.dose-row:last-child {
-  border-bottom: none;
-}
-</style>

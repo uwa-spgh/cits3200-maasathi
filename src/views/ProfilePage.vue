@@ -90,10 +90,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, onMounted } from 'vue';
 import { useIonRouter } from '@ionic/vue';
 import { useI18n } from 'vue-i18n';
-import { IonIcon, alertController } from '@ionic/vue';
+import { IonIcon, alertController, toastController } from '@ionic/vue';
 import {
   archiveOutline,
   bookmarkOutline,
@@ -147,15 +147,25 @@ async function confirmReset(): Promise<void> {
         text: t('common.confirm'),
         role: 'destructive',
         handler: () => {
-          void clearAllData().then(async () => {
-            try {
-              localStorage.clear();
-              await forceCancelAllReminders();
-            } catch (e) {
+          void clearAllData()
+            .then(async () => {
+              try {
+                localStorage.clear();
+                await forceCancelAllReminders();
+              } catch (e) {
+                console.error('reset failed', e);
+              }
+              window.location.href = '/onboarding';
+            })
+            .catch(async (e) => {
               console.error('reset failed', e);
-            }
-            window.location.href = '/onboarding';
-          });
+              const toast = await toastController.create({
+                message: t('profile.reset_failed'),
+                duration: 3000,
+                position: 'bottom'
+              });
+              await toast.present();
+            });
         }
       }
     ]

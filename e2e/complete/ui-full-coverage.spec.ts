@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { completeOnboardingMvp, MVP_SAMPLE } from '../support/onboarding';
+import { completeOnboardingMvp, FIXED_SAMPLE_LMP, MVP_SAMPLE } from '../support/onboarding';
 import { visiblePage } from '../support/visiblePage';
 
 /**
@@ -27,15 +27,15 @@ test.describe('Complete UI coverage', () => {
 
     await visiblePage(page).getByRole('button', { name: 'Home' }).click();
     // The third card is the "what to know right now" rotating widget, not a
-    // Nutrition card. Its Learn more deep-links to the current ANC/PNC page
-    // with the topic in the query string. The widget auto-rotates every 10s, so
-    // assert the URL shape rather than a specific topic key.
-    // Nutrition itself is covered by the Information-hub test above.
+    // Nutrition card. Its Learn more deep-links to the page for the current
+    // topic with the topic in the query string: in ANC that is the ANC page,
+    // Nutrition or the birth plan (src/utils/stageArticle.ts). The widget
+    // auto-rotates every 10s, so accept any of them rather than one topic.
     await visiblePage(page)
       .locator('.home-card.accent-green')
       .getByRole('button', { name: 'Learn more' })
       .click();
-    await expect(page).toHaveURL(/\/information\/anc\?topic=\w+/i);
+    await expect(page).toHaveURL(/\/(information\/(anc|nutrition)|profile\/plan)\?topic=\w+/i);
   });
 
   test('Information hub opens every browse topic', async ({ page }) => {
@@ -75,15 +75,10 @@ test.describe('Complete UI coverage', () => {
     await expect(visiblePage(page).locator('.tt-education')).toBeVisible();
   });
 
-  test('Danger signs and Emergency pages render their key content', async ({ page }) => {
+  test('Danger signs page renders its key content', async ({ page }) => {
     await page.goto('/information/danger-signs');
     await expect(page).toHaveURL(/danger-signs/i);
     await expect(visiblePage(page).locator('.danger-signs-page')).toBeVisible();
-
-    await page.goto('/emergency');
-    await expect(page).toHaveURL(/emergency/i);
-    await expect(visiblePage(page).locator('.emergency-page')).toBeVisible();
-    await expect(visiblePage(page).locator('a[href^="tel:"]').first()).toBeVisible();
   });
 
   test('Profile menu opens every child page', async ({ page }) => {
@@ -92,7 +87,7 @@ test.describe('Complete UI coverage', () => {
       { name: 'Personal information', url: /profile\/personal/i },
       { name: 'My pregnancy', url: /profile\/pregnancy/i },
       { name: 'My vaccinations', url: /profile\/vaccination/i },
-      { name: 'Settings', url: /profile\/settings/i }
+      { name: 'My Birth Plan', url: /profile\/plan/i }
     ];
 
     for (const item of items) {
@@ -100,18 +95,8 @@ test.describe('Complete UI coverage', () => {
       await visiblePage(page).getByRole('button', { name: item.name }).click();
       await expect(page).toHaveURL(item.url);
     }
-  });
-
-  test('Reminders expand opens WeekInfo guidance', async ({ page }) => {
-    await page.goto('/reminders');
-    const first = visiblePage(page).locator('.timeline-item').first();
-    await expect(first).toBeVisible();
-    await first.locator('.item-card').click();
-    const guidance = visiblePage(page).getByRole('button', { name: /View visit guidance|View contact guidance|View Tetanus/i });
-    if (await guidance.count()) {
-      await guidance.first().click();
-      await expect(page).toHaveURL(/week-info|vaccination\/tetanus/i);
-    }
+    await page.goto('/profile');
+    await expect(visiblePage(page).getByRole('radiogroup', { name: 'Appearance' })).toBeVisible();
   });
 
   test('greeting still shows registered name on Home', async ({ page }) => {
@@ -119,5 +104,28 @@ test.describe('Complete UI coverage', () => {
     await expect(
       visiblePage(page).getByRole('heading', { name: `Hello, ${MVP_SAMPLE.name}` })
     ).toBeVisible();
+  });
+});
+
+/**
+ * Which reminders are listed depends on today's date, so fix the clock (as in
+ * manual/manual-d) for the test that expects ANC Visit 2.
+ */
+test.describe('Reminder guidance on a fixed date', () => {
+  test.use({ timezoneId: 'Australia/Perth' });
+
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-10-10T04:00:00Z')); // 12:00 in Perth
+    await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP });
+  });
+
+  test('Reminders expand opens WeekInfo guidance', async ({ page }) => {
+    await page.goto('/reminders');
+    const visit = visiblePage(page).locator('.timeline-item').filter({ hasText: 'ANC Visit 2' });
+    await expect(visit).toBeVisible();
+    await visit.locator('.item-card').click();
+    await visit.getByRole('button', { name: 'View visit guidance' }).click();
+    await expect(page).toHaveURL(/week-info\?ref=visit2&mode=ANC/i);
+    await expect(visiblePage(page).locator('.stage-title')).toContainText('ANC Visit 2');
   });
 });

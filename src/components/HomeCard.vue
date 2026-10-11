@@ -31,7 +31,7 @@
         <IonIcon :icon="homeIcons.learnMore" />
         <span>{{ learnMoreLabel }}</span>
       </button>
-      <ListenButton v-if="listenText" :text="listenText" :accent="accent" size="xs" />
+      <ListenButton v-if="listenText" :text="listenText" :segments="listenSegments ?? undefined" :accent="accent" size="xs" />
     </div>
     <div v-if="dotCount && dotCount > 1" class="dot-indicator" role="presentation">
       <span
@@ -63,6 +63,8 @@ defineProps<{
   cornerArrowLabel?: string;
   /** Text read aloud by the Listen button; the button is hidden when empty. */
   listenText?: string | null;
+  /** Recorded pieces to play in order when `listenText` contains a date and so has no clip of its own. */
+  listenSegments?: string[] | null;
   learnMoreLabel?: string | null;
   dotCount?: number;
   activeDotIndex?: number;

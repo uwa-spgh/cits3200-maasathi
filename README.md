@@ -25,6 +25,12 @@ maasathi/
 ├── vite.config.ts               # Configuration file for Vite, including the Vue plugin integration.
 ├── index.html                   # The root HTML document that Vite serves and where the Vue app is mounted.
 │
+├── server/                      # Optional update server (not hosted yet); see server/README.md.
+│   ├── update_server.py         # Python stdlib-only server: GET /v1/check?code=<versionCode> answers 204 (up to date) or the latest build.
+│   ├── latest.json              # The latest stable build: versionCode, version, release link, size and short notes. Placeholder never offers an update.
+│   ├── test_update_server.py    # unittest suite: python3 -m unittest discover -s server
+│   └── README.md                # How it works, running it, publishing an update, and hosting behind HTTPS.
+│
 └── src/                         # Core Application Source Code
     ├── main.ts                  # The primary entry point. Initializes Vue, Ionic, the router, and localization plugins before mounting the app.
     ├── App.vue                  # The root Vue component. Serves as the base container for the application and houses the router outlet.
@@ -32,19 +38,15 @@ maasathi/
     ├── bootstrap.ts             # One-time app data initialisation (database, pregnancy, TT history, schedule) and onboarding flags.
     │
     ├── config/
-    │   └── app.ts               # Global app configuration. NAV_MODE switches between the 'homeBar' and 'tabBar' navigation prototypes, plus the nav() path helper.
+    │   └── app.ts               # Global app configuration: the home path helper and the Android bottom safe-area value.
     │
     ├── router/
-    │   └── index.ts             # The routing configuration. Builds the route tree per navigation mode and enforces the onboarding guard.
-    │
-    ├── layouts/
-    │   └── TabsLayout.vue       # Ionic tabs layout (IonTabs + IonTabBar) used when NAV_MODE = 'tabBar'.
+    │   └── index.ts             # The routing configuration. Builds the route tree and enforces the onboarding guard.
     │
     ├── views/                   # Page-level components, one per route.
     │   ├── HomePage.vue         # Home screen: greeting, stage-based message card, and the 2x2 action tile grid.
     │   ├── OnboardingPage.vue   # First-launch wizard: language, name, LMP/EDD, TT vaccination history.
     │   ├── WeekInfoPage.vue     # Placeholder page showing information about the current pregnancy/postpartum stage.
-    │   ├── EmergencyPage.vue    # Offline emergency call buttons (tel: links) and the danger-signs checklist.
     │   ├── RemindersPage.vue    # The timeline: today's date, upcoming and past ANC/TT/PNC reminders.
     │   ├── InformationPage.vue  # Information hub: ANC, PNC, danger signs, nutrition, vaccination.
     │   ├── AncPage.vue          # ANC information drill-down: trimester selector.
@@ -53,36 +55,42 @@ maasathi/
     │   ├── VaccinationPage.vue  # Maternal TT vaccination: dose tracker, dose record, education placeholders.
     │   ├── DangerSignsPage.vue  # Full danger-signs reference for pregnancy, labour, postpartum and newborn.
     │   ├── NutritionPage.vue    # Nutrition education placeholders.
-    │   ├── ProfilePage.vue      # Profile & settings: personal info, pregnancy registration, birth registration, TT forms, history list, appearance, navigation and data reset.
+    │   ├── ProfilePage.vue      # Profile hub: personal info, pregnancy, vaccinations and birth plan menu, language and appearance pickers, past pregnancies list, and data reset behind a confirmation.
     │   └── HistorySummaryPage.vue # Read-only summary of an archived pregnancy (visits, doses, delivery, schedule record).
     │
     ├── components/              # Reusable UI components.
-    │   ├── PageShell.vue        # Standard page wrapper: coloured section header, content area and (in homeBar mode) the home footer button.
+    │   ├── PageShell.vue        # Standard page wrapper: coloured section header, content area and the BottomNav footer.
     │   ├── SectionHeader.vue    # Coloured overlapping page header with back button (matches the Figma mockups).
-    │   ├── HomeBarFooter.vue    # Centred home button footer, per the original mockups.
-    │   ├── TabsLayout.vue       # (See layouts/ - listed here for discoverability.)
+    │   ├── HomeCard.vue         # Coloured Home tile with heading, summary and open arrow.
+    │   ├── HomeTimelineRail.vue # Horizontal rail of reminders on Home, with chevrons to scroll back and forward.
+    │   ├── ListenButton.vue     # Read-aloud button: speaks the given text with the device's speech engine.
+    │   ├── ListenList.vue       # Bullet list read aloud in parts, each part with its own Listen button.
+    │   ├── ListenText.vue       # Paragraph text grouped into parts that can each be read aloud.
+    │   ├── ContentText.vue      # Renders a block of text as separate paragraphs.
     │   ├── TimelineList.vue     # Vertical timeline list for the Reminders page.
     │   ├── TimelineItem.vue     # A single timeline milestone: colour-coded dot, date, due chip, expand/complete actions.
     │   ├── ExpandableCard.vue   # Accordion card used across information pages.
     │   ├── PlaceholderBox.vue   # Empty content placeholder box (structure-only sprint).
-    │   ├── LanguageSwitcher.vue # English/Bengali language selector, available on Home, Onboarding and Profile.
-    │   └── ThemeCustomizerModal.vue # Theme preset picker and per-colour customisation modal.
+    │   ├── LanguageSwitcher.vue # English/Bengali language selector, available on Onboarding and Profile.
+    │   └── BottomNav.vue        # Bottom navigation bar (Profile, Home, Danger signs), used by PageShell.vue and HomePage.vue.
     │
     ├── composables/             # Shared reactive state and domain logic (Vue composables).
+    │   ├── useSpeech.ts         # Shared text-to-speech state: speak, stop, and whether speech is playing.
     │   ├── useUser.ts           # The mother's display name (persisted via localStorage).
     │   ├── usePregnancy.ts      # Active pregnancy state, ANC/PNC mode, gestational week / postpartum day, birth registration, and auto-archiving after the 6-week PNC contact.
     │   ├── useTt.ts             # Bangladesh EPI 5-dose lifetime TT schedule logic: registration options, next-dose calculation from last dose date (+4 weeks), dose recording.
     │   ├── useSchedule.ts       # Generates and persists the reminder timeline (4 ANC visits, TT dose, 4 PNC contacts, milestones) and marks items completed.
     │   ├── useHistory.ts        # Archived pregnancy summaries for the Profile history section.
-    │   ├── useEmergencyContacts.ts # Editable emergency contact numbers used by the Emergency page.
-    │   └── useTheme.ts          # Theme colour presets (vibrant/pastel/contrast/dark) applied via CSS variables.
+    │   ├── useEmergencyContacts.ts # Stores the birth plan's emergency contact number.
+    │   └── useTheme.ts          # Theme colour presets (normal/contrast/dark) applied via CSS variables.
     │
     ├── db/
     │   ├── schemas.ts           # TypeScript interfaces for all records plus the SQLite DDL (profile, pregnancy, tt_history, tt_dose, child, schedule_item, settings).
     │   └── database.ts          # Driver-based storage layer: Capacitor SQLite on device, localStorage in the browser. Exposes typed repositories.
     │
     ├── services/
-    │   └── notifications.ts     # Local notification scheduling: 7/3/1/0-day reminders before each upcoming schedule item.
+    │   ├── notifications.ts     # Local notification scheduling: 7/3/1/0-day reminders before each upcoming schedule item.
+    │   └── updateCheck.ts       # Once-a-day check for a newer stable build (off until UPDATE_CHECK_URL is set); see server/README.md.
     │
     ├── i18n/
     │   └── index.ts             # Shared vue-i18n instance; also exports t() for use outside components (e.g., notification text).
@@ -92,10 +100,14 @@ maasathi/
     │   └── bn.json              # The Bengali dictionary mapping UI text keys to Bengali strings.
     │
     ├── utils/
-    │   └── date.ts              # Date helpers: LMP→EDD conversion, gestational week, postpartum day, schedule offset tables.
+    │   ├── date.ts              # Date helpers: LMP→EDD conversion, LMP/EDD input bounds, gestational week, postpartum day, schedule offset tables.
+    │   ├── stageArticle.ts      # Maps the current pregnancy or postpartum stage to the topics surfaced on Home.
+    │   ├── speechChunks.ts      # Splits long bullet lists into parts small enough to read aloud.
+    │   └── backHandler.ts       # Lets a page take over the Android back button (e.g. onboarding steps).
     │
     └── theme/
-        └── variables.css        # Global CSS variables for the four section colours and backgrounds.
+        ├── variables.css        # Global CSS variables for the four section colours and backgrounds.
+        └── profile.css          # Shared styles for the Profile sub-pages (cards, fields, hints, action buttons), so they match the Profile hub.
 ```
 
 ## Domain Logic Summary
@@ -104,6 +116,7 @@ maasathi/
 *   **PNC:** Registering a birth switches the app from ANC to PNC mode and generates the 4 WHO postnatal contacts (24h, 48–72h, 7–14 days, 6 weeks) plus a child EPI module milestone.
 *   **Archiving:** After the 6-week PNC contact date passes, the pregnancy is automatically moved to history (accessible under Profile → Past pregnancies) with a full appointment record. It can also be closed early manually, and a new pregnancy registered at any time.
 *   **Reminders:** Local notifications are scheduled 7, 3, 1 and 0 days before every upcoming appointment or vaccination.
+*   **Updates:** Release builds can ask an update server, at most once a day, whether a newer stable version exists, and offer to open its download page. The check is off until a server is configured. See [Update Server](#update-server).
 
 ## App Content (en.json / bn.json)
 All user-facing information lives in `src/locales/en.json` and `src/locales/bn.json` — there is no other content store. To write or correct app content, edit the values (never the keys) in both files:
@@ -118,15 +131,14 @@ All user-facing information lives in `src/locales/en.json` and `src/locales/bn.j
 *   `danger_signs.*` — danger-sign titles and lists (already filled in).
 *   `home.cards.*` — home-screen card sentences and reminder templates (`{ordinal}` / `{date}` / `{week}` / `{day}` are filled in automatically — keep them in the text).
 *   `content.empty` — shown wherever a content value is still blank ("Content coming soon.").
+*   `update.*` — the "update available" prompt (`{version}` and `{size}` are filled in automatically).
 
 Use `\n` inside a value for paragraph breaks — pages render each line as its own paragraph. UI chrome (titles, buttons, labels) lives alongside the content under the other keys; content articles are the `*_body` keys and the lists above.
 
-## Navigation Prototypes
-The app ships with two navigation implementations so they can be compared side by side:
-*   `homeBar` — a single centred home button at the bottom of every page, exactly as in the Figma mockups.
-*   `tabBar` — an Ionic tab bar (Home / Reminders / Info / Profile) always visible at the bottom.
+## Navigation
+The bottom bar (`src/components/BottomNav.vue`, with Profile, Home and Danger signs buttons) is rendered by `PageShell.vue` and `HomePage.vue`.
 
-Switch via **Profile → Settings → Navigation style** (the app restarts to apply), or change the default in `src/config/app.ts`.
+Navigation is a single bottom bar; there is no alternative layout mode.
 
 ## Local Development Setup
 
@@ -171,5 +183,18 @@ cd android && ./gradlew assembleDebug
 npx cap open android
 ```
 
+## Listen audio
+Listen buttons play pre-recorded English and Bengali clips, falling back to the device voice when a clip is missing. See [docs/AUDIO.md](docs/AUDIO.md) for how the clips are generated and kept in step with the text.
+
+## Update Server
+`server/update_server.py` is a minimal, optional update server, kept small for users with limited mobile data. It is **not hosted yet**, and the app's check (`src/services/updateCheck.ts`) stays off until `UPDATE_CHECK_URL` is set.
+
+*   **The check:** release builds on a phone call `GET /v1/check?code=<versionCode>` at most once a day, after onboarding. The phone sends only its build number.
+*   **The reply:** an empty `204` when up to date, otherwise about 200 bytes of JSON from `server/latest.json`.
+*   **The prompt:** the user is asked, never forced. **Download** opens the latest stable GitHub release in the browser, and **Later** hides that version until a newer one appears.
+*   **Offline:** if the server can't be reached, nothing is shown and the app checks again next launch.
+*   **Publishing:** after each stable release, update `server/latest.json` (see [docs/RELEASING.md](docs/RELEASING.md#telling-phones-about-a-release)).
+*   **Hosting:** run it behind HTTPS; Android blocks plain HTTP. See [server/README.md](server/README.md) for running, hosting and testing.
+
 ## Privacy
-All tracked data remains stored locally on the device (sandboxed SQLite). No data is sent to any external server.
+All tracked data remains stored locally on the device (sandboxed SQLite). No personal data is sent to any external server. The optional update check (`server/`, off until a server is configured) sends only the app's build number.

@@ -45,6 +45,34 @@ export function lmpFromEdd(eddIso: string): string {
   return addDaysIso(eddIso, -PREGNANCY_DURATION_DAYS);
 }
 
+export interface DateBounds {
+  min: string;
+  max: string;
+}
+
+/** A typed LMP can be up to 300 days back and never in the future. */
+export function lmpBounds(today: string = todayIso()): DateBounds {
+  return { min: addDaysIso(today, -300), max: today };
+}
+
+/** A typed EDD can be up to 30 days overdue and up to 300 days ahead. */
+export function eddBounds(today: string = todayIso()): DateBounds {
+  return { min: addDaysIso(today, -30), max: addDaysIso(today, 300) };
+}
+
+export function isWithinBounds(iso: string, bounds: DateBounds): boolean {
+  return iso >= bounds.min && iso <= bounds.max;
+}
+
+/**
+ * The local calendar date (YYYY-MM-DD) for a stored value. Plain dates pass
+ * through; full ISO timestamps (UTC, from toISOString) are converted to local
+ * time so that a late-evening UTC value is not shown as the next day.
+ */
+export function isoToLocalDate(iso: string): string {
+  return iso.length === 10 ? iso : toIsoDate(new Date(iso));
+}
+
 export function gestationalWeek(lmpIso: string, onIso: string = todayIso()): number {
   const days = daysBetween(lmpIso, onIso);
   return Math.floor(days / 7) + 1;

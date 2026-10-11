@@ -156,6 +156,10 @@ function canUndoItem(item: ScheduleItem): boolean {
 async function onComplete(item: ScheduleItem): Promise<void> {
   await markCompleted(item);
   expandedId.value = null;
+  // After "Give Birth" is completed, take the mother to register the birth
+  if (item.type === 'MILESTONE' && item.ref === 'edd') {
+    ionRouter.push({ name: 'ProfilePregnancy', query: { section: 'birth' } });
+  }
 }
 
 async function onUndo(item: ScheduleItem): Promise<void> {

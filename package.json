@@ -9,7 +9,11 @@
         "preview": "vite preview",
         "test:e2e": "playwright test",
         "test:e2e:ui": "playwright test --ui",
-        "test:e2e:report": "playwright show-report"
+        "test:e2e:report": "playwright show-report",
+        "audio:sync": "node --no-warnings scripts/audio/generate.ts",
+        "audio:check": "node --no-warnings scripts/audio/generate.ts --check",
+        "audio:review": "node --no-warnings scripts/audio/review.ts",
+        "typecheck:e2e": "tsc -p e2e/tsconfig.json"
     },
     "dependencies": {
         "@capacitor-community/sqlite": "^8.1.1",
@@ -25,6 +29,7 @@
         "vue-router": "^4.3.0"
     },
     "devDependencies": {
+        "@capacitor/assets": "^3.0.5",
         "@capacitor/cli": "^8.5.2",
         "@capacitor/ios": "^8.5.2",
         "@playwright/test": "^1.63.0",

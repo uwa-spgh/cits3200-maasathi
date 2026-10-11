@@ -15,7 +15,7 @@
       </div>
     </IonContent>
 
-    <IonFooter v-if="getNavMode() === 'homeBar'" class="nav-footer ion-no-border">
+    <IonFooter class="nav-footer ion-no-border">
       <BottomNav :active="nav" @navigate="go" />
     </IonFooter>
   </IonPage>
@@ -25,7 +25,6 @@
 import { IonContent, IonFooter, IonHeader, IonPage, useIonRouter } from '@ionic/vue';
 import SectionHeader from './SectionHeader.vue';
 import BottomNav from './BottomNav.vue';
-import { getNavMode } from '../config/app';
 
 withDefaults(
   defineProps<{

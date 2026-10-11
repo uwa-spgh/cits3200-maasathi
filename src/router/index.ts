@@ -1,12 +1,11 @@
 import { createRouter as createIonicRouter, createWebHistory } from '@ionic/vue-router';
 import type { RouteRecordRaw } from 'vue-router';
 
-import { getNavMode, homePath } from '../config/app';
+import { homePath } from '../config/app';
 import { settingsRepo } from '../db/database';
 import { ensureAppData } from '../bootstrap';
 import HomePage from '../views/HomePage.vue';
 import WeekInfoPage from '../views/WeekInfoPage.vue';
-import EmergencyPage from '../views/EmergencyPage.vue';
 import RemindersPage from '../views/RemindersPage.vue';
 import InformationPage from '../views/InformationPage.vue';
 import AncPage from '../views/AncPage.vue';
@@ -26,7 +25,6 @@ import ProfileVaccinationPage from '../views/profile/ProfileVaccinationPage.vue'
 import ProfilePlanPage from '../views/profile/ProfilePlan.vue';
 import HistorySummaryPage from '../views/HistorySummaryPage.vue';
 import OnboardingPage from '../views/OnboardingPage.vue';
-import TabsLayout from '../layouts/TabsLayout.vue';
 
 const ONBOARDING_ROUTE: RouteRecordRaw = {
   path: '/onboarding',
@@ -36,7 +34,6 @@ const ONBOARDING_ROUTE: RouteRecordRaw = {
 
 const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/week-info', name: 'WeekInfo', component: WeekInfoPage },
-  { path: '/emergency', name: 'Emergency', component: EmergencyPage },
   { path: '/reminders', name: 'Reminders', component: RemindersPage },
   { path: '/information', name: 'Information', component: InformationPage },
   { path: '/information/anc', name: 'Anc', component: AncPage },
@@ -57,41 +54,11 @@ const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/profile/history/:pregnancyId', name: 'HistorySummary', component: HistorySummaryPage }
 ];
 
-const PAGE_META: Record<string, { tab?: string }> = {
-  Home: { tab: 'home' },
-  Reminders: { tab: 'reminders' },
-  Information: { tab: 'information' },
-  Profile: { tab: 'profile' }
-};
-
-function applyTabMeta(routes: RouteRecordRaw[]): RouteRecordRaw[] {
-  return routes.map((r) => ({ ...r, meta: PAGE_META[r.name as string] ?? {} }));
-}
-
 function buildRoutes(): RouteRecordRaw[] {
-  const mode = getNavMode();
-  if (mode === 'tabBar') {
-    const tabChildren = applyTabMeta([
-      { path: 'home', name: 'Home', component: HomePage },
-      { path: 'reminders', name: 'Reminders', component: RemindersPage },
-      { path: 'information', name: 'Information', component: InformationPage },
-      { path: 'profile', name: 'Profile', component: ProfilePage },
-      ...AUX_ROUTES.map((r) => ({
-        ...r,
-        path: r.path.replace(/^\//, '')
-      }))
-    ]);
-    return [
-      { path: '/', redirect: () => ({ path: homePath() }) },
-      { path: '/tabs', component: TabsLayout, children: tabChildren },
-      ONBOARDING_ROUTE,
-      { path: '/:pathMatch(.*)*', redirect: () => ({ path: homePath() }) }
-    ];
-  }
   return [
     { path: '/', redirect: () => ({ path: homePath() }) },
     { path: '/home', name: 'Home', component: HomePage },
-    ...applyTabMeta(AUX_ROUTES),
+    ...AUX_ROUTES,
     ONBOARDING_ROUTE,
     { path: '/:pathMatch(.*)*', redirect: () => ({ path: homePath() }) }
   ];
@@ -104,7 +71,11 @@ export function createRouter() {
   });
 
   router.beforeEach(async (to) => {
-    await ensureAppData();
+    try {
+      await ensureAppData();
+    } catch (e) {
+      console.error('MaaSathi: continuing without app data', e);
+    }
     const onboardingDone = await settingsRepo.get('maasathi_onboarding_done');
     if (!onboardingDone && to.name !== 'Onboarding') {
       return { name: 'Onboarding' };
@@ -117,5 +88,3 @@ export function createRouter() {
 
   return router;
 }
-
-export { getNavMode };

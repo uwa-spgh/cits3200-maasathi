@@ -1,0 +1,141 @@
+/*
+  Shared styles for the Profile sub-pages (personal details, pregnancy, vaccination, birth plan).
+  Cards use the same surface, border, radius and shadow as the Profile menu rows and ExpandableCard.
+*/
+
+.profile-stack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-card {
+  background: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
+  border-radius: 20px;
+  padding: 14px 14px 16px;
+  box-shadow: 0 2px 8px var(--color-shadow, rgba(0, 0, 0, 0.08));
+}
+
+/* Fields sit directly on the card, so they take its colours instead of Ionic's defaults. */
+.profile-card ion-item {
+  --background: transparent;
+  --color: var(--color-surface-text, #1a1a1a);
+  --border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+  --padding-start: 4px;
+  --inner-padding-end: 4px;
+}
+
+.profile-card ion-input,
+.profile-card ion-select,
+.profile-card ion-textarea {
+  --color: var(--color-surface-text, #1a1a1a);
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
+}
+
+/* Toggles: the Ionic defaults are black when off and Ionic blue when on, so use the Profile palette instead. */
+.profile-card ion-toggle {
+  --track-background: color-mix(in srgb, var(--color-surface-text, #1a1a1a) 40%, transparent);
+  --track-background-checked: color-mix(in srgb, var(--color-profile-bg, #33a1de) 50%, transparent);
+  --handle-background-checked: var(--color-profile-bg, #33a1de);
+}
+
+.profile-card-title {
+  margin: 0 4px 8px;
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--color-surface-text, #1a1a1a);
+}
+
+.profile-subtitle {
+  margin: 14px 4px 8px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: var(--color-surface-text, #1a1a1a);
+}
+
+.profile-subtitle.first {
+  margin-top: 0;
+}
+
+.profile-hint {
+  margin: 4px 8px 8px;
+  font-size: 0.8rem;
+  color: var(--color-text-muted, #5c5c5c);
+}
+
+.profile-hint--warn {
+  color: var(--color-danger, #c0392b);
+  font-weight: 600;
+}
+
+.profile-hint-listen {
+  margin: 0 8px 8px;
+}
+
+.profile-dose-row {
+  display: flex;
+  justify-content: space-between;
+  padding: 8px;
+  font-size: 0.9rem;
+  color: var(--color-surface-text, #1a1a1a);
+  border-bottom: 1px dashed var(--color-border, rgba(0, 0, 0, 0.1));
+}
+
+.profile-dose-row:last-child {
+  border-bottom: none;
+}
+
+.profile-action {
+  margin: 12px 4px 0;
+  --background: var(--color-profile-bg, #33a1de);
+  --color: var(--color-profile-text, #000);
+  --border-radius: 999px;
+  font-weight: 700;
+}
+
+.profile-action--secondary {
+  --background: var(--color-btn-more-bg, #7bc62d);
+  --color: var(--color-btn-more-text, #000);
+}
+
+.profile-action--danger {
+  --background: transparent;
+  --color: var(--color-danger, #c0392b);
+  --border-color: var(--color-danger, #c0392b);
+}
+
+/* Ionic fades a disabled button to 50% opacity, which leaves faint text on the coloured fill. Show a flat, readable button instead. */
+.profile-action.button-disabled {
+  opacity: 1;
+  --background: var(--color-card-bg, #eaeaea);
+  --color: var(--color-text-muted, #5c5c5c);
+  --border-width: 1.5px;
+  --border-style: dashed;
+  --border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+}
+
+/* Select popovers opened from Profile (interface-options cssClass): selected row in the Profile palette instead of Ionic blue. */
+ion-popover.profile-select-popover {
+  /* Wide enough for the long TT answers; labels wrap rather than being cut off (Bengali especially). */
+  --width: min(340px, calc(100vw - 32px));
+}
+
+ion-popover.profile-select-popover ion-item {
+  --color: var(--color-surface-text, #1a1a1a);
+}
+
+ion-popover.profile-select-popover ion-radio::part(label) {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+ion-popover.profile-select-popover ion-item.item-radio-checked {
+  --background: color-mix(in srgb, var(--color-profile-bg, #33a1de) 18%, transparent);
+  --background-focused: var(--color-profile-bg, #33a1de);
+  --background-hover: var(--color-profile-bg, #33a1de);
+  font-weight: 700;
+}

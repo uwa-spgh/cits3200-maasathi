@@ -3,9 +3,9 @@ import { completeOnboardingMvp } from '../support/onboarding';
 
 /**
  * MVP-03 — Danger signs reachable from BottomNav
- * Source: docs/e2e-p0-acceptance-journeys.md
+ * Source: docs/e2e-handoff-to-team.md
  *
- * BottomNav right item → DangerSigns (not /emergency).
+ * BottomNav right item → DangerSigns.
  */
 test.describe('MVP-03 danger signs', () => {
   test('BottomNav opens danger-sign content', async ({ page }) => {

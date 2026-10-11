@@ -19,7 +19,9 @@ import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
 import './theme/variables.css';
+import './theme/profile.css';
 import { useTheme } from './composables/useTheme';
+import { loadClipManifest } from './audio/clips';
 
 const app = createApp(App);
 
@@ -29,9 +31,11 @@ app.use(IonicVue);
 app.use(router);
 app.use(i18n);
 
+void loadClipManifest();
+
 const { applyThemeToDOM } = useTheme();
 applyThemeToDOM();
 
-void router.isReady().then(() => {
-  app.mount('#app');
-});
+router.isReady()
+  .catch((e) => console.error('MaaSathi: initial navigation failed', e))
+  .finally(() => app.mount('#app'));

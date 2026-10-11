@@ -13,7 +13,41 @@ export interface NowTopic {
   pageKey?: string;
   /** i18n key for the widget text, overriding the default first-point/body excerpt. */
   excerptKey?: string;
+  /** i18n key for the widget title, overriding `${ns}.${key}_title`. */
+  titleKey?: string;
+  /** Query for the `page` link, overriding the default `?topic=key`. */
+  pageQuery?: Record<string, string>;
 }
+
+/** Shown once every PNC contact is completed, until the child immunisation milestone is. */
+const CHILDHOOD_IMMUNISATION_TOPIC: NowTopic = {
+  ns: 'pnc',
+  key: 'childhood_immunisation',
+  points: 9,
+  page: 'VaccinationChild'
+};
+
+/** Shown once the child immunisation milestone is completed, and after the pregnancy is closed. */
+export const NEW_PREGNANCY_TOPIC: NowTopic = {
+  ns: 'pnc',
+  key: 'new_pregnancy',
+  points: 0,
+  titleKey: 'home.cards.now_new_pregnancy_title',
+  excerptKey: 'home.cards.now_new_pregnancy',
+  page: 'ProfilePregnancy',
+  pageQuery: {}
+};
+
+/** Shown once "Give Birth" is marked completed but the birth isn't registered yet. */
+export const REGISTER_BIRTH_TOPIC: NowTopic = {
+  ns: 'anc',
+  key: 'register_birth',
+  points: 0,
+  titleKey: 'home.cards.now_register_birth_title',
+  excerptKey: 'home.cards.now_register_birth',
+  page: 'ProfilePregnancy',
+  pageQuery: { section: 'birth' }
+};
 
 /** Stage topics without nutrition (nutrition is kept separate in the Nutrition section) */
 export const STAGE_NOW_TOPICS: Record<string, NowTopic[]> = {
@@ -99,6 +133,40 @@ export function currentStageRef(
   return { ns, ref: next.ref, stageKey: `${type}:${next.ref}` };
 }
 
+/**
+ * Stage for the Home cards. Same as currentStageRef, except that once every
+ * ANC visit is done the cards stay on visit 4 until "Give Birth" is marked
+ * completed.
+ */
+export function homeStageRef(
+  items: ScheduleItem[],
+  mode: CareMode
+): { ns: 'anc' | 'pnc'; ref: string; stageKey: string } | null {
+  const stage = currentStageRef(items, mode);
+  if (stage || mode === 'PNC') return stage;
+  const giveBirth = items.find((i) => i.type === 'MILESTONE' && i.ref === 'edd');
+  if (giveBirth && giveBirth.status !== 'completed') {
+    return { ns: 'anc', ref: 'visit4', stageKey: 'ANC:visit4' };
+  }
+  return null;
+}
+
+/** Topics for the "What to know right now" widget at the current stage. */
+export function nowTopicsFor(items: ScheduleItem[], mode: CareMode): NowTopic[] {
+  const stage = homeStageRef(items, mode);
+  if (stage) return STAGE_NOW_TOPICS[stage.stageKey] ?? [];
+  // Every PNC contact done: the baby's vaccinations, then (once the child
+  // immunisation milestone is completed) registering a future pregnancy
+  if (mode === 'PNC') {
+    if (!items.some((i) => i.type === 'PNC')) return [];
+    const epiStart = items.find((i) => i.type === 'MILESTONE' && i.ref === 'child_epi_start');
+    return epiStart?.status === 'completed' ? [NEW_PREGNANCY_TOPIC] : [CHILDHOOD_IMMUNISATION_TOPIC];
+  }
+  // "Give Birth" marked completed but still in pregnancy mode: prompt to register
+  const giveBirth = items.find((i) => i.type === 'MILESTONE' && i.ref === 'edd');
+  return giveBirth?.status === 'completed' ? [REGISTER_BIRTH_TOPIC] : [];
+}
+
 /** First paragraph block, for card-sized excerpts of long articles. */
 export function excerpt(text: string, max = 200): string {
   const block = text
@@ -132,11 +200,26 @@ export function getStageSurfacedContent(
   wellbeingBody: string;
   dangerBody: string;
 } {
-  const stage = currentStageRef(items, mode);
+  const stage = homeStageRef(items, mode);
   if (!stage) {
+    // "Give Birth" marked completed but the birth isn't registered yet
+    const giveBirth = items.find((i) => i.type === 'MILESTONE' && i.ref === 'edd');
+    const justBorn = mode !== 'PNC' && giveBirth?.status === 'completed';
+    // Child immunisation milestone marked completed: the guidance is finished
+    const epiStart = items.find((i) => i.type === 'MILESTONE' && i.ref === 'child_epi_start');
+    const journeyDone = mode === 'PNC' && epiStart?.status === 'completed';
+    // Every PNC contact done, child immunisation milestone still to come
+    const epiStage = mode === 'PNC' && !!epiStart && epiStart.status !== 'completed';
+    const bodyKey = justBorn
+      ? 'home.cards.after_birth_congrats'
+      : journeyDone
+        ? 'home.cards.journey_complete'
+        : epiStage
+          ? 'home.cards.child_epi_stage'
+          : 'home.cards.wellbeing_placeholder';
     return {
       stageKey: null,
-      wellbeingBody: t('home.cards.wellbeing_placeholder'),
+      wellbeingBody: t(bodyKey),
       dangerBody: t('home.cards.danger_generic_body')
     };
   }

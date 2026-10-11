@@ -5,7 +5,7 @@
   <IonPage>
     <IonHeader class="home-header ion-no-border">
       <div class="header-inner">
-        <p class="brand-tag">MaaSathi app</p>
+        <p class="brand-tag">{{ $t('home.brand_tag') }}</p>
         <h1 class="greeting">
           {{ $t('greeting', { name: userName || $t('home.default_name') }) }}
         </h1>
@@ -30,6 +30,7 @@
           :badge="reminderBadge"
           :graphic-icon="reminderGraphic"
           :listen-text="reminderBody"
+          :listen-segments="reminderSegments"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
           @learn-more="onRemindersTap"
@@ -93,16 +94,44 @@ import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
+import { scheduleRepo } from '../db/database';
 import type { ScheduleItem } from '../db/schemas';
 import { daysBetween, formatDayMonthLong, todayIso } from '../utils/date';
-import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { DATE_MARK, segmentsAroundDate } from '../audio/dateSpeech';
+import { excerpt, getStageSurfacedContent, NEW_PREGNANCY_TOPIC, nowTopicsFor } from '../utils/stageArticle';
 import { visitNumber } from '../services/notifications';
 
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { userName } = useUser();
-const { activePregnancy, mode } = usePregnancy();
-const { items, load: loadSchedule } = useSchedule();
+const { activePregnancy, pastPregnancies, mode } = usePregnancy();
+
+/**
+ * A pregnancy has ended (closed early or archived) and no new one has been
+ * added yet: keep showing the end-of-journey messages until it is.
+ */
+const journeyFinished = computed(() => !activePregnancy.value && pastPregnancies.value.length > 0);
+
+/** Whether the ended pregnancy reached the child immunisation milestone (marked completed). */
+const endedAfterEpi = ref(false);
+watch(
+  [journeyFinished, pastPregnancies],
+  async () => {
+    if (!journeyFinished.value) return;
+    const latest = [...pastPregnancies.value].sort((a, b) =>
+      (b.archivedAt ?? '').localeCompare(a.archivedAt ?? '')
+    )[0];
+    if (!latest) return;
+    const epi = (await scheduleRepo.byPregnancy(latest.id)).find(
+      (i) => i.type === 'MILESTONE' && i.ref === 'child_epi_start'
+    );
+    endedAfterEpi.value = epi?.status === 'completed';
+  },
+  { immediate: true }
+);
+const { items: scheduleItems, load: loadSchedule } = useSchedule();
+// Only the active pregnancy's reminders count; a closed pregnancy's are ignored
+const items = computed(() => (activePregnancy.value ? scheduleItems.value : []));
 const { load: loadTt } = useTt();
 
 onMounted(() => {
@@ -157,20 +186,38 @@ const reminderBadge = computed<string | null>(() => {
   return n !== null && shownEvent.value?.status !== 'completed' ? `${n}` : null;
 });
 
-const reminderBody = computed(() => {
+/** The reminder sentence for the shown event: its translation key and values, apart from the date. */
+const reminderSentence = computed<{ key: string; values: Record<string, string>; recorded: boolean } | null>(() => {
   const e = shownEvent.value;
-  if (!e) return t('home.no_pregnancy');
-  const date = formatDayMonthLong(e.dueDate, locale.value);
+  if (!activePregnancy.value || !e) return null;
   const n = visitNumber(e);
   if (e.type === 'ANC' && n !== null) {
-    return t('home.cards.reminder_anc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+    return { key: 'home.cards.reminder_anc', values: { ordinal: t(`home.cards.ordinal_${n}`) }, recorded: true };
   }
   if (e.type === 'PNC' && n !== null) {
-    return t('home.cards.reminder_pnc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+    return { key: 'home.cards.reminder_pnc', values: { ordinal: t(`home.cards.ordinal_${n}`) }, recorded: true };
   }
-  if (e.type === 'TT') return t('home.cards.reminder_tt', { date });
-  if (e.ref === 'edd') return t('home.cards.reminder_edd', { date });
-  return t('home.cards.reminder_generic', { title: t(e.titleKey), date });
+  if (e.type === 'TT') return { key: 'home.cards.reminder_tt', values: {}, recorded: true };
+  if (e.ref === 'edd') return { key: 'home.cards.reminder_edd', values: {}, recorded: true };
+  // The title of any other event has no recording, so this one uses the device voice.
+  return { key: 'home.cards.reminder_generic', values: { title: t(e.titleKey) }, recorded: false };
+});
+
+const reminderBody = computed(() => {
+  const e = shownEvent.value;
+  const sentence = reminderSentence.value;
+  if (!activePregnancy.value) return t(journeyFinished.value ? 'home.cards.no_reminders' : 'home.no_pregnancy');
+  // Everything (up to the child immunisation milestone) is completed
+  if (!e || !sentence) return t('home.cards.no_reminders');
+  return t(sentence.key, { ...sentence.values, date: formatDayMonthLong(e.dueDate, locale.value) });
+});
+
+/** The reminder read from recorded pieces, since its date means no recording of the whole sentence exists. */
+const reminderSegments = computed<string[] | null>(() => {
+  const e = shownEvent.value;
+  const sentence = reminderSentence.value;
+  if (!e || !sentence?.recorded) return null;
+  return segmentsAroundDate(t(sentence.key, { ...sentence.values, date: DATE_MARK }), e.dueDate, locale.value);
 });
 
 /**
@@ -178,10 +225,6 @@ const reminderBody = computed(() => {
  * focusing on that upcoming visit item in the timeline.
  */
 function onRemindersTap(): void {
-  if (!activePregnancy.value) {
-    go('Profile');
-    return;
-  }
   const id = shownEvent.value?.id;
   ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
 }
@@ -195,13 +238,16 @@ function onInformationTap(): void {
 
 // ---- Surfaced Stage Content: Wellbeing ----
 const surfaced = computed(() => getStageSurfacedContent(items.value, mode.value, t));
-const wellbeingBody = computed(() => surfaced.value.wellbeingBody);
+const wellbeingBody = computed(() => {
+  if (!journeyFinished.value) return surfaced.value.wellbeingBody;
+  // Thank-you once the full journey was completed, a gentler note if it ended earlier
+  return t(endedAfterEpi.value ? 'home.cards.journey_complete' : 'home.cards.journey_ended_early');
+});
 
 // ---- "What to know right now" rotating widget ----
-const nowTopics = computed(() => {
-  const stage = currentStageRef(items.value, mode.value);
-  return stage ? STAGE_NOW_TOPICS[stage.stageKey] ?? [] : [];
-});
+const nowTopics = computed(() =>
+  journeyFinished.value ? [NEW_PREGNANCY_TOPIC] : nowTopicsFor(items.value, mode.value)
+);
 
 // Today's date, refreshed whenever Home is shown so the daily topic changes
 // even if the app stays open overnight.
@@ -234,7 +280,8 @@ const activeNowTopic = computed(() => nowTopics.value[nowIndex.value] ?? null);
 
 const nowTitle = computed(() => {
   const topic = activeNowTopic.value;
-  return topic ? t(`${topic.ns}.${topic.key}_title`) : t('home.cards.now_placeholder');
+  if (!topic) return t('home.cards.now_placeholder');
+  return t(topic.titleKey ?? `${topic.ns}.${topic.key}_title`);
 });
 
 const nowExcerpt = computed(() => {
@@ -258,7 +305,7 @@ function onNowLearnMore(): void {
     return;
   }
   const routeName = topic.page ?? (topic.ns === 'pnc' ? 'Pnc' : 'Anc');
-  ionRouter.push({ name: routeName, query: { topic: topic.pageKey ?? topic.key } });
+  ionRouter.push({ name: routeName, query: topic.pageQuery ?? { topic: topic.pageKey ?? topic.key } });
 }
 </script>
 
