@@ -19,6 +19,7 @@ import '@ionic/vue/css/flex-utils.css';
 import '@ionic/vue/css/display.css';
 
 import './theme/variables.css';
+import './theme/profile.css';
 import { useTheme } from './composables/useTheme';
 
 const app = createApp(App);

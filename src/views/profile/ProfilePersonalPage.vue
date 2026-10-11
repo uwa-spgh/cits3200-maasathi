@@ -9,7 +9,7 @@
     :icon="personOutline"
     color="blue"
   >
-    <div class="form-card">
+    <div class="profile-card">
       <IonItem lines="full">
         <IonLabel position="stacked">{{ $t('profile.name_label') }}</IonLabel>
         <IonInput v-model="form.name" :placeholder="$t('profile.name_placeholder')" />
@@ -18,7 +18,7 @@
         <IonLabel position="stacked">{{ $t('profile.age_label') }}</IonLabel>
         <IonInput v-model.number="form.age" type="number" :placeholder="$t('profile.age_placeholder')" />
       </IonItem>
-      <IonButton expand="block" class="primary-action" @click="save">
+      <IonButton expand="block" class="profile-action" @click="save">
         {{ $t('common.save') }}
       </IonButton>
     </div>
@@ -63,28 +63,3 @@ async function save(): Promise<void> {
   await toast.present();
 }
 </script>
-
-<style scoped>
-.form-card {
-  background-color: var(--color-card-bg, #eaeaea);
-  border-radius: 20px;
-  padding: 16px 14px 18px 14px;
-  outline: 1.5px solid var(--color-card-border, transparent);
-}
-
-/* Ionic field placeholders: readable in every theme. */
-.form-card ion-input,
-.form-card ion-select,
-.form-card ion-textarea {
-  --placeholder-color: var(--color-text-muted, #5c5c5c);
-  --placeholder-opacity: 1;
-}
-
-.primary-action {
-  margin: 14px 4px 0 4px;
-  --background: var(--color-profile-bg, #33a1de);
-  --color: var(--color-profile-text, #000);
-  --border-radius: 999px;
-  font-weight: 700;
-}
-</style>
