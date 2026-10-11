@@ -40,6 +40,8 @@
     "profile": "Profile"
   },
   "home": {
+    "brand_tag": "MaaSathi app",
+    "default_name": "there",
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "cards": {
       "reminder_title": "Reminder",
@@ -116,10 +118,10 @@
     "no_number": "No number saved — tap Edit to add one",
     "nearest_facility_placeholder": "Nearest health facility (offline)",
     "danger_signs": "Relevant danger signs",
-    "contacts": {
-      "national": "Call emergency services",
     "edit": "Edit numbers",
     "number_placeholder": "Phone number",
+    "contacts": {
+      "national": "Call emergency services",
       "hospital": "Call hospital",
       "doctor": "Call doctor",
       "family": "Call family contact"
