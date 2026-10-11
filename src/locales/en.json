@@ -17,7 +17,8 @@
     "no": "No",
     "not_sure": "I'm not sure",
     "mode_anc": "ANC mode",
-    "mode_pnc": "PNC mode"
+    "mode_pnc": "PNC mode",
+    "part_of": "Part {current} of {total}"
   },
   "nav": {
     "home": "Home",
@@ -31,6 +32,10 @@
     "reminder_pnc": "Your #ordinal postnatal contact is #date",
     "reminder_tt": "Your tetanus vaccination is #date. Remember to bring your EPI card.",
     "reminder_edd": "Your expected delivery is #date",
+    "reminder_epi_start": "Your baby's vaccinations start #date",
+    "reminder_generic": "Reminder: #date",
+    "channel_name": "Appointment reminders",
+    "channel_description": "Reminders for your antenatal visits, postnatal contacts and vaccinations",
     "in_days":"in #days days"
   },
   "placeholder": {
@@ -43,10 +48,11 @@
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "cards": {
       "reminder_title": "Reminder",
+      "no_reminders": "No current reminders",
       "reminder_anc": "You have your {ordinal} ANC visit on {date}",
       "reminder_pnc": "You have your {ordinal} postnatal contact on {date}",
       "reminder_tt": "Your tetanus vaccination is due on {date}. Remember to bring your EPI card.",
-      "reminder_edd": "Your due date is {date}",
+      "reminder_edd": "Your expected due date is {date}. Register your birth before starting PNC care.",
       "reminder_generic": "{title} · {date}",
       "ordinal_1": "first",
       "ordinal_2": "second",
@@ -54,9 +60,20 @@
       "ordinal_4": "fourth",
       "wellbeing_title": "Information",
       "listen": "Listen",
+      "stop": "Stop",
       "learn_more": "Learn more",
       "wellbeing_placeholder": "Wellbeing information will appear here.",
+      "child_epi_stage": "Your baby's vaccinations are starting. Keep the vaccination card safe.",
+      "journey_ended_early": "Your pregnancy record is closed and saved in Profile. Please talk to your health worker if you need support.",
+      "journey_complete": "This completes your ANC and PNC guidance. Thank you for using the MaaSathi app!",
+      "after_birth_congrats": "Congratulations on your new baby! Rest, keep your baby warm and breastfeed in the first hour.",
       "now_placeholder": "Nothing new to know right now.",
+      "now_birth_plan": "Start your birth plan: where to give birth, how to get there and who to call.",
+      "now_new_pregnancy_title": "Future pregnancies",
+      "now_new_pregnancy": "To register a new pregnancy in the future, go to My pregnancy in Profile.",
+      "now_register_birth_title": "Register Birth",
+      "now_register_birth": "To switch to postnatal care, please register your birth in Profile.",
+      "now_birth_plan_review": "Make sure to review your birth preparedness plan.",
       "now_prev": "Previous",
       "now_next": "Next",
       "danger_title": "Danger signs to watch",
@@ -113,6 +130,7 @@
   "danger_signs": {
     "section_title": "Danger signs — go to the health facility immediately",
     "newborn_title": "Newborn danger signs — go to the health facility immediately",
+    "seek_care_note": "If you are experiencing any danger signs, please go to a health care facility as soon as possible.",
     "pregnancy": {
       "title": "During pregnancy",
       "signs": {
@@ -175,6 +193,8 @@
   },
   "timeline": {
     "empty": "No reminders here",
+    "status_completed": "Completed",
+    "completed_on": "Completed on {date}",
     "mark_completed": "Mark completed",
     "mark_upcoming": "Move back to upcoming",
     "due_today": "Due today",
@@ -210,10 +230,15 @@
       "contact4": "PNC Contact 4 (6 weeks)"
     },
     "tt": {
-      "next": "Tetanus (TT) vaccination due"
+      "next": "Tetanus (TT) vaccination due",
+      "dose1": "Tetanus (TT) vaccination — dose 1 of 5",
+      "dose2": "Tetanus (TT) vaccination — dose 2 of 5",
+      "dose3": "Tetanus (TT) vaccination — dose 3 of 5",
+      "dose4": "Tetanus (TT) vaccination — dose 4 of 5",
+      "dose5": "Tetanus (TT) vaccination — dose 5 of 5"
     },
     "milestone": {
-      "edd": "Expected date of delivery",
+      "edd": "Give Birth",
       "child_epi_start": "Child immunisation (EPI) module starts"
     },
     "journey": {
@@ -538,6 +563,7 @@
   },
   "tt": {
     "tracker_title": "Tetanus (TT) vaccination tracker",
+    "unknown_banner": "Confirm your tetanus doses with your health worker at your next visit, then update them here.",
     "doses_count": "{count} of {max} lifetime doses recorded",
     "next_due": "Next dose due: {date}",
     "unknown_notice": "Vaccination history unknown — confirm with your health worker",
@@ -548,6 +574,7 @@
     "no_doses": "No doses recorded yet",
     "education_title": "About tetanus",
     "epi_card_title": "Your EPI card",
+    "child_vaccines_title": "About child vaccinations",
     "status_not_asked": "Not set",
     "status_unknown": "History unknown",
     "status_complete": "Complete",
@@ -613,13 +640,9 @@
     "menu_personal": "Personal information",
     "menu_pregnancy": "My pregnancy",
     "menu_vaccination": "My vaccinations",
-    "menu_contacts": "Emergency contacts",
     "menu_birth_plan": "My Birth Plan",
-    "menu_settings": "Settings",
     "menu_history": "Past pregnancy",
     "data_section": "Data",
-    "contacts_hint": "These numbers are used by the Emergency page. All data stays on your phone.",
-    "contacts_number_placeholder": "Enter phone number",
     "name_label": "Your name",
     "name_placeholder": "Enter your name",
     "plan_facility_label": "Place of Delivery",
@@ -632,7 +655,23 @@
     "plan_emergency_contact_placeholder": "Enter number of someone who can help",
     "plan_form_title": "Make Your Plan",
     "plan_bag_title": "Pack Delivery Bag",
-    "plan_bag_coming_soon": "Coming soon",
+    "plan_bag_mother_title": "For you",
+    "plan_bag_items": {
+      "item1": "Clean clothes",
+      "item2": "Sanitary pads",
+      "item3": "Clean underwear",
+      "item4": "Soap and personal items",
+      "item5": "Any medicines you need",
+      "item6": "ANC card",
+      "item7": "Phone and charger"
+    },
+    "plan_bag_baby_title": "For your baby",
+    "plan_bag_baby_items": {
+      "item1": "Clean baby clothes",
+      "item2": "Clean nappies or cloth",
+      "item3": "Clean soft cloths",
+      "item4": "Baby blanket"
+    },
     "plan_advice_text": "Remember to go over your birth plan with family and others supporting you.",
     "age_label": "Age",
     "age_placeholder": "Enter your age",
@@ -688,10 +727,6 @@
     "close_pregnancy_btn": "Close current pregnancy early",
     "close_confirm_title": "Close pregnancy?",
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
-    "nav_mode_label": "Navigation style",
-    "nav_mode_hint": "Developer option — app restarts to apply",
-    "nav_home_bar": "Home button bar",
-    "nav_tab_bar": "Tab bar",
     "reset_data_btn": "Reset all data",
     "reset_confirm_title": "Reset all data?",
     "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
@@ -730,20 +765,9 @@
   },
   "theme": {
     "title": "Appearance",
-    "open": "Customise",
-    "presets": "Theme presets",
-    "preset_vibrant": "Vibrant",
-    "preset_pastel": "Pastel",
-    "preset_contrast": "High contrast",
-    "preset_dark": "Dark",
-    "customize_colors": "Customise colours",
-    "background_color": "Background",
-    "card_color": "Card",
-    "emergency_color": "Emergency",
-    "reminders_color": "Reminders",
-    "information_color": "Information",
-    "profile_color": "Profile",
-    "reset": "Reset"
+    "normal": "Normal",
+    "contrast": "High contrast",
+    "dark": "Dark"
   },
   "content": {
     "empty": "Content coming soon."

@@ -10,46 +10,85 @@ import {
   bookOutline,
   chevronBackCircle,
   chevronForwardCircle,
-  happyOutline,
-  heartOutline,
-  home,
-  homeOutline,
-  informationCircleOutline,
-  personOutline,
-  playOutline,
-  pulseOutline,
   shieldCheckmarkOutline,
-  timeOutline,
-  volumeHighOutline,
-  warningOutline
+  stopCircleOutline,
 } from 'ionicons/icons';
+
+import calender from '../assets/icons/calendar_month_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import childFace from '../assets/icons/child_care_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import clockWthreeDots from '../assets/icons/chronic_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import pen from '../assets/icons/ink_pen_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import menstrualHealth from '../assets/icons/menstrual_health_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import syringe from '../assets/icons/syringe_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import vaccineDoses from '../assets/icons/vaccines_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import wavingHand from '../assets/icons/waving_hand_96dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+
+import heartOutline from '../assets/icons/favorite_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import healthCheck from '../assets/icons/stethoscope_64dp_000000_FILL0_wght400_GRAD0_opsz48.svg';
+import water from '../assets/icons/water_drop_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import walk from '../assets/icons/directions_walk_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import nutrition from '../assets/icons/nutrition_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import clock from '../assets/icons/schedule_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import smile from '../assets/icons/sentiment_satisfied_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import home from '../assets/icons/home_64dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
+import info from '../assets/icons/info_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import profile from '../assets/icons/person_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import listen from '../assets/icons/volume_up_64dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
+import warning from '../assets/icons/warning_64dp_000000_FILL0_wght700_GRAD0_opsz48.svg';
+import book from '../assets/icons/import_contacts_20dp_000000_FILL0_wght700_GRAD0_opsz20.svg';
+import play from '../assets/icons/play_arrow_96dp_000000_FILL1_wght700_GRAD0_opsz48.svg';
 
 export const homeIcons = {
   /** Timeline rail scroll controls */
   railBack: chevronBackCircle,
   railForward: chevronForwardCircle,
+
   /** Timeline node states */
   nodeAction: shieldCheckmarkOutline,
-  /** Timeline node per event type — shown inside every circle */
-  nodeAnc: pulseOutline,
-  nodePnc: homeOutline,
-  nodeTt: shieldCheckmarkOutline,
+
+  /** Timeline node per event type — shown inside every circle
+    they are also used as the icon in the reminder widget**/
+  nodeAnc: healthCheck,
+  nodePnc: healthCheck,
+  nodeTt: syringe,
   nodeMilestone: heartOutline,
-  /** Reminder card: title icon + large graphic */
-  reminderTitle: timeOutline,
-  reminderGraphic: pulseOutline,
+
+  /** Reminder widget title icon */
+  reminderTitle: clock,
+
   /** "How are you?" card title icon */
-  wellbeingTitle: happyOutline,
+  wellbeingTitle: smile,
+
+  /** Nutrition card: title icon + large graphic (runner + food) */
+  nutritionTitle: water,
+  nutritionGraphicMain: walk,
+  nutritionGraphicSecondary: nutrition,
+
   /** "What to know right now" rotating card: title icon + corner next-arrow */
-  nowTitle: bookOutline,
-  nowNext: playOutline,
+  nowTitle: book,
+  nowNext: play,
+
   /** Buttons */
-  listen: volumeHighOutline,
-  learnMore: informationCircleOutline,
+  listen: listen,
+  stop: stopCircleOutline,
+  learnMore: info,
+
   /** Bottom navigation */
-  navProfile: personOutline,
+  navProfile: profile,
   navHome: home,
-  navDanger: warningOutline
+  navDanger: warning
+} as const;
+
+export const onBoardingIcons = {
+  /* icons for the onboarding page */
+  calender: calender,
+  childFace: childFace,
+  clockWthreeDots: clockWthreeDots,
+  pen: pen,
+  menstrualHealth: menstrualHealth,
+  syringe: syringe,
+  vaccineDoses: vaccineDoses,
+  wavingHand: wavingHand
 } as const;
 
 export type HomeIconKey = keyof typeof homeIcons;

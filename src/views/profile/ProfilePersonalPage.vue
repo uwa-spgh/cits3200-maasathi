@@ -1,3 +1,6 @@
+<!--
+  ProfilePersonalPage — edit the user's name and age and save them. Reached from the Profile menu.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -45,7 +48,7 @@ const { userName, setUserName } = useUser();
 const form = ref<{ name: string; age: number | null }>({ name: '', age: null });
 
 onMounted(async () => {
-  form.value.name = userName();
+  form.value.name = userName.value;
   form.value.age = await settingsRepo.getNumber(AGE_KEY);
 });
 
@@ -66,6 +69,15 @@ async function save(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
 }
 
 .primary-action {

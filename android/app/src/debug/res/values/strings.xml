@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Debug-only overrides, so a debug build is distinguishable from a real release
+  on the home screen. Overriding the applicationId means both can be installed at
+  once, which is only useful if you can tell them apart.
+
+  - app_name / title_activity_main: the launcher label and the recents/task label.
+  - ic_launcher_background: the adaptive icon's background layer, so debug builds
+    get a teal icon instead of the white production one.
+-->
+<resources>
+    <string name="app_name">MaaSathi (debug)</string>
+    <string name="title_activity_main">MaaSathi (debug)</string>
+</resources>

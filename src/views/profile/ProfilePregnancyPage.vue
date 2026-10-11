@@ -1,3 +1,6 @@
+<!--
+  ProfilePregnancyPage — edit pregnancy details: LMP and EDD in ANC mode, or delivery details in PNC mode, plus obstetric history and risk fields. Can also register a birth, start a new pregnancy or close the current one early.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -25,6 +28,9 @@
             <IonInput v-model="form.edd" type="date" />
           </IonItem>
           <p class="field-hint">{{ $t('profile.date_pair_hint') }}</p>
+          <div class="hint-listen">
+            <ListenButton size="sm" accent="blue" :text="$t('profile.date_pair_hint')" />
+          </div>
         </template>
 
         <template v-else>
@@ -110,9 +116,12 @@
       </section>
 
       <!-- Birth registration -->
-      <section v-if="activePregnancy && mode === 'ANC'" class="form-card">
+      <section v-if="activePregnancy && mode === 'ANC'" ref="birthSection" class="form-card">
         <h2 class="form-title">{{ $t('profile.birth_registration') }}</h2>
         <p class="field-hint">{{ $t('profile.birth_registration_hint') }}</p>
+        <div class="hint-listen">
+          <ListenButton size="sm" accent="blue" :text="$t('profile.birth_registration_hint')" />
+        </div>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.delivery_date_label') }}</IonLabel>
           <IonInput v-model="birth.deliveryDate" type="date" />
@@ -179,6 +188,7 @@
 
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useI18n } from 'vue-i18n';
 import {
   IonButton,
@@ -190,16 +200,28 @@ import {
   IonTextarea,
   IonToggle,
   alertController,
+  onIonViewDidEnter,
   toastController
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
+import ListenButton from '../../components/ListenButton.vue';
 import { usePregnancy } from '../../composables/usePregnancy';
 import { lmpFromEdd, eddFromLmp, formatDate } from '../../utils/date';
 import type { DeliveryMode, BirthOutcome } from '../../db/schemas';
 
 const { t } = useI18n();
+const route = useRoute();
 const { activePregnancy, mode, registerPregnancy, registerBirth, closePregnancyEarly } = usePregnancy();
+
+// ?section=birth (e.g. after marking "Give Birth" completed in Reminders)
+// scrolls straight to the birth registration form.
+// Runs once the page has finished sliding in, so the scroll isn't lost.
+const birthSection = ref<HTMLElement | null>(null);
+onIonViewDidEnter(() => {
+  if (route.query.section !== 'birth') return;
+  birthSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+});
 
 const form = ref({
   lmp: '',
@@ -349,6 +371,20 @@ async function confirmClosePregnancy(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
+}
+
+/* Unchecked toggle track: the Ionic default is black at 39%, invisible on dark. */
+.form-card ion-toggle {
+  --track-background: color-mix(in srgb, var(--color-card-text, #1a1a1a) 40%, transparent);
 }
 
 .form-title {
@@ -378,8 +414,11 @@ async function confirmClosePregnancy(): Promise<void> {
 .field-hint {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
+}
+
+.hint-listen {
+  margin: 0 8px 8px 8px;
 }
 
 .primary-action {
@@ -392,8 +431,8 @@ async function confirmClosePregnancy(): Promise<void> {
 
 .danger-action {
   --border-radius: 999px;
-  --color: #c0392b;
-  --border-color: #c0392b;
+  --color: var(--color-danger, #c0392b);
+  --border-color: var(--color-danger, #c0392b);
   font-weight: 700;
 }
 </style>

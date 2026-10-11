@@ -35,6 +35,7 @@
           <div v-if="prepText" class="prep-box">
             <p class="prep-title">{{ $t('timeline.prep_title') }}</p>
             <ContentText :text="prepText" />
+            <ListenButton size="sm" class="panel-listen" :text="prepSpeech" />
           </div>
 
           <!-- Yellow EPI card reminder placed in the expanded content area (no coming-soon placeholder) -->
@@ -45,6 +46,7 @@
               <span class="epi-text">{{ $t('tt.bring_epi_card_banner') }}</span>
             </div>
             <ContentText v-if="infoBody" :text="infoBody" class="epi-dose-body" />
+            <ListenButton size="sm" class="panel-listen" :text="epiSpeech" />
           </div>
 
           <!-- Natural button to full information page -->
@@ -92,7 +94,7 @@
               {{ $t('timeline.mark_completed') }}
             </IonButton>
             <IonButton
-              v-else
+              v-else-if="canUndo"
               size="small"
               fill="outline"
               class="action-btn undo-btn"
@@ -121,8 +123,10 @@ import {
 } from 'ionicons/icons';
 import { useI18n } from 'vue-i18n';
 import ContentText from './ContentText.vue';
+import ListenButton from './ListenButton.vue';
 import type { ScheduleItem } from '../db/schemas';
 import { daysBetween, formatDate, todayIso } from '../utils/date';
+import { speechText } from '../utils/speechChunks';
 
 const ionRouter = useIonRouter();
 
@@ -135,12 +139,15 @@ const props = withDefaults(
     /** Optional extra info box (e.g. dose-specific TT information). */
     infoTitle?: string | null;
     infoBody?: string | null;
+    /** Whether a completed item offers "Move back to upcoming". */
+    canUndo?: boolean;
   }>(),
   {
     expanded: false,
     isLast: false,
     infoTitle: null,
-    infoBody: null
+    infoBody: null,
+    canUndo: true
   }
 );
 
@@ -228,191 +235,261 @@ const prepText = computed(() => {
   const text = translate(prepKey.value);
   return text && text !== prepKey.value ? text.trim() : '';
 });
+
+/** Splits text into the same paragraphs ContentText shows, so spoken text matches the screen. */
+function paragraphsOf(text: string): string[] {
+  return text
+    .split('\n')
+    .map((p) => p.trim())
+    .filter((p) => p.length > 0);
+}
+
+const prepSpeech = computed(() =>
+  speechText(translate('timeline.prep_title'), paragraphsOf(prepText.value))
+);
+
+const epiSpeech = computed(() =>
+  speechText(props.infoTitle ?? undefined, [
+    translate('tt.bring_epi_card_banner'),
+    ...paragraphsOf(props.infoBody ?? '')
+  ])
+);
 </script>
 
 <style scoped>
+/* One row per visit: a narrow track (dot + line) beside a single card.
+   Every card shares the same radius, padding and shadow. The section is a
+   soft yellow family: edges, line, dots and pills are tints of the reminders
+   yellow over the surface. Due today gets the strongest yellow (2px edge and
+   a full dot) and the DUE TODAY badge; overdue keeps its emergency red badge
+   and dot; completed drops to muted. High contrast drops the tints for solid
+   black edges and keeps orange only on the dots, the badge and the primary button. */
 .timeline-item {
+  --edge-soft: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 45%, var(--color-border, rgba(0, 0, 0, 0.1)));
+  --edge-due: var(--color-reminders-bg, #f6c945);
+  --tint-pill: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 20%, var(--color-surface, #fff));
+  --tint-panel: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 11%, var(--color-surface, #fff));
   display: flex;
   position: relative;
-  min-height: 80px;
+  padding-bottom: 12px;
+}
+
+.timeline-item.is-last {
+  padding-bottom: 0;
 }
 
 .item-track {
-  width: 32px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  position: relative;
+  width: 24px;
   flex-shrink: 0;
 }
 
+/* Line runs through the full row height so consecutive dots are joined */
+.track-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  margin-left: -1px;
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 35%, var(--color-border, rgba(0, 0, 0, 0.1)));
+}
+
+/* First row starts its line at its own dot */
+.timeline-item:first-child .track-line {
+  top: 26px;
+}
+
+/* Every dot is the same size; the ring masks the line behind it.
+   Dot centre sits on the centre of the due pill (card padding 14px + 12px).
+   Upcoming is a softer yellow, due today the full yellow, completed a muted yellow-grey. */
 .track-dot {
-  width: 14px;
-  height: 14px;
+  position: absolute;
+  top: 20px;
+  left: 50%;
+  width: 12px;
+  height: 12px;
+  margin-left: -6px;
   border-radius: 50%;
-  background-color: #d1d5db;
-  border: 3px solid #fff;
-  box-shadow: 0 0 0 2px #d1d5db;
-  margin-top: 18px;
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 55%, var(--color-border, rgba(0, 0, 0, 0.1)));
+  box-shadow: 0 0 0 3px var(--color-app-bg, #fbf7f5);
   z-index: 1;
 }
 
-.track-line {
-  flex: 1;
-  width: 2px;
-  background-color: #e5e7eb;
-}
-
+/* Soft yellow edge on every card; the due-today card takes the full yellow at 2px.
+   In high contrast both are solid black (--edge-soft / --edge-due). */
 .item-card {
   flex: 1;
-  background-color: #fff;
-  border-radius: 16px;
+  min-width: 0;
+  margin-left: 10px;
   padding: 14px 16px;
-  margin: 6px 0 6px 8px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-  border: 1.5px solid transparent;
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 1.5px solid var(--edge-soft);
+  border-radius: 20px;
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.08));
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: transform 0.15s ease;
 }
 
-.item-card:hover {
-  transform: translateY(-1px);
-}
-
-.type-anc .track-dot {
-  background-color: #2b7bc4;
-  box-shadow: 0 0 0 2px #2b7bc4;
-}
-
-.type-tt .track-dot {
-  background-color: #b78103;
-  box-shadow: 0 0 0 2px #b78103;
-}
-
-.type-pnc .track-dot {
-  background-color: #10b981;
-  box-shadow: 0 0 0 2px #10b981;
-}
-
-.status-done .track-dot {
-  background-color: #10b981;
-  box-shadow: 0 0 0 2px #10b981;
-}
-
-.status-done .item-card {
-  opacity: 0.75;
-  background-color: #f9fafb;
-}
-
-.status-overdue .item-card {
-  border-color: #fca5a5;
-  background-color: #fff5f5;
-}
-
-.status-overdue .due-badge {
-  background-color: #ef4444;
-  color: #fff;
+.item-card:active {
+  transform: scale(0.99);
 }
 
 .status-today .item-card {
-  border-color: #93c5fd;
-  background-color: #eff6ff;
+  border-width: 2px;
+  border-color: var(--edge-due);
 }
 
-.status-today .due-badge {
-  background-color: #2563eb;
-  color: #fff;
+/* Dots: due today is yellow, overdue is emergency, everything else muted */
+.status-today .track-dot { background-color: var(--color-reminders-bg, #f6c945); }
+.status-overdue .track-dot { background-color: var(--color-emergency-bg, #ff5c5c); }
+.status-done .track-dot {
+  background-color: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 40%, var(--color-text-muted, #5c5c5c));
+}
+
+/* Completed card keeps the neutral edge so it reads as lower emphasis */
+.status-done .item-card {
+  border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+}
+
+.status-done .item-title {
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .item-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 6px;
+  gap: 8px;
+  margin-bottom: 8px;
 }
 
 .header-left {
   display: flex;
   align-items: center;
-  gap: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-width: 0;
 }
 
-.due-badge {
+/* Pills: all share one height, radius and type scale */
+.due-badge,
+.date-chip {
+  display: inline-flex;
+  align-items: center;
+  height: 24px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1.5px solid var(--color-border, rgba(0, 0, 0, 0.1));
   font-size: 0.72rem;
-  font-weight: 700;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+/* Upcoming due pill and the date chip: light yellow tint, dark text on the surface */
+.due-badge {
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  padding: 3px 8px;
-  border-radius: 8px;
-  background-color: #e5e7eb;
-  color: #4b5563;
+  border-color: var(--edge-soft);
+  background-color: var(--tint-pill);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .date-chip {
-  font-size: 0.78rem;
-  color: #6b7280;
-  font-weight: 600;
+  border-color: var(--edge-soft);
+  background-color: var(--tint-pill);
+  color: var(--color-surface-text, #1a1a1a);
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+/* Due pill: tinted when upcoming, solid yellow when due today,
+   a small emergency label only when overdue, muted when completed.
+   Text on solid fills is the -text token. */
+.status-today .due-badge {
+  background-color: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
+  border-color: var(--color-card-border, transparent);
+}
+
+.status-overdue .due-badge {
+  background-color: var(--color-emergency-bg, #ff5c5c);
+  color: var(--color-emergency-text, #000);
+  border-color: var(--color-card-border, transparent);
+}
+
+.status-done .due-badge {
+  background-color: transparent;
+  color: var(--color-text-muted, #5c5c5c);
+  border-color: var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 .done-icon {
-  font-size: 1.3rem;
-  color: #10b981;
+  flex-shrink: 0;
+  font-size: 1.4rem;
+  color: var(--color-success, #10b981);
 }
 
 .item-title {
   margin: 0;
-  font-size: 1.02rem;
+  font-size: 1rem;
   font-weight: 700;
-  color: #1a1a1a;
+  line-height: 1.3;
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .item-subtitle {
   margin: 4px 0 0 0;
-  font-size: 0.84rem;
-  color: #6b7280;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .item-detail {
   margin-top: 14px;
-  padding-top: 12px;
-  border-top: 1px solid #e5e7eb;
+  padding-top: 14px;
+  border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.prep-box {
-  background-color: #f9fafb;
-  border-radius: 12px;
-  padding: 10px 12px;
+/* Shared inner panel for the prep box, EPI box and open-page buttons:
+   a very light yellow tint on the surface with a soft yellow outline */
+.prep-box,
+.epi-reminder-box,
+.open-page-btn {
+  background-color: var(--tint-panel);
+  color: var(--color-card-text, #1a1a1a);
+  border: 1.5px solid var(--edge-soft);
+  border-radius: 14px;
 }
 
-.prep-title {
-  margin: 0 0 4px 0;
-  font-size: 0.8rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  color: #6b7280;
-  letter-spacing: 0.03em;
-}
-
-/* Yellow EPI card reminder placed in the expanded content area */
+/* Prep and EPI panels: stacked content with the Listen button last */
+.prep-box,
 .epi-reminder-box {
-  background: #fffbe6;
-  border: 1.5px solid #ffd591;
-  border-radius: 12px;
   padding: 12px 14px;
   display: flex;
   flex-direction: column;
   gap: 6px;
 }
 
+.prep-title,
 .epi-dose-title {
   margin: 0;
-  font-size: 0.78rem;
+  font-size: 0.72rem;
   font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: #873800;
+  color: var(--color-card-text, #1a1a1a);
+}
+
+.panel-listen {
+  align-self: flex-start;
+  margin-top: 4px;
 }
 
 .epi-reminder-inner {
@@ -423,93 +500,115 @@ const prepText = computed(() => {
 
 .epi-icon {
   font-size: 1.15rem;
-  color: #d46b08;
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
   margin-top: 1px;
 }
 
 .epi-text {
   font-size: 0.88rem;
-  font-weight: 600;
-  color: #873800;
+  font-weight: 700;
+  color: var(--color-card-text, #1a1a1a);
   line-height: 1.4;
 }
 
 .epi-dose-body {
   margin-top: 4px;
   font-size: 0.85rem;
-  color: #595959;
+  color: var(--color-card-text, #1a1a1a);
 }
 
 .info-action-container {
   display: flex;
-  margin-top: 2px;
 }
 
-/* Natural-looking button for viewing full information */
 .open-page-btn {
   display: flex;
   align-items: center;
   gap: 10px;
   width: 100%;
+  min-height: 48px;
   padding: 12px 14px;
-  border-radius: 12px;
   font-size: 0.88rem;
   font-weight: 700;
-  cursor: pointer;
-  border: 1.5px solid #e2e8f0;
-  background: #f8fafc;
-  color: #1e293b;
   text-align: left;
-  transition: all 0.15s ease;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
-}
-
-.open-page-btn:hover {
-  background: #f1f5f9;
-  border-color: #cbd5e1;
+  cursor: pointer;
+  transition: transform 0.15s ease;
 }
 
 .open-page-btn:active {
-  background: #e2e8f0;
+  transform: scale(0.98);
 }
 
 .open-page-btn .btn-main-icon {
   font-size: 1.25rem;
-  color: #475569;
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
 }
 
 .open-page-btn .btn-label {
   flex: 1;
-  color: #1e293b;
+  color: inherit;
   line-height: 1.35;
 }
 
 .open-page-btn .btn-arrow {
   font-size: 1.15rem;
-  color: #94a3b8;
+  color: var(--color-card-text, #1a1a1a);
   flex-shrink: 0;
 }
 
+/* Action buttons: same 44px height and full pill radius */
 .detail-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 4px;
+  gap: 10px;
+  margin-top: 2px;
 }
 
 .action-btn {
-  font-weight: 700;
-  --border-radius: 10px;
+  flex: 1;
+  height: 44px;
+  min-height: 44px;
+  margin: 0;
+  --border-radius: 999px;
+  --padding-start: 18px;
+  --padding-end: 18px;
+  --box-shadow: none;
+  font-size: 0.9rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  text-transform: none;
 }
 
+/* Primary: solid yellow pill with dark text (never light text on yellow) */
 .complete-btn {
-  --background: #10b981;
-  --background-hover: #059669;
+  --background: var(--color-reminders-bg, #f6c945);
+  --background-hover: color-mix(in srgb, var(--color-reminders-bg, #f6c945) 85%, #000);
+  --color: var(--color-reminders-text, #000);
+  --border-color: var(--color-card-border, transparent);
+  --border-width: 2px;
+  --border-style: solid;
 }
 
+/* Secondary: outlined with the soft yellow edge */
 .undo-btn {
-  --color: #6b7280;
-  --border-color: #d1d5db;
+  --background: transparent;
+  --background-hover: var(--tint-panel);
+  --color: var(--color-surface-text, #1a1a1a);
+  --border-color: var(--edge-soft);
+  --border-width: 1.5px;
+  --border-style: solid;
+}
+</style>
+
+<!-- High contrast overrides live outside the scoped block: Vue's scoped compiler
+     drops the descendant part of a :global(...) selector, so they are written here
+     as plain selectors (the .timeline-item class is unique to this component). -->
+<style>
+:root[data-theme='contrast'] .timeline-item {
+  --edge-soft: var(--color-border, #000);
+  --edge-due: var(--color-border, #000);
+  --tint-pill: var(--color-surface, #fff);
+  --tint-panel: var(--color-surface, #fff);
 }
 </style>

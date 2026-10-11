@@ -1,5 +1,8 @@
 # MaaSathi Web E2E — Team Handoff
 
+> Historical handoff recorded on 14 September 2026. For the current suite and
+> run instructions, see [the E2E README](../e2e/README.md).
+
 Playwright end-to-end tests for the MaaSathi Ionic Vue web application.
 
 This document expands the coverage summary in the [E2E README](../e2e/README.md). The suite contains **18 tests across 8 test files**, covering onboarding, reminders, danger signs, language switching, birth → PNC transition, and existing page navigation and route accessibility.

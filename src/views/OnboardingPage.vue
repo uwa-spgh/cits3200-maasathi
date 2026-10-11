@@ -1,3 +1,6 @@
+<!--
+  OnboardingPage — first-run setup: language, name, pregnancy dates (known LMP/EDD or a month estimate) and tetanus history. Saves the profile and pregnancy, then opens Home. Back steps through earlier answers.
+-->
 <template>
   <IonPage>
     <IonContent class="onboarding-content">
@@ -10,8 +13,10 @@
 
         <!-- Language -->
         <section v-if="step === 'language'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.wavingHand class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.welcome_text')" />
           <LanguageSwitcher class="language-picker" />
           <button class="answer-btn primary" @click="advance('name')">
             {{ $t('common.next') }}
@@ -20,6 +25,7 @@
 
         <!-- Name -->
         <section v-else-if="step === 'name'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.pen class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.name_title') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput
@@ -29,13 +35,16 @@
               label-placement="stacked"
             />
           </IonItem>
-          <button class="answer-btn primary" @click="advance('lmp_known')">
+          <button class="answer-btn primary" 
+            :disabled="!name?.trim()"
+            @click="advance('lmp_known')">
             {{ $t('common.next') }}
           </button>
         </section>
 
         <!-- Q: LMP known? -->
         <section v-else-if="step === 'lmp_known'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.menstrualHealth class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp') }}</h1>
           <button class="answer-btn" @click="advance('lmp_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('edd_known')">{{ $t('common.no') }}</button>
@@ -43,6 +52,7 @@
 
         <!-- A: LMP date -->
         <section v-else-if="step === 'lmp_date'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp_when') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput v-model="lmp" type="date" @ionInput="onLmpInput" />
@@ -54,6 +64,7 @@
 
         <!-- Q: EDD known -->
         <section v-else-if="step === 'edd_known'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.childFace class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd') }}</h1>
           <button class="answer-btn" @click="advance('edd_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('estimate')">{{ $t('common.no') }}</button>
@@ -61,6 +72,7 @@
 
         <!-- A: EDD date -->
         <section v-else-if="step === 'edd_date'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd_when') }}</h1>
           <IonItem lines="none" class="step-input">
             <IonInput v-model="edd" type="date" @ionInput="onEddInput" />
@@ -72,6 +84,7 @@
 
         <!-- Q: estimate months pregnant -->
         <section v-else-if="step === 'estimate'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.calender class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_estimate') }}</h1>
           <div class="count-chips">
             <button
@@ -85,6 +98,7 @@
             </button>
           </div>
           <p class="step-hint">{{ $t('onboarding.estimate_hint') }}</p>
+          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.estimate_hint')" />
           <button
             class="answer-btn primary"
             :disabled="estimateMonths === null"
@@ -96,6 +110,7 @@
 
         <!-- Q: TT ever -->
         <section v-else-if="step === 'tt_ever'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.syringe class="step-icon" />
           <h1 class="step-title">{{ $t('profile.tt_question') }}</h1>
           <button class="answer-btn" @click="advance('tt_count_known')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('never')">{{ $t('common.no') }}</button>
@@ -106,6 +121,7 @@
 
         <!-- Q: TT count known -->
         <section v-else-if="step === 'tt_count_known'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.vaccineDoses class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_tt_count') }}</h1>
           <button class="answer-btn" @click="advance('tt_details')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('unknown')">{{ $t('common.no') }}</button>
@@ -113,6 +129,7 @@
 
         <!-- A: TT details -->
         <section v-else-if="step === 'tt_details'" class="step-card">
+          <IonIcon :icon=onBoardingIcons.vaccineDoses class="step-icon" />
           <h1 class="step-title">{{ $t('profile.tt_dose_count_label') }}</h1>
           <div class="count-chips">
             <button
@@ -135,7 +152,7 @@
           </IonItem>
           <button
             class="answer-btn primary"
-            :disabled="ttDoses === null"
+            :disabled="ttDoses === null || !ttLastDate"
             @click="setTtAndFinish('known')"
           >
             {{ $t('common.next') }}
@@ -146,6 +163,7 @@
         <section v-else class="step-card">
           <h1 class="step-title">{{ $t('onboarding.done_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.done_text') }}</p>
+          <ListenButton class="step-listen" size="sm" accent="green" :text="$t('onboarding.done_text')" />
           <IonIcon :icon="heartCircleOutline" class="done-icon" />
           <button class="answer-btn primary" @click="finish">
             {{ $t('onboarding.start_app') }}
@@ -161,8 +179,10 @@ import { onMounted, onUnmounted, ref } from 'vue';
 import { useIonRouter } from '@ionic/vue';
 import { IonContent, IonIcon, IonInput, IonItem } from '@ionic/vue';
 import { arrowBackOutline, heartCircleOutline } from 'ionicons/icons';
+import { onBoardingIcons } from '../config/icons.js';
 
 import LanguageSwitcher from '../components/LanguageSwitcher.vue';
+import ListenButton from '../components/ListenButton.vue';
 import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
@@ -299,6 +319,7 @@ async function finish(): Promise<void> {
   border-radius: 50%;
   border: none;
   background: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   color: var(--color-card-text, #1a1a1a);
   display: flex;
   align-items: center;
@@ -312,12 +333,21 @@ async function finish(): Promise<void> {
 
 .step-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 24px;
   padding: 28px 22px;
   text-align: center;
   display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.step-icon {
+  align-items: center;
+  width: 100%;
+  height: 96px;
+  flex-shrink: 0;
+  flex-grow: 0;
 }
 
 .step-title {
@@ -337,11 +367,13 @@ async function finish(): Promise<void> {
 
 .step-input {
   --background: var(--color-app-bg, #fbf7f5);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 14px;
   padding: 4px 8px;
 }
 
-.language-picker {
+.language-picker,
+.step-listen {
   align-self: center;
 }
 
@@ -351,14 +383,16 @@ async function finish(): Promise<void> {
   color: var(--color-card-text, #1a1a1a);
   border-radius: 999px;
   padding: 14px 20px;
-  font-size: 1.05rem;
+  font-size: 1.2rem;
   font-weight: 700;
   cursor: pointer;
-  transition: transform 0.15s ease;
+  transition: transform 0.25s ease;
 }
 
 .answer-btn:active {
   transform: scale(0.97);
+  background-color: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000);
 }
 
 .answer-btn:disabled {
@@ -371,32 +405,38 @@ async function finish(): Promise<void> {
 }
 
 .answer-btn.subtle {
-  border-color: transparent;
-  background: transparent;
-  opacity: 0.75;
-  font-size: 0.9rem;
+  border: 0;
+  width: auto;
+  background: var(--color-app-bg, #fbf7f5);
+  border-radius: 999px;
+  font-size: 0.8rem;
+  align-self: center;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .done-icon {
   font-size: 4rem;
-  color: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-information-bg, #7bc62d);
   align-self: center;
 }
 
 .count-chips {
   display: flex;
-  justify-content: center;
-  gap: 10px;
+  flex-wrap: wrap;
+  column-gap: 16px;
+  row-gap: 10px;
+  justify-content: center; /* Centers the columns inside the container */
+  justify-items: center;   /* Centers the content inside each individual cell */
 }
 
 .count-chip {
-  height: 48px;
-  width: 48px;
+  height: 48px; 
+  width: 48px; 
   border-radius: 50%;
-  border: 2px solid rgba(0, 0, 0, 0.2);
+  border: 2px solid var(--color-border, rgba(0, 0, 0, 0.2));
   background: var(--color-app-bg, #fbf7f5);
   color: var(--color-card-text, #1a1a1a);
-  font-size: 1.1rem;
+  font-size: 1.4rem;
   font-weight: 800;
   cursor: pointer;
 }
@@ -411,7 +451,6 @@ async function finish(): Promise<void> {
   margin: 0;
   font-size: 0.8rem;
   font-style: italic;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

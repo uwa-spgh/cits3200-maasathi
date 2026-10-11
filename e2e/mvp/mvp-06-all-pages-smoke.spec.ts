@@ -15,16 +15,17 @@ const STATIC_ROUTES: { path: string; label: string }[] = [
   { path: '/information/anc/trimester/1', label: 'AncTrimester' },
   { path: '/information/pnc', label: 'Pnc' },
   { path: '/information/pnc/breastfeeding', label: 'PncBreastfeeding' },
+  { path: '/information/pnc/routine-care', label: 'PncRoutineCare' },
   { path: '/information/vaccination', label: 'Vaccination' },
   { path: '/information/vaccination/tetanus', label: 'VaccinationTetanus' },
+  { path: '/information/vaccination/child', label: 'VaccinationChild' },
   { path: '/information/danger-signs', label: 'DangerSigns' },
   { path: '/information/nutrition', label: 'Nutrition' },
   { path: '/profile', label: 'Profile' },
   { path: '/profile/personal', label: 'ProfilePersonal' },
   { path: '/profile/pregnancy', label: 'ProfilePregnancy' },
   { path: '/profile/vaccination', label: 'ProfileVaccination' },
-  { path: '/profile/contacts', label: 'ProfileContacts' },
-  { path: '/profile/settings', label: 'ProfileSettings' }
+  { path: '/profile/plan', label: 'ProfilePlan' },
 ];
 
 test.describe('All pages smoke', () => {
@@ -67,7 +68,7 @@ test.describe('All pages smoke', () => {
       }
     });
 
-    test.skip(!pregnancyId, 'No pregnancy id in localStorage');
+    expect(pregnancyId).toBeTruthy();
     await page.goto(`/profile/history/${pregnancyId}`);
     await expect(page).not.toHaveURL(/onboarding/i);
     await expect(page.locator('ion-router-outlet, ion-app').first()).toBeVisible();

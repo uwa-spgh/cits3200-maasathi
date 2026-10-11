@@ -1,7 +1,14 @@
 :root {
+  color-scheme: light;
+
   --color-app-bg: #FBF7F5;
   --color-card-bg: #EAEAEA;
   --color-card-text: #1A1A1A;
+  --color-surface: #FFFFFF;
+  --color-surface-text: #1A1A1A;
+  --color-text-muted: #5C5C5C;
+  --color-border: rgba(0, 0, 0, 0.1);
+  --color-shadow: rgba(0, 0, 0, 0.08);
   --color-btn-more-bg: #7BC62D;
   --color-btn-more-text: #000000;
   --color-emergency-bg: #FF5C5C;
@@ -12,6 +19,87 @@
   --color-information-text: #000000;
   --color-profile-bg: #33A1DE;
   --color-profile-text: #000000;
+  --color-danger: #C0392B;
+  --color-card-border: transparent;
+  --color-success: #10B981;
+  --color-success-text: #000000;
+  --color-reminders-accent: #D9A521;
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-app-bg: #121212;
+  --color-card-bg: #1E1E1E;
+  --color-card-text: #E6E6E6;
+  --color-surface: #262626;
+  --color-surface-text: #E6E6E6;
+  --color-text-muted: #A8A8A8;
+  --color-border: rgba(255, 255, 255, 0.16);
+  --color-shadow: rgba(0, 0, 0, 0.5);
+  --color-btn-more-bg: #66BB6A;
+  --color-btn-more-text: #000000;
+  --color-emergency-bg: #EF5350;
+  --color-emergency-text: #000000;
+  --color-reminders-bg: #FFCA28;
+  --color-reminders-text: #000000;
+  --color-information-bg: #26A69A;
+  --color-information-text: #000000;
+  --color-profile-bg: #42A5F5;
+  --color-profile-text: #000000;
+  --color-danger: #FF8A80;
+  --color-card-border: transparent;
+  --color-success: #10B981;
+  --color-success-text: #000000;
+  --color-reminders-accent: #FFCA28;
+}
+
+:root[data-theme='contrast'] {
+  color-scheme: light;
+
+  --color-app-bg: #FFFFFF;
+  --color-card-bg: #FFFFFF;
+  --color-card-text: #000000;
+  --color-surface: #FFFFFF;
+  --color-surface-text: #000000;
+  --color-text-muted: #000000;
+  --color-border: #000000;
+  --color-shadow: rgba(0, 0, 0, 0);
+  --color-btn-more-bg: #00FF00;
+  --color-btn-more-text: #000000;
+  --color-emergency-bg: #A50E0E;
+  --color-emergency-text: #FFFFFF;
+  --color-reminders-bg: #F57F17;
+  --color-reminders-text: #000000;
+  --color-information-bg: #1B5E20;
+  --color-information-text: #FFFFFF;
+  --color-profile-bg: #0D47A1;
+  --color-profile-text: #FFFFFF;
+  --color-danger: #8B0000;
+  --color-card-border: #000000;
+  --color-success: #1B5E20;
+  --color-success-text: #FFFFFF;
+  --color-reminders-accent: #8A5A00;
+}
+
+/* Ionic components read their own variables, so point them at the palette. */
+:root {
+  --ion-background-color: var(--color-app-bg);
+  --ion-text-color: var(--color-card-text);
+  --ion-item-background: var(--color-surface);
+  --ion-item-color: var(--color-surface-text);
+  --ion-toolbar-background: var(--color-app-bg);
+  --ion-toolbar-color: var(--color-card-text);
+  --ion-border-color: var(--color-border);
+}
+
+*{
+  font-family: "PublicSans";
+}
+
+@font-face {
+  font-family: "PublicSans";
+  src: url("../assets/font/PublicSans-VariableFont_wght.ttf")
 }
 
 html, body, #app {

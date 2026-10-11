@@ -1,3 +1,6 @@
+<!--
+  ProfileVaccinationPage — record tetanus (TT) status and doses, optionally log a new dose with its date and facility, and view the dose list. Saving regenerates the reminder schedule.
+-->
 <template>
   <PageShell
     nav="profile"
@@ -26,7 +29,12 @@
           <IonLabel position="stacked">{{ $t('profile.tt_last_dose_label') }}</IonLabel>
           <IonInput v-model="ttForm.lastDoseDate" type="date" />
         </IonItem>
-        <p v-if="ttForm.status === 'unknown'" class="field-hint">{{ $t('profile.tt_unknown_hint') }}</p>
+        <template v-if="ttForm.status === 'unknown'">
+          <p class="field-hint">{{ $t('profile.tt_unknown_hint') }}</p>
+          <div class="hint-listen">
+            <ListenButton size="sm" accent="blue" :text="$t('profile.tt_unknown_hint')" />
+          </div>
+        </template>
 
         <IonButton expand="block" class="primary-action" @click="saveTt">
           {{ $t('common.save') }}
@@ -65,7 +73,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue';
+import { computed, ref, watch } from 'vue';
 import { useI18n } from 'vue-i18n';
 import {
   IonButton,
@@ -78,6 +86,7 @@ import {
 } from '@ionic/vue';
 import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
+import ListenButton from '../../components/ListenButton.vue';
 import { useTt } from '../../composables/useTt';
 import { regenerateSchedule } from '../../composables/useSchedule';
 import { pregnancyRepo } from '../../db/database';
@@ -106,14 +115,18 @@ const recordFacility = ref('');
 const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber - b.doseNumber));
 const doseCount = computed(() => doses.value.length);
 
-onMounted(() => {
-  const h = history.value;
-  if (h) {
+// Pre-fill the form with the saved TT answer (from onboarding or an earlier
+// save), and keep it in step when doses are recorded elsewhere.
+watch(
+  ttHistory,
+  (h) => {
+    if (!h) return;
     ttForm.value.status = h.status;
     ttForm.value.dosesReceived = h.dosesReceived;
     ttForm.value.lastDoseDate = h.lastDoseDate ?? '';
-  }
-});
+  },
+  { immediate: true }
+);
 
 async function showSaved(): Promise<void> {
   const toast = await toastController.create({
@@ -162,6 +175,15 @@ async function regenerateActive(): Promise<void> {
   background-color: var(--color-card-bg, #eaeaea);
   border-radius: 20px;
   padding: 16px 14px 18px 14px;
+  outline: 1.5px solid var(--color-card-border, transparent);
+}
+
+/* Ionic field placeholders: readable in every theme. */
+.form-card ion-input,
+.form-card ion-select,
+.form-card ion-textarea {
+  --placeholder-color: var(--color-text-muted, #5c5c5c);
+  --placeholder-opacity: 1;
 }
 
 .form-title {
@@ -174,8 +196,11 @@ async function regenerateActive(): Promise<void> {
 .field-hint {
   margin: 4px 8px 8px 8px;
   font-size: 0.8rem;
-  opacity: 0.7;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
+}
+
+.hint-listen {
+  margin: 0 8px 8px 8px;
 }
 
 .primary-action {
@@ -200,7 +225,7 @@ async function regenerateActive(): Promise<void> {
   padding: 8px 8px;
   font-size: 0.9rem;
   color: var(--color-card-text, #1a1a1a);
-  border-bottom: 1px dashed rgba(0, 0, 0, 0.1);
+  border-bottom: 1px dashed var(--color-border, rgba(0, 0, 0, 0.1));
 }
 
 .dose-row:last-child {

@@ -1,9 +1,12 @@
+<!--
+  PncRoutineCarePage — routine baby care guidance (keeping warm, routine breastfeeding, cleanliness, safety, check-ups) as expandable cards with listen buttons.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"
     :breadcrumb="breadcrumb"
     :icon="informationCircleOutline"
-    color="green"
+    color="blue"
   >
     <div class="pnc-routine-care">
       <ExpandableCard
@@ -11,9 +14,11 @@
         :key="topic.key"
         :title="$t(`pnc.${topic.key}_title`)"
       >
-        <ul class="sign-list">
-          <li v-for="n in topic.points" :key="n">{{ $t(`pnc.${topic.key}.point${n}`) }}</li>
-        </ul>
+        <ListenList
+          :title="$t(`pnc.${topic.key}_title`)"
+          :points="topicPoints(topic)"
+          accent="blue"
+        />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -25,16 +30,27 @@ import { useI18n } from 'vue-i18n';
 import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenList from '../components/ListenList.vue';
 
 const { t } = useI18n();
 
-const infoTopics: { key: string; points: number }[] = [
+interface Topic {
+  key: string;
+  points: number;
+}
+
+const infoTopics: Topic[] = [
   { key: 'keep_baby_warm', points: 4 },
   { key: 'routine_breastfeed', points: 4 },
   { key: 'keep_baby_clean', points: 4 },
   { key: 'keep_baby_safe', points: 3 },
   { key: 'baby_checkups', points: 3 }
 ];
+
+/** The displayed points for a topic, in order. ListenList reads these exact strings. */
+function topicPoints(topic: Topic): string[] {
+  return Array.from({ length: topic.points }, (_, i) => t(`pnc.${topic.key}.point${i + 1}`));
+}
 
 const breadcrumb = computed(() => `${t('information.topics.pnc')} - ${t('pnc.routine_care_title')}`);
 </script>
@@ -44,15 +60,5 @@ const breadcrumb = computed(() => `${t('information.topics.pnc')} - ${t('pnc.rou
   display: flex;
   flex-direction: column;
   gap: 14px;
-}
-
-.sign-list {
-  margin: 0;
-  padding-left: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
 }
 </style>

@@ -42,12 +42,12 @@ import {
 <style scoped>
 .app-tab-bar {
   --background: var(--color-card-bg, #eaeaea);
-  border-top: 1px solid rgba(0, 0, 0, 0.08);
+  border-top: 1px solid var(--color-border, rgba(0, 0, 0, 0.08));
 }
 
 .app-tab-bar ion-tab-button {
   --color: var(--color-card-text, #1a1a1a);
-  --color-selected: var(--color-btn-more-bg, #7bc62d);
+  --color-selected: var(--color-information-bg, #7bc62d);
   --background: transparent;
   font-weight: 600;
 }

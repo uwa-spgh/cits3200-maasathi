@@ -9,6 +9,7 @@
       :is-last="idx === items.length - 1"
       :info-title="resolveInfo(item)?.title ?? null"
       :info-body="resolveInfo(item)?.body ?? null"
+      :can-undo="canUndoItem ? canUndoItem(item) : true"
       @select="$emit('toggle', $event.id)"
       @complete="$emit('complete', $event)"
       @undo="$emit('undo', $event)"
@@ -31,6 +32,7 @@ const props = defineProps<{
   items: ScheduleItem[];
   expandedId?: string | null;
   infoForItem?: ((item: ScheduleItem) => ItemInfo | null) | null;
+  canUndoItem?: ((item: ScheduleItem) => boolean) | null;
 }>();
 
 defineEmits<{
@@ -55,10 +57,12 @@ function resolveInfo(item: ScheduleItem): ItemInfo | null {
 }
 
 .empty-note {
+  margin: 0;
+  padding: 12px 0;
   text-align: center;
   font-size: 0.9rem;
-  opacity: 0.6;
+  font-weight: 600;
   font-style: italic;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-text-muted, #5c5c5c);
 }
 </style>

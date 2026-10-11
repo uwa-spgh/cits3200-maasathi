@@ -419,6 +419,9 @@ export const ttDoseRepo = {
   },
   save(dose: TtDose): Promise<void> {
     return withDb((d) => d.upsert(TtDoseTable, dose));
+  },
+  remove(id: string): Promise<void> {
+    return withDb((d) => d.remove(TtDoseTable, id));
   }
 };
 

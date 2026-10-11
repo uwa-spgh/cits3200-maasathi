@@ -1,9 +1,12 @@
+<!--
+  VaccinationPage — tetanus (TT) tracker showing status, doses recorded and next due date, with the dose schedule and EPI card reminder. Links to tetanus education and child vaccines.
+-->
 <template>
   <PageShell
     :title="$t('information.title')"
     :breadcrumb="$t('information.topics.vaccination')"
     :icon="informationCircleOutline"
-    color="green"
+    color="blue"
   >
     <div class="vaccination-page">
       <div class="tt-card">
@@ -11,13 +14,20 @@
           <p class="tt-title">{{ $t('tt.tracker_title') }}</p>
           <span class="tt-chip" :class="statusClass">{{ statusLabel }}</span>
         </div>
-        <p class="tt-doses">
-          {{ $t('tt.doses_count', { count: lifetimeDoseCount, max: 5 }) }}
-        </p>
-        <p v-if="nextDueDisplay" class="tt-next">{{ $t('tt.next_due', { date: nextDueDisplay }) }}</p>
-        <p v-else-if="isUnknown" class="tt-next">{{ $t('tt.unknown_notice') }}</p>
-        <p v-else-if="isComplete" class="tt-next">{{ $t('tt.complete_notice') }}</p>
+        <p class="tt-doses">{{ trackerDosesLine }}</p>
+        <p v-if="trackerNextLine" class="tt-next">{{ trackerNextLine }}</p>
+        <ListenButton class="tt-listen" accent="blue" :text="trackerSpeech" />
       </div>
+
+      <button class="section-btn" @click="openTetanusInfo">
+        <span>{{ $t('tt.education_title') }}</span>
+        <IonIcon :icon="chevronForwardOutline" class="chevron" />
+      </button>
+
+      <button class="section-btn" @click="openChildVaccines">
+        <span>{{ $t('tt.child_vaccines_title') }}</span>
+        <IonIcon :icon="chevronForwardOutline" class="chevron" />
+      </button>
 
       <ExpandableCard :title="$t('tt.schedule_title')">
         <ul class="dose-list">
@@ -28,12 +38,9 @@
         </ul>
       </ExpandableCard>
 
-      <button class="section-btn" @click="openTetanusInfo">
-        {{ $t('tt.education_title') }}
-      </button>
-
       <ExpandableCard :title="$t('tt.epi_card_title')">
-        <p class="card-text">{{ $t('tt.bring_epi_card.point1') }}</p>
+        <p class="card-text">{{ epiText }}</p>
+        <ListenButton class="card-listen" accent="blue" :text="epiText" />
       </ExpandableCard>
     </div>
   </PageShell>
@@ -41,13 +48,15 @@
 
 <script setup lang="ts">
 import { computed } from 'vue';
-import { useIonRouter } from '@ionic/vue';
-import { informationCircleOutline } from 'ionicons/icons';
+import { IonIcon, useIonRouter } from '@ionic/vue';
+import { chevronForwardOutline, informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
+import ListenButton from '../components/ListenButton.vue';
 import { useTt } from '../composables/useTt';
 import { useI18n } from 'vue-i18n';
 import { formatDate } from '../utils/date';
+import { speechText } from '../utils/speechChunks';
 
 const { t, locale } = useI18n();
 const ionRouter = useIonRouter();
@@ -55,6 +64,10 @@ const { history, doses, lifetimeDoseCount, isComplete, isUnknown } = useTt();
 
 function openTetanusInfo(): void {
   ionRouter.push({ name: 'VaccinationTetanus' });
+}
+
+function openChildVaccines(): void {
+  ionRouter.push({ name: 'VaccinationChild' });
 }
 
 const statusLabel = computed(() => {
@@ -76,6 +89,22 @@ const nextDueDisplay = computed(() => {
 });
 
 const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber - b.doseNumber));
+
+const trackerDosesLine = computed(() => t('tt.doses_count', { count: lifetimeDoseCount.value, max: 5 }));
+
+const trackerNextLine = computed(() => {
+  if (nextDueDisplay.value) return t('tt.next_due', { date: nextDueDisplay.value });
+  if (isUnknown.value) return t('tt.unknown_notice');
+  if (isComplete.value) return t('tt.complete_notice');
+  return '';
+});
+
+/** Reads the tracker exactly as displayed: title, status, doses, then the next-due/notice line. */
+const trackerSpeech = computed(() =>
+  speechText(t('tt.tracker_title'), [statusLabel.value, trackerDosesLine.value, trackerNextLine.value])
+);
+
+const epiText = computed(() => t('tt.bring_epi_card.point1'));
 </script>
 
 <style scoped>
@@ -87,6 +116,7 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
 
 .tt-card {
   background-color: var(--color-card-bg, #eaeaea);
+  border: 1px solid var(--color-border, rgba(0, 0, 0, 0.1));
   border-radius: 20px;
   padding: 16px 18px;
   color: var(--color-card-text, #1a1a1a);
@@ -113,9 +143,18 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   white-space: nowrap;
 }
 
-.chip-progress { background: var(--color-reminders-bg, #f6c945); }
-.chip-complete { background: var(--color-btn-more-bg, #7bc62d); }
-.chip-unknown { background: var(--color-profile-bg, #33a1de); }
+.chip-progress {
+  background: var(--color-reminders-bg, #f6c945);
+  color: var(--color-reminders-text, #000);
+}
+.chip-complete {
+  background: var(--color-btn-more-bg, #7bc62d);
+  color: var(--color-btn-more-text, #000);
+}
+.chip-unknown {
+  background: var(--color-profile-bg, #33a1de);
+  color: var(--color-profile-text, #000);
+}
 
 .tt-doses {
   margin: 10px 0 0 0;
@@ -128,22 +167,34 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   opacity: 0.85;
 }
 
+.tt-listen {
+  margin-top: 14px;
+}
+
 .section-btn {
-  background-color: var(--color-btn-more-bg, #7bc62d);
-  color: var(--color-btn-more-text, #000);
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 999px;
-  padding: 14px 20px;
-  font-size: 1rem;
+  background-color: var(--color-surface, #fff);
+  color: var(--color-surface-text, #1a1a1a);
+  border: 2px solid var(--color-profile-bg, #33a1de);
+  border-radius: 18px;
+  padding: 14px 18px;
+  font-size: 0.98rem;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 3px 10px var(--color-shadow, rgba(0, 0, 0, 0.06));
   transition: transform 0.15s ease;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  text-align: left;
 }
 
 .section-btn:active {
-  transform: scale(0.97);
+  transform: scale(0.98);
+}
+
+.section-btn .chevron {
+  font-size: 1.2rem;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .dose-list {
@@ -153,20 +204,24 @@ const sortedDoses = computed(() => [...doses.value].sort((a, b) => a.doseNumber 
   flex-direction: column;
   gap: 6px;
   font-size: 0.9rem;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
 }
 
 .dose-list .empty {
   list-style: none;
   margin-left: -20px;
   font-style: italic;
-  opacity: 0.7;
+  color: var(--color-text-muted, #5c5c5c);
 }
 
 .card-text {
   margin: 0;
   font-size: 0.9rem;
   line-height: 1.45;
-  color: var(--color-card-text, #1a1a1a);
+  color: var(--color-surface-text, #1a1a1a);
+}
+
+.card-listen {
+  align-self: flex-start;
 }
 </style>

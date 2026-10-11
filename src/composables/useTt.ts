@@ -129,6 +129,32 @@ export function useTt() {
     });
   }
 
+  /**
+   * Undo the most recently recorded dose (e.g. a reminder marked completed by
+   * mistake). Only the latest dose can be removed, so the count stays in order.
+   */
+  async function removeLatestDose(doseNumber: number): Promise<boolean> {
+    const h = history.value;
+    if (!h || lifetimeDoseCount.value !== doseNumber) return false;
+    const record = doses.value.find((d) => d.doseNumber === doseNumber);
+    if (!record) return false;
+    await ttDoseRepo.remove(record.id);
+    doses.value = await ttDoseRepo.all();
+    const previous =
+      doses.value
+        .filter((d) => d.doseNumber < doseNumber && d.dateGiven !== null)
+        .sort((a, b) => b.doseNumber - a.doseNumber)[0] ?? null;
+    const previousCount = doseNumber - 1;
+    await saveHistory({
+      dosesReceived: previousCount,
+      lastDoseDate: previous?.dateGiven ?? null,
+      currentPregnancyDoseDate:
+        h.currentPregnancyDoseDate === record.dateGiven ? null : h.currentPregnancyDoseDate,
+      nextDueDate: previous?.dateGiven ? nextDueFromLastDose(previousCount, previous.dateGiven) : null
+    });
+    return true;
+  }
+
   async function reset(): Promise<void> {
     await saveHistory(defaultHistory());
     doses.value = await ttDoseRepo.all();
@@ -146,6 +172,7 @@ export function useTt() {
     load,
     setRegistration,
     recordDose,
+    removeLatestDose,
     reset
   };
 }

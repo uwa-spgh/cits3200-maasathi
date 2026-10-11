@@ -1,3 +1,6 @@
+<!--
+  HomePage — main dashboard: greeting, a timeline rail of visits, and cards for the next reminder, a wellbeing article, and a daily "What to know right now" topic. Cards open Reminders, Information or the topic page.
+-->
 <template>
   <IonPage>
     <IonHeader class="home-header ion-no-border">
@@ -25,11 +28,10 @@
           :title-icon="homeIcons.reminderTitle"
           :body="reminderBody"
           :badge="reminderBadge"
-          :graphic-icon="homeIcons.reminderGraphic"
-          :listen-label="$t('home.cards.listen')"
+          :graphic-icon="reminderGraphic"
+          :listen-text="reminderBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
-          @listen="listen(reminderBody)"
           @learn-more="onRemindersTap"
         />
 
@@ -38,19 +40,15 @@
           :title="$t('home.cards.wellbeing_title')"
           :title-icon="homeIcons.wellbeingTitle"
           :body="wellbeingBody"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="wellbeingBody"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onInformationTap"
-          @listen="listen(wellbeingBody)"
           @learn-more="onInformationTap"
         />
 
         <!--
-          "What to know right now" rotating widget — pick ONE rotation
-          method in the <script> below (search "ROTATION METHOD"). METHOD 3
-          is active: a single corner arrow on the card advances to the next
-          topic (see the `corner-arrow-*` props below and the `HomeCard`
-          corner-arrow-btn styling for the look).
+          "What to know right now" rotating widget — shows a different topic
+          each day, and the corner arrow advances to the next topic.
         -->
         <HomeCard
           accent="green"
@@ -59,12 +57,11 @@
           :body="nowExcerpt"
           :corner-arrow-icon="nowTopics.length > 1 ? homeIcons.nowNext : null"
           :corner-arrow-label="$t('home.cards.now_next')"
-          :listen-label="$t('home.cards.listen')"
+          :listen-text="nowExcerpt"
           :learn-more-label="$t('home.cards.learn_more')"
           :dot-count="nowTopics.length"
           :active-dot-index="nowIndex"
           @open="onNowLearnMore"
-          @listen="listen(nowExcerpt)"
           @learn-more="onNowLearnMore"
           @corner-arrow="nowNext"
         />
@@ -78,42 +75,62 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, onUnmounted, ref, watch } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import {
   IonContent,
   IonFooter,
   IonHeader,
   IonPage,
-  onIonViewWillLeave,
+  onIonViewWillEnter,
   useIonRouter
 } from '@ionic/vue';
-// Only needed by ROTATION METHOD 2 (leave-page/app rotation) below — safe to
-// leave imported even if that method is disabled.
-import { App as CapApp } from '@capacitor/app';
-import type { PluginListenerHandle } from '@capacitor/core';
 import { useI18n } from 'vue-i18n';
 import BottomNav from '../components/BottomNav.vue';
 import HomeCard from '../components/HomeCard.vue';
 import HomeTimelineRail from '../components/HomeTimelineRail.vue';
 import { homeIcons } from '../config/icons';
-import { NOW_WIDGET_ROTATE_MS } from '../config/app';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useSchedule } from '../composables/useSchedule';
-import { useSpeech } from '../composables/useSpeech';
 import { useTt } from '../composables/useTt';
 import { useUser } from '../composables/useUser';
+import { scheduleRepo } from '../db/database';
 import type { ScheduleItem } from '../db/schemas';
-import { formatDayMonthLong, todayIso } from '../utils/date';
-import { currentStageRef, excerpt, getStageSurfacedContent, STAGE_NOW_TOPICS } from '../utils/stageArticle';
+import { daysBetween, formatDayMonthLong, todayIso } from '../utils/date';
+import { excerpt, getStageSurfacedContent, NEW_PREGNANCY_TOPIC, nowTopicsFor } from '../utils/stageArticle';
 import { visitNumber } from '../services/notifications';
 
 const ionRouter = useIonRouter();
 const { t, locale } = useI18n();
 const { userName } = useUser();
-const { activePregnancy, mode } = usePregnancy();
-const { items, load: loadSchedule } = useSchedule();
+const { activePregnancy, pastPregnancies, mode } = usePregnancy();
+
+/**
+ * A pregnancy has ended (closed early or archived) and no new one has been
+ * added yet: keep showing the end-of-journey messages until it is.
+ */
+const journeyFinished = computed(() => !activePregnancy.value && pastPregnancies.value.length > 0);
+
+/** Whether the ended pregnancy reached the child immunisation milestone (marked completed). */
+const endedAfterEpi = ref(false);
+watch(
+  [journeyFinished, pastPregnancies],
+  async () => {
+    if (!journeyFinished.value) return;
+    const latest = [...pastPregnancies.value].sort((a, b) =>
+      (b.archivedAt ?? '').localeCompare(a.archivedAt ?? '')
+    )[0];
+    if (!latest) return;
+    const epi = (await scheduleRepo.byPregnancy(latest.id)).find(
+      (i) => i.type === 'MILESTONE' && i.ref === 'child_epi_start'
+    );
+    endedAfterEpi.value = epi?.status === 'completed';
+  },
+  { immediate: true }
+);
+const { items: scheduleItems, load: loadSchedule } = useSchedule();
+// Only the active pregnancy's reminders count; a closed pregnancy's are ignored
+const items = computed(() => (activePregnancy.value ? scheduleItems.value : []));
 const { load: loadTt } = useTt();
-const { speak } = useSpeech();
 
 onMounted(() => {
   void loadSchedule();
@@ -122,10 +139,6 @@ onMounted(() => {
 
 function go(routeName: string): void {
   ionRouter.push({ name: routeName });
-}
-
-function listen(text: string): void {
-  speak(text, locale.value);
 }
 
 // ---- Reminder card: the next thing needing attention ----
@@ -156,16 +169,26 @@ function openEvent(id: string): void {
   ionRouter.push({ name: 'Reminders', query: { focus: id } });
 }
 
-
+const reminderGraphic = computed(() => {
+  const e = shownEvent.value;
+  if (!e) return homeIcons.nodeAnc;
+  if (e.type === 'ANC') return homeIcons.nodeAnc;
+  if (e.type === 'PNC') return homeIcons.nodePnc;
+  if (e.type === 'TT') return homeIcons.nodeTt;
+  if (e.ref === 'edd') return homeIcons.nodeMilestone;
+  return homeIcons.nodeAnc;
+});
 
 const reminderBadge = computed<string | null>(() => {
   const n = visitNumber(shownEvent.value);
-  return n !== null && shownEvent.value?.status !== 'completed' ? `#${n}` : null;
+  return n !== null && shownEvent.value?.status !== 'completed' ? `${n}` : null;
 });
 
 const reminderBody = computed(() => {
   const e = shownEvent.value;
-  if (!e) return t('home.no_pregnancy');
+  if (!activePregnancy.value) return t(journeyFinished.value ? 'home.cards.no_reminders' : 'home.no_pregnancy');
+  // Everything (up to the child immunisation milestone) is completed
+  if (!e) return t('home.cards.no_reminders');
   const date = formatDayMonthLong(e.dueDate, locale.value);
   const n = visitNumber(e);
   if (e.type === 'ANC' && n !== null) {
@@ -184,104 +207,69 @@ const reminderBody = computed(() => {
  * focusing on that upcoming visit item in the timeline.
  */
 function onRemindersTap(): void {
-  if (!activePregnancy.value) {
-    go('Profile');
-    return;
-  }
   const id = shownEvent.value?.id;
   ionRouter.push(id ? { name: 'Reminders', query: { focus: id } } : { name: 'Reminders' });
 }
 
 /**
- * Tapping the Information card opens Layla's comprehensive information page for the current mode.
+ * Tapping the wellbeing card opens the general Information page.
  */
 function onInformationTap(): void {
-  if (mode.value === 'PNC') {
-    go('Pnc');
-  } else {
-    go('Anc');
-  }
+  go('Information');
 }
 
 // ---- Surfaced Stage Content: Wellbeing ----
 const surfaced = computed(() => getStageSurfacedContent(items.value, mode.value, t));
-const wellbeingBody = computed(() => surfaced.value.wellbeingBody);
+const wellbeingBody = computed(() => {
+  if (!journeyFinished.value) return surfaced.value.wellbeingBody;
+  // Thank-you once the full journey was completed, a gentler note if it ended earlier
+  return t(endedAfterEpi.value ? 'home.cards.journey_complete' : 'home.cards.journey_ended_early');
+});
 
 // ---- "What to know right now" rotating widget ----
-const nowTopics = computed(() => {
-  const stage = currentStageRef(items.value, mode.value);
-  return stage ? STAGE_NOW_TOPICS[stage.stageKey] ?? [] : [];
+const nowTopics = computed(() =>
+  journeyFinished.value ? [NEW_PREGNANCY_TOPIC] : nowTopicsFor(items.value, mode.value)
+);
+
+// Today's date, refreshed whenever Home is shown so the daily topic changes
+// even if the app stays open overnight.
+const today = ref(todayIso());
+onIonViewWillEnter(() => {
+  today.value = todayIso();
 });
 
-const nowIndex = ref(0);
+// Extra steps from tapping the corner arrow, on top of the daily topic.
+const nowTapOffset = ref(0);
 
-/** Move to the next/previous slide, wrapping around. Shared by whichever
- *  rotation method below is active. */
-function nowAdvance(step: number): void {
+// Start from a different topic each day, then step forward per arrow tap.
+const nowIndex = computed(() => {
   const len = nowTopics.value.length;
-  if (len === 0) return;
-  nowIndex.value = (nowIndex.value + step + len) % len;
-}
-
-// Always jump back to the first slide when the underlying topic list
-// changes (e.g. moving from one ANC visit to the next).
-watch(nowTopics, () => {
-  nowIndex.value = 0;
+  if (len === 0) return 0;
+  const day = daysBetween('1970-01-01', today.value);
+  return (((day + nowTapOffset.value) % len) + len) % len;
 });
 
-
-// METHOD 1: auto-rotate on a timer 
-/*
-let nowTimer: ReturnType<typeof setInterval> | null = null;
-
-function stopNowRotation(): void {
-  if (nowTimer !== null) {
-    clearInterval(nowTimer);
-    nowTimer = null;
-  }
-}
-
-function startNowRotation(): void {
-  stopNowRotation();
-  if (nowTopics.value.length <= 1) return;
-  nowTimer = setInterval(() => nowAdvance(1), NOW_WIDGET_ROTATE_MS);
-}
-
-watch(nowTopics, startNowRotation, { immediate: true });
-onUnmounted(stopNowRotation);
-*/
-
-// METHOD 2: advance once each time you leave the Home page
-/*
-onIonViewWillLeave(() => nowAdvance(1));
-
-let appStateHandle: PluginListenerHandle | null = null;
-onMounted(async () => {
-  appStateHandle = await CapApp.addListener('appStateChange', ({ isActive }) => {
-    if (!isActive) nowAdvance(1);
-  });
+// Clear manual taps when the topic list (e.g. a new ANC visit) or the day changes.
+watch([nowTopics, today], () => {
+  nowTapOffset.value = 0;
 });
-onUnmounted(() => {
-  void appStateHandle?.remove();
-});
-*/
-
-// METHOD 3: manual navigation via a corner arrow button
 
 function nowNext(): void {
-  nowAdvance(1);
+  nowTapOffset.value += 1;
 }
 
 const activeNowTopic = computed(() => nowTopics.value[nowIndex.value] ?? null);
 
 const nowTitle = computed(() => {
   const topic = activeNowTopic.value;
-  return topic ? t(`${topic.ns}.${topic.key}_title`) : t('home.cards.now_placeholder');
+  if (!topic) return t('home.cards.now_placeholder');
+  return t(topic.titleKey ?? `${topic.ns}.${topic.key}_title`);
 });
 
 const nowExcerpt = computed(() => {
   const topic = activeNowTopic.value;
   if (!topic) return '';
+  if (topic.excerptKey) return t(topic.excerptKey);
   if (topic.key === 'breastfeeding') return t('pnc.start_early.point1');
   if (topic.key === 'routine_care') return t('pnc.routine_care_blurb');
   if (topic.route) return excerpt(t(`${topic.ns}.${topic.key}_body`));
@@ -298,8 +286,8 @@ function onNowLearnMore(): void {
     go(topic.route);
     return;
   }
-  const routeName = topic.ns === 'pnc' ? 'Pnc' : 'Anc';
-  ionRouter.push({ name: routeName, query: { topic: topic.key } });
+  const routeName = topic.page ?? (topic.ns === 'pnc' ? 'Pnc' : 'Anc');
+  ionRouter.push({ name: routeName, query: topic.pageQuery ?? { topic: topic.pageKey ?? topic.key } });
 }
 </script>
 
@@ -319,7 +307,8 @@ function onNowLearnMore(): void {
 
 .home-header {
   background: var(--color-app-bg, #fbf7f5);
-  padding: 24px 20px 8px 20px;
+  /* Clear the status bar / Dynamic Island; see SectionHeader.vue. */
+  padding: calc(24px + var(--ion-safe-area-top, 0px)) 20px 8px 20px;
 }
 
 .header-inner {
@@ -330,7 +319,7 @@ function onNowLearnMore(): void {
 .brand-tag {
   font-size: 0.85rem;
   font-weight: 700;
-  color: #8c8c8c;
+  color: var(--color-text-muted, #5c5c5c);
   margin: 0 0 4px 0;
   text-transform: uppercase;
   letter-spacing: 0.05em;
@@ -339,12 +328,12 @@ function onNowLearnMore(): void {
 .greeting {
   font-size: 1.85rem;
   font-weight: 800;
-  color: #1a1a1a;
+  color: var(--color-card-text, #1a1a1a);
   margin: 0;
 }
 
 .nav-footer {
   background: var(--color-app-bg, #fbf7f5);
-  box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 -4px 16px var(--color-shadow, rgba(0, 0, 0, 0.08));
 }
 </style>
