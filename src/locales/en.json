@@ -6,6 +6,7 @@
   "user_default": "User",
   "common": {
     "back": "Back",
+    "date_out_of_range": "That date is outside the range this app accepts.",
     "home": "Home",
     "save": "Save",
     "saved": "Saved",
@@ -756,7 +757,8 @@
     "q_tt_count": "Do you know how many doses you have had?",
     "done_title": "You are all set",
     "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
-    "start_app": "Start using MaaSathi"
+    "start_app": "Start using MaaSathi",
+    "save_failed": "We could not save your details. Please try again."
   },
   "theme": {
     "title": "Appearance",

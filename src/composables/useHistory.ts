@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { childRepo, pregnancyRepo, scheduleRepo, ttDoseRepo, visitTrackingRepo } from '../db/database';
 import type { Child, Pregnancy, ScheduleItem, VisitTracking } from '../db/schemas';
-import { formatDate } from '../utils/date';
+import { formatDate, isoToLocalDate } from '../utils/date';
 import { useTt } from './useTt';
 
 export interface PregnancySummary {
@@ -56,7 +56,7 @@ export function useHistory() {
       lmpDisplay: formatDate(pregnancy.lmp),
       eddDisplay: formatDate(pregnancy.edd),
       deliveryDisplay: formatDate(pregnancy.deliveryDate),
-      archivedDisplay: pregnancy.archivedAt ? formatDate(pregnancy.archivedAt.slice(0, 10)) : ''
+      archivedDisplay: pregnancy.archivedAt ? formatDate(isoToLocalDate(pregnancy.archivedAt)) : ''
     };
   }
 

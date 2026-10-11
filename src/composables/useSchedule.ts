@@ -3,7 +3,7 @@ import { pregnancyRepo, scheduleRepo } from '../db/database';
 import type { Pregnancy, ScheduleItem } from '../db/schemas';
 import { t } from '../i18n';
 import { cancelItemReminders, scheduleItemReminders } from '../services/notifications';
-import { ANC_VISIT_TARGET_WEEKS, PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, todayIso } from '../utils/date';
+import { ANC_VISIT_TARGET_WEEKS, PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, isoToLocalDate, todayIso } from '../utils/date';
 import { useTt } from './useTt';
 
 const ANC_VISITS = ['visit1', 'visit2', 'visit3', 'visit4'] as const;
@@ -36,7 +36,7 @@ function desiredItems(
   if (!isPnc) {
     const lmp = pregnancy.lmp ?? null;
     if (lmp) {
-      const registeredDate = pregnancy.registeredAt.slice(0, 10);
+      const registeredDate = isoToLocalDate(pregnancy.registeredAt);
       for (const visit of ANC_VISITS) {
         const dueDate =
           visit === 'visit1'

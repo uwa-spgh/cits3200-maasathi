@@ -55,9 +55,20 @@
           <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp_when') }}</h1>
           <IonItem lines="none" class="step-input">
-            <IonInput v-model="lmp" type="date" @ionInput="onLmpInput" />
+            <IonInput
+              v-model="lmp"
+              type="date"
+              :min="lmpRange.min"
+              :max="lmpRange.max"
+              @ionInput="onLmpInput"
+            />
           </IonItem>
-          <button class="answer-btn primary" :disabled="!lmp" @click="advance('tt_ever')">
+          <p v-if="lmp && !isWithinBounds(lmp, lmpRange)" class="step-hint">{{ $t('common.date_out_of_range') }}</p>
+          <button
+            class="answer-btn primary"
+            :disabled="!lmp || !isWithinBounds(lmp, lmpRange)"
+            @click="advance('tt_ever')"
+          >
             {{ $t('common.next') }}
           </button>
         </section>
@@ -75,9 +86,20 @@
           <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd_when') }}</h1>
           <IonItem lines="none" class="step-input">
-            <IonInput v-model="edd" type="date" @ionInput="onEddInput" />
+            <IonInput
+              v-model="edd"
+              type="date"
+              :min="eddRange.min"
+              :max="eddRange.max"
+              @ionInput="onEddInput"
+            />
           </IonItem>
-          <button class="answer-btn primary" :disabled="!edd" @click="advance('tt_ever')">
+          <p v-if="edd && !isWithinBounds(edd, eddRange)" class="step-hint">{{ $t('common.date_out_of_range') }}</p>
+          <button
+            class="answer-btn primary"
+            :disabled="!edd || !isWithinBounds(edd, eddRange)"
+            @click="advance('tt_ever')"
+          >
             {{ $t('common.next') }}
           </button>
         </section>
@@ -165,7 +187,7 @@
           <p class="step-text">{{ $t('onboarding.done_text') }}</p>
           <ListenButton class="step-listen" size="sm" accent="green" :text="$t('onboarding.done_text')" />
           <IonIcon :icon="heartCircleOutline" class="done-icon" />
-          <button class="answer-btn primary" @click="finish">
+          <button class="answer-btn primary" :disabled="saving" @click="finish">
             {{ $t('onboarding.start_app') }}
           </button>
         </section>
@@ -176,8 +198,9 @@
 
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue';
-import { useIonRouter } from '@ionic/vue';
+import { useIonRouter, toastController } from '@ionic/vue';
 import { IonContent, IonIcon, IonInput, IonItem } from '@ionic/vue';
+import { useI18n } from 'vue-i18n';
 import { arrowBackOutline, heartCircleOutline } from 'ionicons/icons';
 import { onBoardingIcons } from '../config/icons.js';
 
@@ -187,7 +210,7 @@ import { useUser } from '../composables/useUser';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useTt } from '../composables/useTt';
 import { completeOnboarding } from '../bootstrap';
-import { addDaysIso, eddFromLmp, lmpFromEdd, todayIso } from '../utils/date';
+import { addDaysIso, eddBounds, eddFromLmp, isWithinBounds, lmpBounds, lmpFromEdd, todayIso } from '../utils/date';
 import { requestNotificationPermission } from '../services/notifications';
 import { registerBackHandler } from '../utils/backHandler';
 import type { TtStatus } from '../db/schemas';
@@ -206,15 +229,21 @@ type Step =
   | 'done';
 
 const router = useIonRouter();
+const { t } = useI18n();
 const { setUserName } = useUser();
 const { registerPregnancy } = usePregnancy();
 const { setRegistration } = useTt();
+const saving = ref(false);
 
 const step = ref<Step>('language');
 const flowStack = ref<Step[]>([]);
 const name = ref('');
 const lmp = ref('');
 const edd = ref('');
+/** The date field the mother typed last; it decides which date is the source when both are saved. */
+const typedDate = ref<'lmp' | 'edd' | null>(null);
+const lmpRange = lmpBounds();
+const eddRange = eddBounds();
 const estimateMonths = ref<number | null>(null);
 const ttStatus = ref<TtStatus>('not_asked');
 const ttDoses = ref<number | null>(null);
@@ -245,12 +274,16 @@ onUnmounted(() => {
   unregisterBack = null;
 });
 
-function onLmpInput(): void {
-  if (lmp.value) edd.value = eddFromLmp(lmp.value);
+function onLmpInput(event: Event): void {
+  typedDate.value = 'lmp';
+  const value = String((event.target as HTMLIonInputElement).value ?? '');
+  edd.value = value ? eddFromLmp(value) : '';
 }
 
-function onEddInput(): void {
-  if (edd.value) lmp.value = lmpFromEdd(edd.value);
+function onEddInput(event: Event): void {
+  typedDate.value = 'edd';
+  const value = String((event.target as HTMLIonInputElement).value ?? '');
+  lmp.value = value ? lmpFromEdd(value) : '';
 }
 
 /**
@@ -263,6 +296,7 @@ function confirmEstimate(): void {
   const daysGone = estimateMonths.value * 30;
   lmp.value = addDaysIso(todayIso(), -daysGone);
   edd.value = eddFromLmp(lmp.value);
+  typedDate.value = null;
   advance('tt_ever');
 }
 
@@ -272,24 +306,39 @@ function setTtAndFinish(status: TtStatus): void {
 }
 
 async function finish(): Promise<void> {
-  setUserName(name.value);
-  if (ttStatus.value !== 'not_asked') {
-    await setRegistration({
-      status: ttStatus.value,
-      dosesReceived: ttStatus.value === 'known' ? ttDoses.value : null,
-      lastDoseDate: ttStatus.value === 'known' ? ttLastDate.value || null : null,
-      cardAvailable: ttStatus.value === 'known'
+  if (saving.value) return;
+  saving.value = true;
+  try {
+    setUserName(name.value);
+    if (ttStatus.value !== 'not_asked') {
+      await setRegistration({
+        status: ttStatus.value,
+        dosesReceived: ttStatus.value === 'known' ? ttDoses.value : null,
+        lastDoseDate: ttStatus.value === 'known' ? ttLastDate.value || null : null,
+        cardAvailable: ttStatus.value === 'known'
+      });
+    }
+    if (lmp.value || edd.value) {
+      await registerPregnancy({
+        lmp: lmp.value || null,
+        edd: edd.value || null,
+        ...(typedDate.value ? { dateSource: typedDate.value } : {})
+      });
+    }
+    await completeOnboarding();
+    void requestNotificationPermission();
+    router.replace({ name: 'Home' });
+  } catch (e) {
+    console.error('Onboarding save failed', e);
+    const toast = await toastController.create({
+      message: t('onboarding.save_failed'),
+      duration: 3000,
+      position: 'bottom'
     });
+    await toast.present();
+  } finally {
+    saving.value = false;
   }
-  if (lmp.value || edd.value) {
-    await registerPregnancy({
-      lmp: lmp.value || null,
-      edd: edd.value || null
-    });
-  }
-  await completeOnboarding();
-  void requestNotificationPermission();
-  router.replace({ name: 'Home' });
 }
 </script>
 
@@ -395,13 +444,18 @@ async function finish(): Promise<void> {
   color: var(--color-profile-text, #000);
 }
 
-.answer-btn:disabled {
-  opacity: 0.45;
-}
-
 .answer-btn.primary {
   background: var(--color-profile-bg, #33a1de);
   color: var(--color-profile-text, #000);
+}
+
+/* Flat and readable rather than faded, so the label still shows in every theme. */
+.answer-btn:disabled {
+  background: var(--color-card-bg, #eaeaea);
+  color: var(--color-text-muted, #5c5c5c);
+  border-style: dashed;
+  border-color: var(--color-border, rgba(0, 0, 0, 0.1));
+  cursor: default;
 }
 
 .answer-btn.subtle {

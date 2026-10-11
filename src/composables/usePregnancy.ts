@@ -3,12 +3,11 @@ import {
   childRepo,
   pregnancyRepo,
   scheduleRepo,
-  settingsRepo,
   ttHistoryRepo
 } from '../db/database';
 import { uuid, type CareMode, type Pregnancy } from '../db/schemas';
 import { cancelAllReminders } from '../services/notifications';
-import { PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, gestationalWeek, lmpFromEdd, postpartumDays, todayIso } from '../utils/date';
+import { PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, gestationalWeek, isoToLocalDate, lmpFromEdd, postpartumDays, todayIso } from '../utils/date';
 import { regenerateSchedule, useSchedule } from './useSchedule';
 
 const PNC_END_DAY = PNC_CONTACT_OFFSET_DAYS['contact4'];
@@ -54,10 +53,6 @@ export function usePregnancy() {
     const archiveOn = addDaysIso(active.deliveryDate, PNC_END_DAY);
     if (todayIso() > archiveOn) {
       await archive(active.id);
-      await settingsRepo.setJson('maasathi_pending_archive_notice', {
-        pregnancyId: active.id,
-        archivedAt: new Date().toISOString()
-      });
     }
   }
 
@@ -95,8 +90,14 @@ export function usePregnancy() {
   async function registerPregnancy(input: Partial<Pregnancy>): Promise<Pregnancy> {
     const existing = await pregnancyRepo.active();
     if (existing) {
+      // Only re-derive the date source and weeks when the mother actually changed a date,
+      // so an unrelated edit does not overwrite what was recorded at registration.
+      const datesChanged =
+        (input.lmp !== undefined && input.lmp !== existing.lmp) ||
+        (input.edd !== undefined && input.edd !== existing.edd) ||
+        (input.dateSource !== undefined && input.dateSource !== existing.dateSource);
       Object.assign(existing, input);
-      applyDateSource(existing, input);
+      if (datesChanged) applyDateSource(existing, input);
       await pregnancyRepo.save(existing);
       activePregnancy.value = existing;
       await regenerateSchedule(existing);
@@ -135,20 +136,28 @@ export function usePregnancy() {
 
   /**
    * Requirements Table 1: record which date the mother supplied
-   * (LMP or EDD) and the gestational week at registration.
+   * (LMP or EDD) and the gestational week at registration. When both are
+   * given, input.dateSource (the field the mother last typed) decides; otherwise LMP wins.
    */
   function applyDateSource(target: Pregnancy, input: Partial<Pregnancy>): void {
-    if (input.lmp) {
+    const source =
+      input.dateSource === 'edd' && input.edd ? 'edd'
+        : input.dateSource === 'lmp' && input.lmp ? 'lmp'
+          : input.lmp ? 'lmp'
+            : input.edd ? 'edd'
+              : null;
+    const registeredOn = isoToLocalDate(target.registeredAt);
+    if (source === 'lmp' && input.lmp) {
       target.dateSource = 'lmp';
       target.lmp = input.lmp;
-      target.edd = target.edd ?? eddFromLmp(input.lmp);
-      target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(input.lmp));
-    } else if (input.edd) {
-      target.dateSource = 'edd';
+      target.edd = eddFromLmp(input.lmp);
+      target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(input.lmp, registeredOn));
+    } else if (source === 'edd' && input.edd) {
       const derivedLmp = lmpFromEdd(input.edd);
+      target.dateSource = 'edd';
       target.edd = input.edd;
       target.lmp = derivedLmp;
-      target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(derivedLmp));
+      target.pregnancyWeeksAtRegistration = clampWeeks(gestationalWeek(derivedLmp, registeredOn));
     }
   }
 
@@ -179,12 +188,15 @@ export function usePregnancy() {
     if (details.postnatalDangerSigns !== undefined) p.postnatalDangerSigns = details.postnatalDangerSigns;
     if (details.breastfeedingInitiated !== undefined) p.breastfeedingInitiated = details.breastfeedingInitiated;
     await pregnancyRepo.save(p);
+    // Re-saving a birth (e.g. after clearing and re-entering the delivery date) updates the
+    // existing child rather than adding a second one.
+    const existingChild = await childRepo.byPregnancy(p.id);
     await childRepo.save({
-      id: uuid(),
+      id: existingChild?.id ?? uuid(),
       pregnancyId: p.id,
       dob: details.deliveryDate,
-      sex: details.babySex ?? '',
-      notes: ''
+      sex: details.babySex ?? existingChild?.sex ?? '',
+      notes: existingChild?.notes ?? ''
     });
     activePregnancy.value = p;
     await regenerateSchedule(p);
