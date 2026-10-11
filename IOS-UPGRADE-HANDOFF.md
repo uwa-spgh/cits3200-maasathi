@@ -181,8 +181,8 @@ adb install -r app/build/outputs/apk/debug/app-debug.apk
 
 `npx cap sync android` is **mandatory before the first gradle run** on a fresh clone:
 `android/capacitor-cordova-android-plugins/` is gitignored and `android/settings.gradle`
-`include`s it, so gradle fails without it. `npm run build:android` already does
-`vite build && cap sync android && ./gradlew assembleDebug`.
+`include`s it, so gradle fails without it. There is no single npm script for this; run
+`npm run build && npx cap sync android` and then `./gradlew assembleDebug` from `android/`.
 
 ### Verified on Linux with JDK 21 + Android SDK 36
 
@@ -436,8 +436,9 @@ adb shell dumpsys notification --noredact | grep -A5 "pkg=com.maasathi.app"
 
 ## Web / e2e status
 
-`PW_BROWSER=playwright npm run test:e2e` — **18 passed (53s)** across all four suites
-(`smoke`, `mvp`, `complete`, `support`), Chromium.
+`PW_BROWSER=playwright npm run test:e2e` — **18 passed (53s)** across the `smoke`, `mvp` and
+`complete` suites, Chromium, at the time of this handoff (`e2e/support/` holds helpers only).
+The suite has since grown; see `e2e/README.md` for current coverage.
 
 One pre-existing failure was found and fixed: `e2e/complete/ui-full-coverage.spec.ts` asserted a
 Home card titled "Remember to eat well" linking to Nutrition. That card no longer exists — it was

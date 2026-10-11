@@ -32,13 +32,10 @@ maasathi/
     ├── bootstrap.ts             # One-time app data initialisation (database, pregnancy, TT history, schedule) and onboarding flags.
     │
     ├── config/
-    │   └── app.ts               # Global app configuration. NAV_MODE switches between the 'homeBar' and 'tabBar' navigation prototypes, plus the nav() path helper.
+    │   └── app.ts               # Global app configuration: the home path helper and the Android bottom safe-area value.
     │
     ├── router/
-    │   └── index.ts             # The routing configuration. Builds the route tree per navigation mode and enforces the onboarding guard.
-    │
-    ├── layouts/
-    │   └── TabsLayout.vue       # Ionic tabs layout (IonTabs + IonTabBar) used when NAV_MODE = 'tabBar'.
+    │   └── index.ts             # The routing configuration. Builds the route tree and enforces the onboarding guard.
     │
     ├── views/                   # Page-level components, one per route.
     │   ├── HomePage.vue         # Home screen: greeting, stage-based message card, and the 2x2 action tile grid.
@@ -53,29 +50,34 @@ maasathi/
     │   ├── VaccinationPage.vue  # Maternal TT vaccination: dose tracker, dose record, education placeholders.
     │   ├── DangerSignsPage.vue  # Full danger-signs reference for pregnancy, labour, postpartum and newborn.
     │   ├── NutritionPage.vue    # Nutrition education placeholders.
-    │   ├── ProfilePage.vue      # Profile & settings: personal info, pregnancy registration, birth registration, TT forms, history list, appearance, navigation and data reset.
+    │   ├── ProfilePage.vue      # Profile hub: personal info, pregnancy, vaccinations and birth plan menu, language and appearance pickers, past pregnancies list, and data reset behind a confirmation.
     │   └── HistorySummaryPage.vue # Read-only summary of an archived pregnancy (visits, doses, delivery, schedule record).
     │
     ├── components/              # Reusable UI components.
-    │   ├── PageShell.vue        # Standard page wrapper: coloured section header, content area and (in homeBar mode) the home footer button.
+    │   ├── PageShell.vue        # Standard page wrapper: coloured section header, content area and the BottomNav footer.
     │   ├── SectionHeader.vue    # Coloured overlapping page header with back button (matches the Figma mockups).
-    │   ├── HomeBarFooter.vue    # Centred home button footer, per the original mockups.
-    │   ├── TabsLayout.vue       # (See layouts/ - listed here for discoverability.)
+    │   ├── HomeCard.vue         # Coloured Home tile with heading, summary and open arrow.
+    │   ├── HomeTimelineRail.vue # Horizontal rail of reminders on Home, with chevrons to scroll back and forward.
+    │   ├── ListenButton.vue     # Read-aloud button: speaks the given text with the device's speech engine.
+    │   ├── ListenList.vue       # Bullet list read aloud in parts, each part with its own Listen button.
+    │   ├── ListenText.vue       # Paragraph text grouped into parts that can each be read aloud.
+    │   ├── ContentText.vue      # Renders a block of text as separate paragraphs.
     │   ├── TimelineList.vue     # Vertical timeline list for the Reminders page.
     │   ├── TimelineItem.vue     # A single timeline milestone: colour-coded dot, date, due chip, expand/complete actions.
     │   ├── ExpandableCard.vue   # Accordion card used across information pages.
     │   ├── PlaceholderBox.vue   # Empty content placeholder box (structure-only sprint).
-    │   ├── LanguageSwitcher.vue # English/Bengali language selector, available on Home, Onboarding and Profile.
-    │   └── ThemeCustomizerModal.vue # Theme preset picker and per-colour customisation modal.
+    │   ├── LanguageSwitcher.vue # English/Bengali language selector, available on Onboarding and Profile.
+    │   └── BottomNav.vue        # Bottom navigation bar (Profile, Home, Danger signs), used by PageShell.vue and HomePage.vue.
     │
     ├── composables/             # Shared reactive state and domain logic (Vue composables).
+    │   ├── useSpeech.ts         # Shared text-to-speech state: speak, stop, and whether speech is playing.
     │   ├── useUser.ts           # The mother's display name (persisted via localStorage).
     │   ├── usePregnancy.ts      # Active pregnancy state, ANC/PNC mode, gestational week / postpartum day, birth registration, and auto-archiving after the 6-week PNC contact.
     │   ├── useTt.ts             # Bangladesh EPI 5-dose lifetime TT schedule logic: registration options, next-dose calculation from last dose date (+4 weeks), dose recording.
     │   ├── useSchedule.ts       # Generates and persists the reminder timeline (4 ANC visits, TT dose, 4 PNC contacts, milestones) and marks items completed.
     │   ├── useHistory.ts        # Archived pregnancy summaries for the Profile history section.
     │   ├── useEmergencyContacts.ts # Editable emergency contact numbers used by the Emergency page.
-    │   └── useTheme.ts          # Theme colour presets (vibrant/pastel/contrast/dark) applied via CSS variables.
+    │   └── useTheme.ts          # Theme colour presets (normal/contrast/dark) applied via CSS variables.
     │
     ├── db/
     │   ├── schemas.ts           # TypeScript interfaces for all records plus the SQLite DDL (profile, pregnancy, tt_history, tt_dose, child, schedule_item, settings).
@@ -92,10 +94,14 @@ maasathi/
     │   └── bn.json              # The Bengali dictionary mapping UI text keys to Bengali strings.
     │
     ├── utils/
-    │   └── date.ts              # Date helpers: LMP→EDD conversion, gestational week, postpartum day, schedule offset tables.
+    │   ├── date.ts              # Date helpers: LMP→EDD conversion, LMP/EDD input bounds, gestational week, postpartum day, schedule offset tables.
+    │   ├── stageArticle.ts      # Maps the current pregnancy or postpartum stage to the topics surfaced on Home.
+    │   ├── speechChunks.ts      # Splits long bullet lists into parts small enough to read aloud.
+    │   └── backHandler.ts       # Lets a page take over the Android back button (e.g. onboarding steps).
     │
     └── theme/
-        └── variables.css        # Global CSS variables for the four section colours and backgrounds.
+        ├── variables.css        # Global CSS variables for the four section colours and backgrounds.
+        └── profile.css          # Shared styles for the Profile sub-pages (cards, fields, hints, action buttons), so they match the Profile hub.
 ```
 
 ## Domain Logic Summary
@@ -121,12 +127,10 @@ All user-facing information lives in `src/locales/en.json` and `src/locales/bn.j
 
 Use `\n` inside a value for paragraph breaks — pages render each line as its own paragraph. UI chrome (titles, buttons, labels) lives alongside the content under the other keys; content articles are the `*_body` keys and the lists above.
 
-## Navigation Prototypes
-The app ships with two navigation implementations so they can be compared side by side:
-*   `homeBar` — a single centred home button at the bottom of every page, exactly as in the Figma mockups.
-*   `tabBar` — an Ionic tab bar (Home / Reminders / Info / Profile) always visible at the bottom.
+## Navigation
+The bottom bar (`src/components/BottomNav.vue`, with Profile, Home and Danger signs buttons) is rendered by `PageShell.vue` and `HomePage.vue`.
 
-Switch via **Profile → Settings → Navigation style** (the app restarts to apply), or change the default in `src/config/app.ts`.
+Navigation is a single bottom bar; there is no alternative layout mode.
 
 ## Local Development Setup
 
