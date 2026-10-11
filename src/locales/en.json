@@ -748,6 +748,12 @@
     "no_notes": "No notes recorded",
     "not_found": "Record not found"
   },
+  "update": {
+    "title": "Update available",
+    "message": "MaaSathi {version} is available ({size} MB).",
+    "download": "Download",
+    "later": "Later"
+  },
   "onboarding": {
     "welcome_title": "Welcome to MaaSathi",
     "welcome_text": "Your companion for a safe pregnancy and a healthy baby. Choose your language to begin.",
