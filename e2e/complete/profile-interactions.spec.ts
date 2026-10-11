@@ -19,7 +19,6 @@ test.describe('Profile data and preferences', () => {
     await visiblePage(page).getByRole('button', { name: 'Save', exact: true }).click();
     await expect(page.locator('ion-toast').last()).toContainText('Saved');
 
-    await page.reload();
     await page.goto('/home');
     await expect(visiblePage(page).getByRole('heading', { name: 'Hello, Ayesha Begum' })).toBeVisible();
   });

@@ -33,10 +33,10 @@ keeps failure screenshots in the ignored `test-results/` directory.
 | `complete/ui-full-coverage.spec.ts` | Home cards, information routes, profile menu, and reminder guidance. |
 | `complete/profile-interactions.spec.ts` | Profile, Birth Plan, appearance, and pregnancy detail persistence. |
 | `complete/onboarding-lifecycle.spec.ts` | Estimated dates, unknown TT history, EDD entry, pregnancy closure, and archived history. |
-| `complete/pnc-vaccination-interactions.spec.ts` | Give Birth registration, PNC contact dates, child EPI milestone, and complete/undo. |
+| `complete/birth-pnc-interactions.spec.ts` | Give Birth registration, PNC contact dates, child EPI milestone, and complete/undo. |
 | `manual/manual-a-b-network-language.spec.ts` | Manual A: already loaded app under Slow 4G, 3G, and Offline; Manual B: implemented English/Bengali switching and persistence. |
-| `manual/test-c-information-navigation.spec.ts` | Manual C: observable navigation to maternal care and specific medical guidance. |
-| `manual/test-d-pregnancy-schedule.spec.ts` | Manual D: fixed-date LMP/EDD and TT reminder calculations, plus completed/undo persistence. |
+| `manual/manual-c-information-navigation.spec.ts` | Manual C: observable navigation to maternal care and specific medical guidance. |
+| `manual/manual-d-pregnancy-schedule.spec.ts` | Manual D: fixed-date LMP/EDD and TT reminder calculations, plus completed/undo persistence. |
 
 The date tests fix the browser clock and timezone, then check both the rendered
 timeline and the browser's persisted records. The route smoke checks the current

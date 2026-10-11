@@ -114,7 +114,7 @@ test.describe('Complete UI coverage', () => {
 
 /**
  * Which reminders are listed depends on today's date, so fix the clock (as in
- * manual/test-d) for the test that expects ANC Visit 2.
+ * manual/manual-d) for the test that expects ANC Visit 2.
  */
 test.describe('Reminder guidance on a fixed date', () => {
   test.use({ timezoneId: 'Australia/Perth' });
