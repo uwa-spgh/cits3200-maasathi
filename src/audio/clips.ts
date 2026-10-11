@@ -25,12 +25,12 @@ export function loadClipManifest(): Promise<void> {
 const warned = new Set<string>();
 
 /** URL of the recording for this exact text, or null when there isn't one. */
-export function clipUrl(locale: string, text: string): string | null {
+export function clipUrl(locale: string, text: string, { warn = true } = {}): string | null {
   const ids = available[locale];
   if (!ids || ids.size === 0) return null;
   const id = clipId(locale, text);
   if (ids.has(id)) return `${base()}audio/${locale}/${id}.mp3`;
-  if (import.meta.env.DEV && !warned.has(`${locale}${text}`)) {
+  if (warn && import.meta.env.DEV && !warned.has(`${locale}${text}`)) {
     warned.add(`${locale}${text}`);
     console.warn(`[audio] no clip for (${locale}) "${text.slice(0, 80)}": run npm run audio:sync, or scripts/audio/collect.ts has drifted from the page`);
   }

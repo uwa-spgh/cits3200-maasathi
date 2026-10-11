@@ -38,6 +38,8 @@ const props = withDefaults(
   defineProps<{
     /** The text to read aloud. Clicking does nothing when empty. */
     text: string;
+    /** For text with a changing part (a date): recorded pieces to play in order when `text` has no clip of its own. */
+    segments?: string[];
     accent?: ListenAccent;
     size?: 'xs' | 'sm' | 'md';
   }>(),
@@ -61,7 +63,7 @@ function onClick(): void {
     return;
   }
   activeOwner.value = ownerId;
-  speak(props.text, locale.value);
+  speak(props.text, locale.value, props.segments);
 }
 
 // Speech ended naturally: release ownership so this button goes back to "Listen".

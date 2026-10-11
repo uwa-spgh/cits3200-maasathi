@@ -236,14 +236,22 @@ function writeCache(clip: { locale: string; id: string }, audio: RawAudio): void
 
 // ---------- encoding ----------
 
+/**
+ * Pieces that are played back to back (the reminder's day, month and surrounding words) get their
+ * leading and trailing silence trimmed, so the joins don't sound like gaps. Everything else keeps its pauses.
+ */
+const isFragment = (clip: { sources: string[] }): boolean => clip.sources.every((source) => source.startsWith('Reminder'));
+const TRIM_SILENCE = 'silenceremove=start_periods=1:start_threshold=-45dB,areverse,silenceremove=start_periods=1:start_threshold=-45dB,areverse,apad=pad_dur=0.06';
+
 /** Encodes whatever the API returned to a small mono speech MP3. */
-function encode(audio: RawAudio, outFile: string, bitrate: string): Promise<void> {
+function encode(audio: RawAudio, outFile: string, bitrate: string, trim = false): Promise<void> {
   const raw = /l16|pcm/i.test(audio.mimeType) && !/wav/i.test(audio.mimeType);
   const rate = Number(audio.mimeType.match(/rate=(\d+)/)?.[1] ?? SAMPLE_RATE);
   const args = [
     '-hide_banner', '-loglevel', 'error', '-y',
     ...(raw ? ['-f', 's16le', '-ar', String(rate), '-ac', '1'] : []),
     '-i', 'pipe:0',
+    ...(trim ? ['-af', TRIM_SILENCE] : []),
     '-ac', '1', '-ar', String(SAMPLE_RATE),
     '-c:a', 'libmp3lame', '-b:a', bitrate,
     outFile
@@ -411,7 +419,7 @@ async function runBatches(todo: Clip[], opts: Options, apiKey: string): Promise<
         const audio: RawAudio = { data: Buffer.from(part.data, 'base64'), mimeType: part.mimeType ?? 'audio/wav' };
         writeCache(clip, audio);
         fs.mkdirSync(path.dirname(clip.file), { recursive: true });
-        await encode(audio, clip.file, opts.bitrate);
+        await encode(audio, clip.file, opts.bitrate, isFragment(clip));
         done++;
         console.log(`  [${done + failed}/${total}] ${clip.locale} ${clip.id} ${(fs.statSync(clip.file).size / 1024).toFixed(1)} KB  ${clip.sources[0]}`);
       } catch (err) {
@@ -525,7 +533,7 @@ async function main(): Promise<void> {
           const audio = (!opts.refetch && readCache(clip)) || (await synthesiseWithRetry(clip.text, opts, apiKey));
           writeCache(clip, audio);
           fs.mkdirSync(path.dirname(clip.file), { recursive: true });
-          await encode(audio, clip.file, opts.bitrate);
+          await encode(audio, clip.file, opts.bitrate, isFragment(clip));
           done++;
           console.log(`  [${done + failed}/${todo.length}] ${clip.locale} ${clip.id} ${(fs.statSync(clip.file).size / 1024).toFixed(1)} KB  ${clip.sources[0]}`);
         } catch (err) {

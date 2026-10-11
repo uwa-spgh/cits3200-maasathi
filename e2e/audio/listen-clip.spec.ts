@@ -1,5 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { clearAppStorage } from '../support/storage';
+import { completeOnboardingMvp } from '../support/onboarding';
+import { selectAppLanguage } from '../support/language';
 
 test.describe('Pre-recorded Listen clips', () => {
   test('Listen plays the recorded clip instead of the device voice', async ({ page }) => {
@@ -99,4 +101,46 @@ test.describe('Onboarding Listen buttons', () => {
 
     expect(await deviceSpeech()).toBe(0);
   });
+});
+
+test.describe('Home reminder card', () => {
+  /**
+   * The reminder contains a date, so it has no recording of its own; it is played as the words before
+   * the date, the day, the month, and any words after. Each is a recorded clip.
+   */
+  for (const lang of ['en', 'bn'] as const) {
+    test(`reminder Listen plays recorded pieces in ${lang}, not the device voice`, async ({ page }) => {
+      await page.addInitScript(() => {
+        const w = window as unknown as { __deviceSpeech: number };
+        w.__deviceSpeech = 0;
+        const synth = window.speechSynthesis;
+        if (!synth) return;
+        const speak = synth.speak.bind(synth);
+        synth.speak = (utterance) => {
+          w.__deviceSpeech += 1;
+          speak(utterance);
+        };
+      });
+      await completeOnboardingMvp(page);
+      if (lang === 'bn') {
+        await page.getByRole('button', { name: 'Profile' }).last().click();
+        await selectAppLanguage(page, 'bn');
+        await page.locator('ion-router-outlet > .ion-page:not(.ion-page-hidden)').last().getByRole('button', { name: 'হোম' }).click();
+      }
+
+      const clips: string[] = [];
+      page.on('response', (response) => {
+        if (new RegExp(`/audio/${lang}/[0-9a-z]+\\.mp3$`).test(response.url()) && [200, 206].includes(response.status())) {
+          clips.push(response.url());
+        }
+      });
+
+      const card = page.locator('.home-card').first();
+      await card.getByRole('button', { name: lang === 'bn' ? /শুনুন/ : /Listen/ }).click();
+      // Before + day + month is at least three pieces, fetched one after another.
+      await expect.poll(() => new Set(clips).size, { timeout: 15_000 }).toBeGreaterThanOrEqual(3);
+
+      expect(await page.evaluate(() => (window as unknown as { __deviceSpeech: number }).__deviceSpeech)).toBe(0);
+    });
+  }
 });

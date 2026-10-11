@@ -15,6 +15,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chunkPoints, chunkSentences, speechText } from '../../src/utils/speechChunks.ts';
+import { DATE_MARK, dayMonthSpeechParts } from '../../src/audio/dateSpeech.ts';
 import { excerpt, NEW_PREGNANCY_TOPIC, REGISTER_BIRTH_TOPIC, STAGE_NOW_TOPICS } from '../../src/utils/stageArticle.ts';
 import type { NowTopic } from '../../src/utils/stageArticle.ts';
 import {
@@ -26,6 +27,7 @@ import {
   PNC_BREASTFEEDING_TOPICS,
   PNC_ROUTINE_CARE_TOPICS,
   PNC_TOPICS,
+  REMINDER_DATE_SENTENCES,
   TETANUS_TOPICS,
   TRIMESTER_DANGER_SIGN_COUNT,
   TRIMESTER_VISITS
@@ -185,6 +187,25 @@ export function collect(): { speakables: Speakable[]; missingKeys: string[] } {
       else if (topic.route) text = excerpt(lookup(`${topic.ns}.${topic.key}_body`));
       else text = lookup(`${topic.ns}.${topic.key}.point1`);
       add(text, `Home widget: ${topic.key}`);
+    }
+
+    // --- Home reminder: a sentence with a date, played from pieces ---
+    // Words before and after the date, then every day and every month, each recorded once.
+    for (const sentence of REMINDER_DATE_SENTENCES) {
+      const ordinals = sentence.ordinals > 0 ? Array.from({ length: sentence.ordinals }, (_, i) => i + 1) : [0];
+      for (const n of ordinals) {
+        const values = n > 0 ? { ordinal: lookup(`home.cards.ordinal_${n}`) } : {};
+        const rendered = lookup(sentence.key).replace(/\{(\w+)\}/g, (_, name: string) =>
+          name === 'date' ? DATE_MARK : ((values as Record<string, string>)[name] ?? `{${name}}`)
+        );
+        for (const piece of rendered.split(DATE_MARK)) add(piece.trim(), `Reminder sentence: ${sentence.key}`);
+      }
+    }
+    for (let day = 1; day <= 31; day++) {
+      add(dayMonthSpeechParts(`2026-01-${String(day).padStart(2, '0')}`, locale).day, 'Reminder date: day');
+    }
+    for (let month = 1; month <= 12; month++) {
+      add(dayMonthSpeechParts(`2026-${String(month).padStart(2, '0')}-01`, locale).month, 'Reminder date: month');
     }
 
     // --- Timeline "what to prepare" panels ---

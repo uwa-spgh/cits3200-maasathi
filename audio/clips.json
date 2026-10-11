@@ -13,6 +13,13 @@
     ],
     "text": "মানসিক অনুভূতি ও বিষণ্নতা। প্রসবের পর মন খারাপ বা কান্না পাওয়া অস্বাভাবিক নয়; তবে দীর্ঘস্থায়ী হলে চিকিৎসকের সাহায্য নিন।"
   },
+  "bn/02fu197kn5n": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "জানুয়ারি"
+  },
   "bn/02hw7mg5roc": {
     "locale": "bn",
     "sources": [
@@ -26,6 +33,13 @@
       "Home widget: pre_eclampsia_monitoring"
     ],
     "text": "সতর্কতার লক্ষণগুলো জেনে রাখুন। গর্ভাবস্থায় উচ্চ রক্তচাপ বিপজ্জনক হতে পারে। প্রতিটি ANC ভিজিটে আপনার রক্তচাপ পরীক্ষা করান।"
+  },
+  "bn/033d9uu71iy": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৭"
   },
   "bn/03nnmvjoixz": {
     "locale": "bn",
@@ -41,6 +55,27 @@
     ],
     "text": "উভয় স্তন থেকে খাওয়ানো। প্রতিবার খাওয়ানোর সময় উভয় স্তন থেকে পর্যাপ্ত সময় ধরে খাওয়ান।"
   },
+  "bn/04cegx2eltf": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১১"
+  },
+  "bn/04w5x39202j": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৮"
+  },
+  "bn/04xeyr1hrsu": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "আপনার চতুর্থ ANC ভিজিট"
+  },
   "bn/064cn4zboru": {
     "locale": "bn",
     "sources": [
@@ -54,6 +89,20 @@
       "Vaccination > tetanus: what_is_tetanus"
     ],
     "text": "টিটেনাস (ধনুষ্টংকার) কী এবং এর ঝুঁকি। টিটেনাস জীবাণুর সংক্রমণে ঘটে যা কোনো নোংরা বা জং ধরা কাটার মাধ্যমে শরীরে প্রবেশ করে এবং দ্রুত চিকিৎসা না পেলে মারাত্মক হতে পারে।"
+  },
+  "bn/07fn149dsd3": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৬"
+  },
+  "bn/07j9qwh6jl9": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "মার্চ"
   },
   "bn/08e9jxtjbuf": {
     "locale": "bn",
@@ -77,6 +126,13 @@
     ],
     "text": "পূর্বে টিকা দেওয়া থাকলে। আগে কোনো টিকা দেওয়া থাকলে স্বাস্থ্যকর্মীকে জানান এবং কার্ড দেখান; তারা সঠিক পরবর্তী ডোজ দেবেন।"
   },
+  "bn/08tls0bl1zm": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৬"
+  },
   "bn/09q2jasgt8p": {
     "locale": "bn",
     "sources": [
@@ -91,6 +147,13 @@
       "Home widget: register_birth"
     ],
     "text": "পিএনসি সেবায় যেতে, প্রোফাইলে গিয়ে জন্ম নিবন্ধন করুন।"
+  },
+  "bn/0bii0rdji0t": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৪"
   },
   "bn/0bljiedh1h6": {
     "locale": "bn",
@@ -122,12 +185,26 @@
     ],
     "text": "পরিবার পরিকল্পনা। পরবর্তী গর্ভধারণের মাঝে ব্যবধান রাখতে উপযুক্ত পরিবার পরিকল্পনা পদ্ধতি বেছে নিন।"
   },
+  "bn/0dv1e5cpprx": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১২"
+  },
   "bn/0e503cnio42": {
     "locale": "bn",
     "sources": [
       "Onboarding: lmp_known"
     ],
     "text": "আপনার শেষ মাসিক কখন শুরু হয়েছিল জানেন কি?"
+  },
+  "bn/0eapzxyjbkr": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৩"
   },
   "bn/0ef71khdk1v": {
     "locale": "bn",
@@ -156,6 +233,13 @@
       "Home / stage summary: pnc contact3"
     ],
     "text": "শরীর পরিষ্কার-পরিচ্ছন্ন রাখুন এবং ১–২ সপ্তাহের মধ্যে স্বাস্থ্যকর্মীর কাছে চেকআপ করান। অতিরিক্ত অবসাদ লাগলে পরিবারের সাহায্য নিন।"
+  },
+  "bn/0hjq5gu2mvq": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "আগস্ট"
   },
   "bn/0i9d1m25ksl": {
     "locale": "bn",
@@ -186,6 +270,13 @@
     ],
     "text": "কোথায় প্রসব হবে এবং কীভাবে যাবেন তা আগে থেকেই ঠিক করে রাখুন।"
   },
+  "bn/0kr37k5yztu": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "এপ্রিল"
+  },
   "bn/0kvktwidif8": {
     "locale": "bn",
     "sources": [
@@ -199,6 +290,13 @@
       "Home: home.no_pregnancy"
     ],
     "text": "কোনো সক্রিয় গর্ভাবস্থা নেই। স্মারক শুরু করতে প্রোফাইল থেকে নিবন্ধন করুন।"
+  },
+  "bn/0le7ljigrky": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৩০"
   },
   "bn/0lmsxij3d5m": {
     "locale": "bn",
@@ -239,6 +337,27 @@
     ],
     "text": "রক্তপাত পর্যবেক্ষণ। প্রসবের পর সামান্য রক্তপাত স্বাভাবিক, কিন্তু অতিরিক্ত বা বড় চাকা গেলে অবিলম্বে হাসপাতালে যান।"
   },
+  "bn/0ojn2htw7xe": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_tt"
+    ],
+    "text": "তারিখে আপনার টিটেনাস টিকা দেওয়ার সময়। সাথে আপনার ইপিআই কার্ড আনতে ভুলবেন না।"
+  },
+  "bn/0q82f9bkm71": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৩১"
+  },
+  "bn/0ripxk9c186": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৮"
+  },
   "bn/0s2ttwb3ar3": {
     "locale": "bn",
     "sources": [
@@ -248,6 +367,13 @@
       "Stage ANC:visit4: birth_preparedness"
     ],
     "text": "প্রসবের প্রস্তুতি পরিকল্পনা। কোথায় প্রসব হবে এবং কীভাবে যাবেন তা আগে থেকেই ঠিক করে রাখুন। জরুরি টাকা, পরিবহন এবং রক্তদাতার ব্যবস্থা আগে থেকেই প্রস্তুত রাখুন।"
+  },
+  "bn/0tacvlwb9fj": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২০"
   },
   "bn/0tjl0mkioin": {
     "locale": "bn",
@@ -292,6 +418,13 @@
     ],
     "text": "সহজলভ্য স্থানীয় খাবার যেমন ভাত, ডাল, শাকসবজি, ডিম, মাছ ও ফলমূল খান।"
   },
+  "bn/0xkbywritiq": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "সেপ্টেম্বর"
+  },
   "bn/0xkislke81p": {
     "locale": "bn",
     "sources": [
@@ -305,6 +438,13 @@
       "Home / stage summary: pnc contact1"
     ],
     "text": "পর্যাপ্ত বিশ্রাম নিন। রক্তপাত স্বাভাবিক কি না লক্ষ্য রাখুন এবং জন্মের এক ঘণ্টার মধ্যে শিশুকে শুধু বুকের দুধ দেওয়া শুরু করুন।"
+  },
+  "bn/0y9rbaonk39": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "আপনার প্রথম প্রসব-পরবর্তী যোগাযোগ"
   },
   "bn/0yfxlbes71i": {
     "locale": "bn",
@@ -341,6 +481,13 @@
     ],
     "text": "ভিজিটের পূর্বে প্রস্তুতি। আপনার কার্ড সাথে নিন। প্রসববেদনার লক্ষণ ও বিপদচিহ্ন জেনে নিন, বাচ্চার জন্য পরিষ্কার কাপড় প্রস্তুত রাখুন এবং জরুরি নম্বর সাথে রাখুন।"
   },
+  "bn/10f7s5nyiq3": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৬"
+  },
   "bn/10hng3ltngi": {
     "locale": "bn",
     "sources": [
@@ -369,6 +516,20 @@
     ],
     "text": "পরিষ্কার-পরিচ্ছন্নতা ও সংক্রমণ রোধ। নিয়মিত সাবান দিয়ে হাত ধোয়ার অভ্যাস করুন এবং নিরাপদ পানি ব্যবহার করুন। খাবার পরিষ্কার রাখুন এবং ভালোভাবে সেদ্ধ করে খান।"
   },
+  "bn/112o1wby8gl": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "অক্টোবর"
+  },
+  "bn/12dgoia2xh7": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "আপনার চতুর্থ প্রসব-পরবর্তী যোগাযোগ"
+  },
   "bn/12fy47tooie": {
     "locale": "bn",
     "sources": [
@@ -396,6 +557,13 @@
       "Home: home.cards.no_reminders"
     ],
     "text": "এই মুহূর্তে কোনো রিমাইন্ডার নেই"
+  },
+  "bn/12zasy3df7e": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "জুলাই"
   },
   "bn/13nzuoa1ua6": {
     "locale": "bn",
@@ -482,6 +650,20 @@
     ],
     "text": "আপনার শিশুকে নিরাপদ রাখুন। ঘুমানোর সময় সবসময় শিশুকে পিঠের ওপর শোয়ান। শিশুর ঘুমানোর জায়গা থেকে বালিশ, কম্বল ও অন্যান্য জিনিস সরিয়ে রাখুন যা মুখ ঢেকে দিতে পারে। শিশুকে ধোঁয়া ও ক্ষতিকর পদার্থ থেকে দূরে রাখুন।"
   },
+  "bn/196elnww6hx": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২২"
+  },
+  "bn/19lu6l9s2on": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "আপনার দ্বিতীয় ANC ভিজিট"
+  },
   "bn/19qqhlrxysq": {
     "locale": "bn",
     "sources": [
@@ -496,12 +678,33 @@
     ],
     "text": "ভিজিটের পূর্বে প্রস্তুতি। আপনার প্রসবপূর্ব কার্ড সাথে নিন। মাথাব্যথা, ঝাপসা দৃষ্টি বা হাত-পা ফোলার মতো কোনো লক্ষণ থাকলে স্বাস্থ্যকর্মীকে জানান।"
   },
+  "bn/1a898wcnr31": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "ডিসেম্বর"
+  },
+  "bn/1arawgdnxtj": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "আপনার তৃতীয় ANC ভিজিট"
+  },
   "bn/1arpnvvltuy": {
     "locale": "bn",
     "sources": [
       "ANC trimester: visit3"
     ],
     "text": "ভিজিট ৩ (৩২ সপ্তাহ)। প্রসবের প্রস্তুতি পরিকল্পনা। কোথায় প্রসব হবে এবং কীভাবে যাবেন তা আগে থেকেই ঠিক করে রাখুন। জরুরি যোগাযোগের নম্বর সংরক্ষণ করুন এবং প্রয়োজনীয় জিনিসপত্র প্রস্তুত রাখুন। দক্ষ স্বাস্থ্যকর্মীর উপস্থিতিতে প্রসব। প্রশিক্ষিত স্বাস্থ্যকর্মীর অধীনে প্রসব করালে মা ও শিশু উভয়ই নিরাপদ থাকে।"
+  },
+  "bn/1b65xfryyvs": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৩"
   },
   "bn/1bqtz6k8pfv": {
     "locale": "bn",
@@ -516,6 +719,13 @@
       "Information > PNC: cleanliness"
     ],
     "text": "পরিষ্কার-পরিচ্ছন্নতা। নিয়মিত হাত এবং শরীর পরিষ্কার পানি ও সাবান দিয়ে পরিষ্কার রাখুন।"
+  },
+  "bn/1c3gldrwcps": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৪"
   },
   "bn/1ci41u9wdat": {
     "locale": "bn",
@@ -560,6 +770,20 @@
     ],
     "text": "আপনি কয়টি ডোজ নিয়েছেন জানেন কি?"
   },
+  "bn/1fdgzl41kmc": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "আপনার প্রথম ANC ভিজিট"
+  },
+  "bn/1gmxx0s1cbn": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৪"
+  },
   "bn/1h7ipggcsaj": {
     "locale": "bn",
     "sources": [
@@ -587,6 +811,13 @@
       "Danger signs: note"
     ],
     "text": "আপনার যদি কোনো বিপদচিহ্ন দেখা দেয়, তাহলে যত তাড়াতাড়ি সম্ভব স্বাস্থ্যকেন্দ্রে যান।"
+  },
+  "bn/1j3r3lviw22": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৮"
   },
   "bn/1j5hc7mwfn3": {
     "locale": "bn",
@@ -617,12 +848,26 @@
     ],
     "text": "প্রশিক্ষিত স্বাস্থ্যকর্মীর অধীনে প্রসব করালে মা ও শিশু উভয়ই নিরাপদ থাকে।"
   },
+  "bn/1jurm6ji6qv": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_edd"
+    ],
+    "text": "আপনার সম্ভাব্য প্রসবের তারিখ"
+  },
   "bn/1kpu3gcxz1x": {
     "locale": "bn",
     "sources": [
       "Home widget: family_planning"
     ],
     "text": "পরবর্তী গর্ভধারণের মাঝে ব্যবধান রাখতে উপযুক্ত পরিবার পরিকল্পনা পদ্ধতি বেছে নিন।"
+  },
+  "bn/1l24p8wnwv2": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১"
   },
   "bn/1m2azfwu4x9": {
     "locale": "bn",
@@ -658,6 +903,13 @@
       "Home widget: cord_healing"
     ],
     "text": "জন্মের পর শিশুর নাভি শুকিয়ে সেরে উঠতে কিছুটা সময় লাগে।"
+  },
+  "bn/1oafqwhyo0c": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "জুন"
   },
   "bn/1oah3dnk678": {
     "locale": "bn",
@@ -704,6 +956,13 @@
     ],
     "text": "আপনার সন্তানের কোনো টিকা বাদ পড়লে হাল ছাড়বেন না। বাদ পড়া টিকা কখন দেওয়া যাবে তা স্বাস্থ্যকর্মীর সাথে কথা বলুন। কিছু টিকার পর সন্তানের সামান্য ব্যথা, ফোলাভাব বা জ্বর হতে পারে। এই প্রতিক্রিয়াগুলো সাধারণত স্বল্পস্থায়ী; উদ্বিগ্ন হলে স্বাস্থ্যকর্মীকে জিজ্ঞাসা করুন কী করা উচিত।"
   },
+  "bn/1rt4rnir1wd": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২১"
+  },
   "bn/1s2fo6dh1p0": {
     "locale": "bn",
     "sources": [
@@ -723,6 +982,13 @@
       "Stage PNC:contact4: childhood_immunisation"
     ],
     "text": "কোনো টিকার তারিখ মিস করার চেষ্টা করবেন না। মনে রাখার জন্য পরবর্তী টিকাদানের তারিখ ফোনে বা ক্যালেন্ডারে রাখুন। টিকাদান কার্ড সুরক্ষিত রাখুন এবং সন্তানের প্রতিটি টিকা দেওয়ার সময় এটি সাথে নিয়ে যান।"
+  },
+  "bn/1t5n3eue6y6": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৯"
   },
   "bn/1tickn3r1vt": {
     "locale": "bn",
@@ -769,6 +1035,13 @@
     ],
     "text": "প্রসববেদনা শুরু হওয়ামাত্র স্বাস্থ্যকেন্দ্রে যান। মানসিক সুস্থতা ও যত্ন। গর্ভাবস্থায় কিছুটা দুশ্চিন্তা বা মন খারাপ হওয়া স্বাভাবিক। মানসিক চাপ, বিষণ্নতা বা অতিরিক্ত অস্থিরতা অনুভব করলে নির্ভরযোগ্য কারো সাথে কথা বলুন।"
   },
+  "bn/1xb06ui0r2c": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১০"
+  },
   "bn/1xm0ycf0t96": {
     "locale": "bn",
     "sources": [
@@ -783,12 +1056,26 @@
     ],
     "text": "ভবিষ্যতে নতুন গর্ভাবস্থা নিবন্ধন করতে প্রোফাইলে 'আমার গর্ভাবস্থা' তে যান।"
   },
+  "bn/1xtsgkni8l5": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৯"
+  },
   "bn/1ya287n0d0n": {
     "locale": "bn",
     "sources": [
       "ANC trimester: danger signs"
     ],
     "text": "বিপদচিহ্ন — অবিলম্বে স্বাস্থ্যকেন্দ্রে যান। যোনিপথে রক্তক্ষরণ। তীব্র পেটে ব্যথা। চোখে ঝাপসা দেখা। উচ্চ রক্তচাপ। তীব্র মাথাব্যথা।"
+  },
+  "bn/1yfrj1ykqlx": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "মে"
   },
   "bn/1yo7khs4z6s": {
     "locale": "bn",
@@ -836,6 +1123,13 @@
     ],
     "text": "দ্রুত শুরু করুন। জন্মের ১ ঘণ্টার মধ্যে শিশুকে শালদুধ দিন।"
   },
+  "bn/21o49uqrew7": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "আপনার দ্বিতীয় প্রসব-পরবর্তী যোগাযোগ"
+  },
   "bn/22m4mcx1ptp": {
     "locale": "bn",
     "sources": [
@@ -849,6 +1143,13 @@
       "Danger signs: labour"
     ],
     "text": "প্রসব ও প্রসবকালীন। প্রচুর যোনিপথে রক্তক্ষরণ। ১২ ঘণ্টার বেশি প্রসববেদনা। সন্তানের অস্বাভাবিক অবস্থান। কাঁধ আটকে যাওয়া। তীব্র মাথাব্যথা। অপরিণত জরায়ু (অ্যাফন্ট)। উচ্চ জ্বর।"
+  },
+  "bn/23nfzs81tm1": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৩"
   },
   "bn/25fltmcoxwk": {
     "locale": "bn",
@@ -864,12 +1165,33 @@
     ],
     "text": "আপনি কি আগে কখনো টিটেনাস (টিটি) টিকা নিয়েছেন?"
   },
+  "bn/264qqkhvx3n": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৫"
+  },
   "bn/264v208yy68": {
     "locale": "bn",
     "sources": [
       "Home widget: birth_preparedness"
     ],
     "text": "আপনার জন্ম প্রস্তুতি পরিকল্পনাটি অবশ্যই আবার দেখে নিন।"
+  },
+  "bn/26e0net503c": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "ফেব্রুয়ারি"
+  },
+  "bn/26t8ixzgn3q": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৭"
   },
   "bn/26y7grqll63": {
     "locale": "bn",
@@ -920,12 +1242,26 @@
     ],
     "text": "ভিজিটের পূর্বে প্রস্তুতি। আপনার প্রসবপূর্ব কার্ড সাথে নিন। প্রসবের স্থান, জরুরি যাতায়াত এবং প্রসবকালে সহায়তাকারী সম্পর্কে আলোচনা করুন।"
   },
+  "bn/29r1uvz68ty": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "আপনার তৃতীয় প্রসব-পরবর্তী যোগাযোগ"
+  },
   "bn/29rul5isod0": {
     "locale": "bn",
     "sources": [
       "PNC > breastfeeding: sore_breasts"
     ],
     "text": "স্তনে ব্যথা বা ফোলা। স্তনে তীব্র ব্যথা, ফাটল বা শক্ত ফোলা দেখা দিলে দ্রুত স্বাস্থ্যকর্মীর পরামর্শ নিন।"
+  },
+  "bn/29t11m4ybpm": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২"
   },
   "bn/2a35toyo5e0": {
     "locale": "bn",
@@ -934,12 +1270,33 @@
     ],
     "text": "আপনার বর্তমান স্বাস্থ্য ও পরামর্শ এখানে দেখা যাবে।"
   },
+  "bn/2a4gy23eon5": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৫"
+  },
   "bn/2a8em02goss": {
     "locale": "bn",
     "sources": [
       "PNC > breastfeeding: only_breastmilk"
     ],
     "text": "শুধু বুকের দুধ (৬ মাস)। প্রথম ৬ মাস শিশুকে শুধু বুকের দুধ দিন; পানি, মধু বা অন্য কোনো খাবারের প্রয়োজন নেই।"
+  },
+  "bn/2afii1i9g01": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "২৭"
+  },
+  "bn/2aq9mxhgna8": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "নভেম্বর"
   },
   "bn/2b7ohu96fow": {
     "locale": "bn",
@@ -955,6 +1312,13 @@
     ],
     "text": "আপনার নাম কি?"
   },
+  "bn/2c6t7siv5hb": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "৯"
+  },
   "bn/2caoyh8m0fx": {
     "locale": "bn",
     "sources": [
@@ -969,6 +1333,20 @@
       "Vaccination > tetanus: tt_protection"
     ],
     "text": "টিটি টিকা কীভাবে সুরক্ষা দেয়। গর্ভাবস্থায় টিটি টিকা নিলে মায়ের শরীরে রোগ প্রতিরোধ ক্ষমতা তৈরি হয় এবং তা গর্ভস্থ শিশুর মধ্যেও পৌঁছায়।"
+  },
+  "bn/2d3k7o2xui1": {
+    "locale": "bn",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_edd"
+    ],
+    "text": "। পিএনসি সেবা শুরু করার আগে জন্ম নিবন্ধন করুন।"
+  },
+  "bn/2dpmqfqh4m3": {
+    "locale": "bn",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "১৫"
   },
   "bn/2ejm62q5kds": {
     "locale": "bn",
@@ -1020,6 +1398,13 @@
       "PNC > breastfeeding: good_position"
     ],
     "text": "Good position. Hold baby close, tummy to tummy, mouth open wide on the breast."
+  },
+  "en/00owjnoy94s": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "April"
   },
   "en/00petgsas7m": {
     "locale": "en",
@@ -1110,6 +1495,20 @@
     ],
     "text": "Keep your baby safe. Always place your baby on their back to sleep. Keep the baby's sleeping area free from pillows, blankets and other objects that may cover the baby's face. Keep your baby away from smoke and harmful substances."
   },
+  "en/03vt55ej2s0": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "31st of"
+  },
+  "en/04gct25am4m": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "12th of"
+  },
   "en/054ad4gkeac": {
     "locale": "en",
     "sources": [
@@ -1130,6 +1529,13 @@
       "Home widget: routine_care"
     ],
     "text": "Simple daily care to keep your baby warm, fed, clean, and safe."
+  },
+  "en/06qunpssnwq": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "25th of"
   },
   "en/07d2uupq5g6": {
     "locale": "en",
@@ -1202,6 +1608,13 @@
     ],
     "text": "Before your visit. Bring your antenatal card or previous medical reports. Note the date of your last period, and any questions you want to ask your health worker."
   },
+  "en/0b94l5c5kkv": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "16th of"
+  },
   "en/0cgic0nkxbi": {
     "locale": "en",
     "sources": [
@@ -1230,12 +1643,33 @@
     ],
     "text": "Calcium. Calcium supplementation. Take calcium tablets as recommended during pregnancy. Calcium helps keep your bones and your baby’s bones healthy."
   },
+  "en/0dgok20hobt": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "July"
+  },
   "en/0dq8xq5w3kd": {
     "locale": "en",
     "sources": [
       "Home widget: mental_wellbeing"
     ],
     "text": "Feeling worried or tired can happen during pregnancy."
+  },
+  "en/0dr8ibsjj6z": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "13th of"
+  },
+  "en/0exwrj1bve2": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "22nd of"
   },
   "en/0ghgufjawbh": {
     "locale": "en",
@@ -1251,12 +1685,47 @@
     ],
     "text": "When did your last period start?"
   },
+  "en/0h7y4zyzv52": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "23rd of"
+  },
+  "en/0hik04lg0my": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "February"
+  },
   "en/0i17knrhxsc": {
     "locale": "en",
     "sources": [
       "ANC trimester: nutrition"
     ],
     "text": "Nutrition. Healthy diet. Eat a balanced diet using affordable local foods (rice, dal, vegetables, eggs, fish, fruits). Eat small, frequent meals if you feel nauseous."
+  },
+  "en/0i8e6hjj50k": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "3rd of"
+  },
+  "en/0icb9fh21wh": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "January"
+  },
+  "en/0il04s0fgfr": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_tt"
+    ],
+    "text": "Your tetanus vaccination is due on"
   },
   "en/0jqonle0zpy": {
     "locale": "en",
@@ -1309,6 +1778,34 @@
     ],
     "text": "Bleeding. Some bleeding is normal. Heavy bleeding is not. Please go to the health facility."
   },
+  "en/0lhgkm9rsii": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "5th of"
+  },
+  "en/0lm790w1383": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "1st of"
+  },
+  "en/0oyznazuvl3": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "20th of"
+  },
+  "en/0pjmd8ds9m0": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "September"
+  },
   "en/0q8m4omr6hs": {
     "locale": "en",
     "sources": [
@@ -1322,6 +1819,13 @@
       "ANC trimester: visit2"
     ],
     "text": "Calcium helps keep your bones and your baby’s bones healthy. Pre-eclampsia monitoring. Monitor for swelling and high blood pressure (pre-eclampsia)."
+  },
+  "en/0qkja0danah": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "24th of"
   },
   "en/0qpx75w554a": {
     "locale": "en",
@@ -1357,6 +1861,13 @@
       "Danger signs: postpartum"
     ],
     "text": "After delivery (postpartum). Abdominal pain. Blurred vision. High fever. Too weak to get out of bed. Foul-smelling vaginal discharge. Fast or difficult breathing. Convulsions. Breasts swollen, red, or sore. Heavy vaginal bleeding."
+  },
+  "en/0saug3rhc6a": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "October"
   },
   "en/0srpkthr2o8": {
     "locale": "en",
@@ -1414,6 +1925,13 @@
     ],
     "text": "Keep your ANC card and follow health worker advice. Danger signs. Seek medical care immediately for heavy bleeding, severe abdominal pain, severe headache, fever, swelling, reduced baby movement, or difficulty breathing."
   },
+  "en/0uuqgf5c4qs": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "August"
+  },
   "en/0v83ml5ht0d": {
     "locale": "en",
     "sources": [
@@ -1443,6 +1961,13 @@
       "Stage ANC:visit2: pre_eclampsia_monitoring"
     ],
     "text": "Swelling and high blood pressure. Know the warning signs. High blood pressure during pregnancy can be dangerous. Have your blood pressure checked at your ANC visits. Some swelling of the feet can happen during pregnancy. Sudden or severe swelling of your face or hands can be a warning sign."
+  },
+  "en/0wzuahwxopz": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_edd"
+    ],
+    "text": "Your expected due date is"
   },
   "en/0x605ibkg69": {
     "locale": "en",
@@ -1515,6 +2040,13 @@
     ],
     "text": "Confirm your tetanus doses with your health worker at your next visit, then update them here."
   },
+  "en/140juh6gx8t": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "6th of"
+  },
   "en/14q70o0soox": {
     "locale": "en",
     "sources": [
@@ -1522,6 +2054,13 @@
       "Nutrition: activity"
     ],
     "text": "Physical activity. Move a little every day, such as walking or gentle stretching. Rest when tired and stop if you feel pain, dizziness, breathing problems, or bleeding."
+  },
+  "en/1574it8ow7q": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "You have your fourth postnatal contact on"
   },
   "en/15a519earvh": {
     "locale": "en",
@@ -1537,6 +2076,13 @@
     ],
     "text": "Pain. Mild pain is normal. Severe pain is not normal."
   },
+  "en/16j2taet1df": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "You have your first postnatal contact on"
+  },
   "en/16q0cwnogkc": {
     "locale": "en",
     "sources": [
@@ -1545,6 +2091,13 @@
       "Stage PNC:contact4: childhood_immunisation"
     ],
     "text": "Your child may have mild soreness, swelling, or fever after some vaccines. These reactions are usually short-lived; ask your health worker what to do if you are concerned."
+  },
+  "en/17nt1jlrlw6": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "You have your second postnatal contact on"
   },
   "en/17v3t090c8n": {
     "locale": "en",
@@ -1566,6 +2119,13 @@
       "Home widget: calcium_supplementation"
     ],
     "text": "Take calcium tablets as recommended during pregnancy."
+  },
+  "en/1aiya699e47": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "28th of"
   },
   "en/1ask4x995en": {
     "locale": "en",
@@ -1602,6 +2162,13 @@
     ],
     "text": "Start breastfeeding within 1 hour of birth."
   },
+  "en/1c2kyz9ldwj": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "14th of"
+  },
   "en/1ch5poacwm8": {
     "locale": "en",
     "sources": [
@@ -1615,6 +2182,27 @@
       "Home / stage summary: anc visit4"
     ],
     "text": "Prepare clean baby clothes and plan transport to the health facility. Learn signs of labour and ask family for postpartum support."
+  },
+  "en/1cxbqpbonos": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "26th of"
+  },
+  "en/1dphuxdwx7o": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "You have your fourth ANC visit on"
+  },
+  "en/1e6pa4tp5rl": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "30th of"
   },
   "en/1eb4hkrr1u2": {
     "locale": "en",
@@ -1662,12 +2250,33 @@
     ],
     "text": "Family planning. Ask your health worker about spacing your next pregnancy."
   },
+  "en/1hnxvkkqih1": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "You have your third ANC visit on"
+  },
+  "en/1hraffvxpyh": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "December"
+  },
   "en/1idl5aq3pyu": {
     "locale": "en",
     "sources": [
       "Information > PNC: checkup"
     ],
     "text": "Check-up. See a health worker at day 3–4, day 7–14, and week 6."
+  },
+  "en/1ih9kj8rvwc": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "19th of"
   },
   "en/1ixore5kd0p": {
     "locale": "en",
@@ -1689,6 +2298,41 @@
       "Home: home.cards.journey_ended_early"
     ],
     "text": "Your pregnancy record is closed and saved in Profile. Please talk to your health worker if you need support."
+  },
+  "en/1k6smzskd4m": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "2nd of"
+  },
+  "en/1km4vkixrbk": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "17th of"
+  },
+  "en/1l69x12ekcd": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "15th of"
+  },
+  "en/1lghi4amj05": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "7th of"
+  },
+  "en/1mdpqg2ogw5": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "You have your second ANC visit on"
   },
   "en/1mk9rk7jzcr": {
     "locale": "en",
@@ -1714,12 +2358,40 @@
     ],
     "text": "Hydration and rest. Drink enough water and fluids every day, especially in hot weather. Get enough rest and sleep when you can."
   },
+  "en/1n8ikzoutfv": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "29th of"
+  },
   "en/1okozbug55y": {
     "locale": "en",
     "sources": [
       "Vaccination > tetanus: five_dose_schedule"
     ],
     "text": "Why Bangladesh uses a 5-dose lifetime schedule. You need up to 5 TT doses in your whole life, not every pregnancy. Each dose adds more protection. Once you have had all 5, you and your future babies are protected. You will not need this vaccine again."
+  },
+  "en/1oln96p2xer": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "4th of"
+  },
+  "en/1p3kxf3zjpf": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "11th of"
+  },
+  "en/1qlxneg340h": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_pnc"
+    ],
+    "text": "You have your third postnatal contact on"
   },
   "en/1qrrl95t2r4": {
     "locale": "en",
@@ -1755,6 +2427,20 @@
     ],
     "text": "Iron and folic acid. Take daily iron-folic acid (IFA) tablets as advised by your health worker. IFA helps prevent anaemia and supports your baby’s growth."
   },
+  "en/1u9ge4d40to": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "10th of"
+  },
+  "en/1ugzlu9ir92": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "27th of"
+  },
   "en/1uusnkqwu2s": {
     "locale": "en",
     "sources": [
@@ -1775,6 +2461,13 @@
       "Home / stage summary: pnc contact3"
     ],
     "text": "Keep your body clean and attend your 1–2 week checkup. Rest when tired and reach out to family if you feel overwhelmed."
+  },
+  "en/1wh21a0fwnp": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "March"
   },
   "en/1wkp3jq41ok": {
     "locale": "en",
@@ -1812,6 +2505,13 @@
     ],
     "text": "Enough milk. Baby feeding well: wet nappies, good weight gain, calm after feeding."
   },
+  "en/1xn1tc753ja": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "November"
+  },
   "en/1ydyvfrwvmb": {
     "locale": "en",
     "sources": [
@@ -1834,6 +2534,13 @@
     ],
     "text": "If you have already had some TT doses before (previous pregnancy or as a teenager). If you had TT doses before in an earlier pregnancy, at school, or at another clinic, that is good. The app will not guess this for you. Please tell your health worker and show your card if you have it. They will tell you exactly which dose you need next."
   },
+  "en/20ahxfa8hzo": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_anc"
+    ],
+    "text": "You have your first ANC visit on"
+  },
   "en/20ljwj4y2s0": {
     "locale": "en",
     "sources": [
@@ -1849,6 +2556,13 @@
       "Information > PNC: cleanliness"
     ],
     "text": "Cleanliness. Wash your hands and body area with clean water daily."
+  },
+  "en/20mj8q2alku": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_edd"
+    ],
+    "text": ". Register your birth before starting PNC care."
   },
   "en/20tokyrj4z6": {
     "locale": "en",
@@ -1870,6 +2584,13 @@
       "Onboarding: edd_date"
     ],
     "text": "When is your expected delivery date?"
+  },
+  "en/211e2qhg6bk": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "8th of"
   },
   "en/21bwig7v8n3": {
     "locale": "en",
@@ -1941,6 +2662,27 @@
     ],
     "text": "Have you received a tetanus (TT) vaccine before?"
   },
+  "en/24uynovqe8f": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "June"
+  },
+  "en/25rqxp6g9mz": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "9th of"
+  },
+  "en/266nw0s129c": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: month"
+    ],
+    "text": "May"
+  },
   "en/2687kd945kx": {
     "locale": "en",
     "sources": [
@@ -1962,6 +2704,13 @@
       "Vaccination > tetanus: tt_protection"
     ],
     "text": "How TT vaccination protects both the mother and the baby. The TT vaccine helps your body fight tetanus. When you get this vaccine during pregnancy, some of this protection passes to your baby before birth. This keeps your baby safe from tetanus in the first weeks of life. The vaccine is safe for you and your baby."
+  },
+  "en/296jcj8rzjo": {
+    "locale": "en",
+    "sources": [
+      "Reminder sentence: home.cards.reminder_tt"
+    ],
+    "text": ". Remember to bring your EPI card."
   },
   "en/29xqhy9xcqz": {
     "locale": "en",
@@ -1991,6 +2740,20 @@
       "Stage PNC:contact2: cord_healing"
     ],
     "text": "A small amount of drying or a little blood when the cord separates can happen. Keep checking the cord while it heals."
+  },
+  "en/2bxt0j9m9nz": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "21st of"
+  },
+  "en/2cjprzz9vw9": {
+    "locale": "en",
+    "sources": [
+      "Reminder date: day"
+    ],
+    "text": "18th of"
   },
   "en/2cwfhge9ume": {
     "locale": "en",
