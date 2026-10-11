@@ -23,33 +23,53 @@ function pickVoice(langPrefix: string): SpeechSynthesisVoice | null {
  * uses the device voice. No-ops on platforms with neither.
  */
 export function useSpeech() {
-  function speak(text: string, locale: string): void {
+  /**
+   * `segments` is for text that has no recording of its own because part of it changes (a date):
+   * the pieces are played one after another when every one of them has a clip.
+   */
+  function speak(text: string, locale: string, segments?: string[]): void {
     stop();
     if (!text) return;
-    const url = clipUrl(locale, text);
-    if (url && playClip(url, () => speakWithDevice(text, locale))) return;
-    speakWithDevice(text, locale);
+    const fallback = () => speakWithDevice(text, locale);
+    const url = clipUrl(locale, text, { warn: !segments });
+    if (url && playClip([url], fallback)) return;
+    if (segments && segments.length > 0) {
+      const urls = segments.map((piece) => clipUrl(locale, piece));
+      if (urls.every((u): u is string => u !== null) && playClip(urls, fallback)) return;
+    }
+    fallback();
   }
 
-  /** Plays a recording. Returns false if it could not even be started. */
-  function playClip(url: string, onFailure: () => void): boolean {
-    if (typeof Audio === 'undefined') return false;
-    const audio = new Audio(url);
+  /** Plays recordings back to back. Returns false if they could not even be started. */
+  function playClip(urls: string[], onFailure: () => void): boolean {
+    if (typeof Audio === 'undefined' || urls.length === 0) return false;
+    let index = 0;
+    let audio = new Audio(urls[0]);
     const finish = () => {
       if (currentAudio !== audio) return;
       currentAudio = null;
       speaking.value = false;
     };
-    audio.onended = finish;
-    // A missing or undecodable file should not leave the user with silence.
-    audio.onerror = () => {
+    const onEnded = () => {
       if (currentAudio !== audio) return;
-      finish();
-      onFailure();
+      if (++index >= urls.length) return finish();
+      audio = new Audio(urls[index]);
+      currentAudio = audio;
+      attach(audio);
+    };
+    const attach = (el: HTMLAudioElement) => {
+      el.onended = onEnded;
+      // A missing or undecodable file should not leave the user with silence.
+      el.onerror = () => {
+        if (currentAudio !== el) return;
+        finish();
+        onFailure();
+      };
+      el.play().catch(() => el.onerror?.(new Event('error')));
     };
     currentAudio = audio;
     speaking.value = true;
-    audio.play().catch(() => audio.onerror?.(new Event('error')));
+    attach(audio);
     return true;
   }
 

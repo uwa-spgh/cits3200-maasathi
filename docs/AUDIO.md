@@ -47,10 +47,19 @@ The generator cannot see inside Vue pages, so it rebuilds each page's spoken tex
 
 If step 2 is skipped or drifts from the page, the dev console warning above shows it.
 
+## Text with a date
+
+The Home reminder card contains a date, so no recording of the whole sentence can exist. It is played
+from pieces instead: the words before the date, the day, the month, then any words after
+(`src/audio/dateSpeech.ts`). The generator records each piece once (every day 1–31, every month, and
+the words around the date for each reminder type), and any date is a combination of them. These
+fragment clips have their leading and trailing silence trimmed so the joins stay tight.
+
 ## Not covered
 
-Text containing a date or a count has no fixed string, so it keeps using the device voice: the Home
-reminder card, the tetanus tracker, and the tetanus dose info in the timeline.
+Text with a changing part that is not a date keeps using the device voice: the tetanus tracker (dose
+counts and dates), the tetanus dose info in the timeline, and the Home reminder when it shows an event
+that is not an ANC visit, PNC contact, tetanus dose or due date.
 
 ## Review
 

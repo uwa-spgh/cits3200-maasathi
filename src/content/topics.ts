@@ -122,3 +122,14 @@ export const ONBOARDING_SPEECH = {
 } as const;
 
 export type OnboardingSpeechStep = keyof typeof ONBOARDING_SPEECH;
+
+/**
+ * Home reminder sentences that end in a date, and so are played in pieces (see src/audio/dateSpeech.ts).
+ * `ordinals` is how many visits/contacts the `{ordinal}` placeholder can name.
+ */
+export const REMINDER_DATE_SENTENCES = [
+  { key: 'home.cards.reminder_anc', ordinals: 4 },
+  { key: 'home.cards.reminder_pnc', ordinals: 4 },
+  { key: 'home.cards.reminder_tt', ordinals: 0 },
+  { key: 'home.cards.reminder_edd', ordinals: 0 }
+] as const;

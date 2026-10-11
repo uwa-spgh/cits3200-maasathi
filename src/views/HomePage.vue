@@ -30,6 +30,7 @@
           :badge="reminderBadge"
           :graphic-icon="reminderGraphic"
           :listen-text="reminderBody"
+          :listen-segments="reminderSegments"
           :learn-more-label="$t('home.cards.learn_more')"
           @open="onRemindersTap"
           @learn-more="onRemindersTap"
@@ -96,6 +97,7 @@ import { useUser } from '../composables/useUser';
 import { scheduleRepo } from '../db/database';
 import type { ScheduleItem } from '../db/schemas';
 import { daysBetween, formatDayMonthLong, todayIso } from '../utils/date';
+import { DATE_MARK, segmentsAroundDate } from '../audio/dateSpeech';
 import { excerpt, getStageSurfacedContent, NEW_PREGNANCY_TOPIC, nowTopicsFor } from '../utils/stageArticle';
 import { visitNumber } from '../services/notifications';
 
@@ -184,22 +186,38 @@ const reminderBadge = computed<string | null>(() => {
   return n !== null && shownEvent.value?.status !== 'completed' ? `${n}` : null;
 });
 
-const reminderBody = computed(() => {
+/** The reminder sentence for the shown event: its translation key and values, apart from the date. */
+const reminderSentence = computed<{ key: string; values: Record<string, string>; recorded: boolean } | null>(() => {
   const e = shownEvent.value;
-  if (!activePregnancy.value) return t(journeyFinished.value ? 'home.cards.no_reminders' : 'home.no_pregnancy');
-  // Everything (up to the child immunisation milestone) is completed
-  if (!e) return t('home.cards.no_reminders');
-  const date = formatDayMonthLong(e.dueDate, locale.value);
+  if (!activePregnancy.value || !e) return null;
   const n = visitNumber(e);
   if (e.type === 'ANC' && n !== null) {
-    return t('home.cards.reminder_anc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+    return { key: 'home.cards.reminder_anc', values: { ordinal: t(`home.cards.ordinal_${n}`) }, recorded: true };
   }
   if (e.type === 'PNC' && n !== null) {
-    return t('home.cards.reminder_pnc', { ordinal: t(`home.cards.ordinal_${n}`), date });
+    return { key: 'home.cards.reminder_pnc', values: { ordinal: t(`home.cards.ordinal_${n}`) }, recorded: true };
   }
-  if (e.type === 'TT') return t('home.cards.reminder_tt', { date });
-  if (e.ref === 'edd') return t('home.cards.reminder_edd', { date });
-  return t('home.cards.reminder_generic', { title: t(e.titleKey), date });
+  if (e.type === 'TT') return { key: 'home.cards.reminder_tt', values: {}, recorded: true };
+  if (e.ref === 'edd') return { key: 'home.cards.reminder_edd', values: {}, recorded: true };
+  // The title of any other event has no recording, so this one uses the device voice.
+  return { key: 'home.cards.reminder_generic', values: { title: t(e.titleKey) }, recorded: false };
+});
+
+const reminderBody = computed(() => {
+  const e = shownEvent.value;
+  const sentence = reminderSentence.value;
+  if (!activePregnancy.value) return t(journeyFinished.value ? 'home.cards.no_reminders' : 'home.no_pregnancy');
+  // Everything (up to the child immunisation milestone) is completed
+  if (!e || !sentence) return t('home.cards.no_reminders');
+  return t(sentence.key, { ...sentence.values, date: formatDayMonthLong(e.dueDate, locale.value) });
+});
+
+/** The reminder read from recorded pieces, since its date means no recording of the whole sentence exists. */
+const reminderSegments = computed<string[] | null>(() => {
+  const e = shownEvent.value;
+  const sentence = reminderSentence.value;
+  if (!e || !sentence?.recorded) return null;
+  return segmentsAroundDate(t(sentence.key, { ...sentence.values, date: DATE_MARK }), e.dueDate, locale.value);
 });
 
 /**
