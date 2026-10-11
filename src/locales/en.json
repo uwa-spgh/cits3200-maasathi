@@ -6,6 +6,7 @@
   "user_default": "User",
   "common": {
     "back": "Back",
+    "date_out_of_range": "That date is outside the range this app accepts.",
     "home": "Home",
     "save": "Save",
     "saved": "Saved",
@@ -19,12 +20,6 @@
     "mode_anc": "ANC mode",
     "mode_pnc": "PNC mode",
     "part_of": "Part {current} of {total}"
-  },
-  "nav": {
-    "home": "Home",
-    "reminders": "Reminders",
-    "information": "Info",
-    "profile": "Profile"
   },
   "notification": {
     "title": "MaaSathi reminder",
@@ -45,6 +40,8 @@
     "profile": "Profile"
   },
   "home": {
+    "brand_tag": "MaaSathi app",
+    "default_name": "there",
     "no_pregnancy": "No active pregnancy. Register one from your Profile to start reminders.",
     "cards": {
       "reminder_title": "Reminder",
@@ -118,13 +115,16 @@
   },
   "emergency": {
     "title": "Emergency",
-    "no_number": "No number saved — add one in Profile",
+    "no_number": "No number saved — tap Edit to add one",
     "nearest_facility_placeholder": "Nearest health facility (offline)",
     "danger_signs": "Relevant danger signs",
+    "edit": "Edit numbers",
+    "number_placeholder": "Phone number",
     "contacts": {
       "national": "Call emergency services",
       "hospital": "Call hospital",
-      "doctor": "Call doctor"
+      "doctor": "Call doctor",
+      "family": "Call family contact"
     }
   },
   "danger_signs": {
@@ -672,7 +672,6 @@
       "item3": "Clean soft cloths",
       "item4": "Baby blanket"
     },
-    "plan_advice_text": "Remember to go over your birth plan with family and others supporting you.",
     "age_label": "Age",
     "age_placeholder": "Enter your age",
     "pregnancy_info": "Current pregnancy",
@@ -729,7 +728,8 @@
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
     "reset_data_btn": "Reset all data",
     "reset_confirm_title": "Reset all data?",
-    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
+    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device.",
+    "reset_failed": "Could not reset your data. Please try again."
   },
   "history": {
     "pregnancy_details": "Pregnancy details",
@@ -761,7 +761,8 @@
     "q_tt_count": "Do you know how many doses you have had?",
     "done_title": "You are all set",
     "done_text": "You can change anything later in your Profile. We will remind you before every appointment and vaccination.",
-    "start_app": "Start using MaaSathi"
+    "start_app": "Start using MaaSathi",
+    "save_failed": "We could not save your details. Please try again."
   },
   "theme": {
     "title": "Appearance",

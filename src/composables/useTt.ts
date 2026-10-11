@@ -1,7 +1,7 @@
 import { computed, ref } from 'vue';
 import { pregnancyRepo, ttDoseRepo, ttHistoryRepo } from '../db/database';
 import { uuid, type TtDose, type TtDose as TtDoseType, type TtHistory, type TtStatus } from '../db/schemas';
-import { nextDueFromLastDose, todayIso } from '../utils/date';
+import { isoToLocalDate, nextDueFromLastDose, todayIso } from '../utils/date';
 
 export const TT_MAX_DOSES = 5;
 
@@ -55,12 +55,12 @@ export function useTt() {
     if (!h) return null;
     if (h.status === 'unknown') return null;
     if (lifetimeDoseCount.value >= TT_MAX_DOSES) return null;
-    if (h.status === 'never') return pregnancyRegisteredAtIso ? pregnancyRegisteredAtIso.slice(0, 10) : todayIso();
+    if (h.status === 'never') return pregnancyRegisteredAtIso ? isoToLocalDate(pregnancyRegisteredAtIso) : todayIso();
     if (h.lastDoseDate) {
       return nextDueFromLastDose(h.dosesReceived ?? 1, h.lastDoseDate);
     }
     if (h.dosesReceived !== null && h.dosesReceived > 0) return null;
-    return pregnancyRegisteredAtIso ? pregnancyRegisteredAtIso.slice(0, 10) : todayIso();
+    return pregnancyRegisteredAtIso ? isoToLocalDate(pregnancyRegisteredAtIso) : todayIso();
   }
 
   async function load(): Promise<void> {

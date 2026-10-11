@@ -1,5 +1,5 @@
 import { test, expect } from '@playwright/test';
-import { completeOnboardingMvp, MVP_SAMPLE } from '../support/onboarding';
+import { completeOnboardingMvp, FIXED_SAMPLE_LMP, MVP_SAMPLE } from '../support/onboarding';
 import { visiblePage } from '../support/visiblePage';
 
 /**
@@ -27,15 +27,15 @@ test.describe('Complete UI coverage', () => {
 
     await visiblePage(page).getByRole('button', { name: 'Home' }).click();
     // The third card is the "what to know right now" rotating widget, not a
-    // Nutrition card. Its Learn more deep-links to the current ANC/PNC page
-    // with the topic in the query string. The widget auto-rotates every 10s, so
-    // assert the URL shape rather than a specific topic key.
-    // Nutrition itself is covered by the Information-hub test above.
+    // Nutrition card. Its Learn more deep-links to the page for the current
+    // topic with the topic in the query string: in ANC that is the ANC page,
+    // Nutrition or the birth plan (src/utils/stageArticle.ts). The widget
+    // auto-rotates every 10s, so accept any of them rather than one topic.
     await visiblePage(page)
       .locator('.home-card.accent-green')
       .getByRole('button', { name: 'Learn more' })
       .click();
-    await expect(page).toHaveURL(/\/information\/anc\?topic=\w+/i);
+    await expect(page).toHaveURL(/\/(information\/(anc|nutrition)|profile\/plan)\?topic=\w+/i);
   });
 
   test('Information hub opens every browse topic', async ({ page }) => {
@@ -121,7 +121,7 @@ test.describe('Reminder guidance on a fixed date', () => {
 
   test.beforeEach(async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-10-10T04:00:00Z')); // 12:00 in Perth
-    await completeOnboardingMvp(page);
+    await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP });
   });
 
   test('Reminders expand opens WeekInfo guidance', async ({ page }) => {

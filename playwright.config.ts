@@ -2,7 +2,7 @@ import { defineConfig, devices } from '@playwright/test';
 
 /**
  * MVP E2E harness for MaaSathi (browser / Vite / localStorage path).
- * Journeys: see docs/e2e-p0-acceptance-journeys.md
+ * Journeys: see docs/e2e-handoff-to-team.md
  *
  * Browser selection:
  * - Local/dev default: system Google Chrome (`channel: 'chrome'`) — no Playwright browser download.

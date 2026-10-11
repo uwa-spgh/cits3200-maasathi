@@ -5,7 +5,7 @@
   <IonPage>
     <IonHeader class="home-header ion-no-border">
       <div class="header-inner">
-        <p class="brand-tag">MaaSathi app</p>
+        <p class="brand-tag">{{ $t('home.brand_tag') }}</p>
         <h1 class="greeting">
           {{ $t('greeting', { name: userName || $t('home.default_name') }) }}
         </h1>

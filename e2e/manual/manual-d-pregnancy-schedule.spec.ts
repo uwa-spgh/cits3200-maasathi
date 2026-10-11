@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { completeOnboardingMvp, MVP_SAMPLE } from '../support/onboarding';
+import { completeOnboardingMvp, FIXED_SAMPLE_LMP } from '../support/onboarding';
 import { clearAppStorage } from '../support/storage';
 import { visiblePage } from '../support/visiblePage';
 
@@ -23,11 +23,11 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
   });
 
   test('LMP determines recorded week, due date, and ANC visit dates', async ({ page }) => {
-    await completeOnboardingMvp(page);
+    await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP });
 
     const [pregnancy] = await rows(page, 'pregnancy');
     expect(pregnancy).toMatchObject({
-      lmp: MVP_SAMPLE.lmp,
+      lmp: FIXED_SAMPLE_LMP,
       edd: '2026-12-06',
       pregnancy_weeks_at_registration: 32
     });
@@ -86,7 +86,7 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
   });
 
   test('completed ANC reminder remains completed after reload and can be undone', async ({ page }) => {
-    await completeOnboardingMvp(page);
+    await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP });
     await page.goto('/reminders');
     let visit = visiblePage(page).locator('.timeline-item').filter({ hasText: 'ANC Visit 2' });
     await visit.locator('.item-card').click();

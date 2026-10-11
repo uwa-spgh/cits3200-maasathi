@@ -1,5 +1,5 @@
 import { expect, test, type Page } from '@playwright/test';
-import { completeOnboardingMvp } from '../support/onboarding';
+import { completeOnboardingMvp, FIXED_SAMPLE_LMP } from '../support/onboarding';
 import { visiblePage } from '../support/visiblePage';
 
 test.use({ timezoneId: 'Australia/Perth' });
@@ -20,7 +20,7 @@ async function scheduleRows(page: Page): Promise<ScheduleRow[]> {
 
 test('Give Birth leads to registration, PNC dates, and completed contact can be undone', async ({ page }) => {
   await page.clock.setFixedTime(TODAY);
-  await completeOnboardingMvp(page);
+  await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP }); // EDD 2026-12-06, the fixed date
 
   await page.goto('/reminders');
   await visiblePage(page).getByRole('button', { name: /See all upcoming/ }).click();
@@ -31,7 +31,7 @@ test('Give Birth leads to registration, PNC dates, and completed contact can be 
   await expect(page).toHaveURL(/\/profile\/pregnancy\?section=birth$/);
 
   const pregnancy = visiblePage(page);
-  const birthForm = pregnancy.locator('section.form-card').filter({ hasText: 'Birth registration' });
+  const birthForm = pregnancy.locator('section.profile-card').filter({ hasText: 'Birth registration' });
   await birthForm.locator('ion-input input[type="date"]').fill('2026-12-06');
   await birthForm.getByRole('button', { name: 'Register birth' }).click();
   await expect(visiblePage(page).locator('.mode-chip')).toContainText('PNC mode');

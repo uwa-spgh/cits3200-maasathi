@@ -1,9 +1,10 @@
 import { test, expect } from '@playwright/test';
 import { completeOnboardingMvp } from '../support/onboarding';
+import { visiblePage } from '../support/visiblePage';
 
 /**
  * Full route smoke: every named app page loads without a blank crash.
- * HistorySummary is covered when an active pregnancy id is found in localStorage.
+ * HistorySummary runs against the pregnancy that onboarding creates.
  */
 const STATIC_ROUTES: { path: string; label: string }[] = [
   { path: '/home', label: 'Home' },
@@ -12,7 +13,9 @@ const STATIC_ROUTES: { path: string; label: string }[] = [
   { path: '/reminders', label: 'Reminders' },
   { path: '/information', label: 'Information' },
   { path: '/information/anc', label: 'Anc' },
-  { path: '/information/anc/trimester/1', label: 'AncTrimester' },
+  { path: '/information/anc/trimester/1', label: 'AncTrimester1' },
+  { path: '/information/anc/trimester/2', label: 'AncTrimester2' },
+  { path: '/information/anc/trimester/3', label: 'AncTrimester3' },
   { path: '/information/pnc', label: 'Pnc' },
   { path: '/information/pnc/breastfeeding', label: 'PncBreastfeeding' },
   { path: '/information/pnc/routine-care', label: 'PncRoutineCare' },
@@ -48,29 +51,26 @@ test.describe('All pages smoke', () => {
       await page.goto(route.path);
       await expect(page, `route ${route.label}`).not.toHaveURL(/onboarding/i);
       await expect(page, `route ${route.label}`).toHaveURL(new RegExp(route.path.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')));
-      await expect(page.locator('ion-app')).toBeVisible();
+      // The visible page must be rendered and non-empty, not just the app shell.
+      await expect(visiblePage(page), `route ${route.label}`).toBeVisible();
+      await expect(visiblePage(page), `route ${route.label}`).not.toBeEmpty();
     }
   });
 
-  test('history summary loads for active pregnancy when present', async ({ page }) => {
+  test('history summary loads for the active pregnancy', async ({ page }) => {
     await completeOnboardingMvp(page);
     await page.goto('/home');
 
     const pregnancyId = await page.evaluate(() => {
-      try {
-        const raw = localStorage.getItem('maasathi_db_v2_pregnancy');
-        if (!raw) return null;
-        const rows = JSON.parse(raw) as { id?: string; status?: string }[];
-        const active = rows.find((r) => r.status === 'active') ?? rows[0];
-        return active?.id ?? null;
-      } catch {
-        return null;
-      }
+      const raw = localStorage.getItem('maasathi_db_v2_pregnancy');
+      const rows = JSON.parse(raw ?? '[]') as { id: string; status: string }[];
+      return rows.find((r) => r.status === 'active')?.id ?? null;
     });
 
-    expect(pregnancyId).toBeTruthy();
+    // Onboarding always creates an active pregnancy, so a missing id is a failure.
+    expect(pregnancyId, 'onboarding should create an active pregnancy').toBeTruthy();
     await page.goto(`/profile/history/${pregnancyId}`);
-    await expect(page).not.toHaveURL(/onboarding/i);
-    await expect(page.locator('ion-router-outlet, ion-app').first()).toBeVisible();
+    await expect(page).toHaveURL(new RegExp(`profile/history/${pregnancyId}`));
+    await expect(visiblePage(page).getByText('Pregnancy details', { exact: true })).toBeVisible();
   });
 });

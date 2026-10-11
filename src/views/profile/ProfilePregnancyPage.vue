@@ -9,10 +9,10 @@
     :icon="personOutline"
     color="blue"
   >
-    <div class="stack">
-      <section class="form-card">
+    <div class="profile-stack">
+      <section class="profile-card">
         <div class="form-title-row">
-          <h2 class="form-title">{{ $t('profile.pregnancy_info') }}</h2>
+          <h2 class="profile-card-title">{{ $t('profile.pregnancy_info') }}</h2>
           <span v-if="activePregnancy" class="mode-chip" :class="mode === 'PNC' ? 'chip-pnc' : 'chip-anc'">
             {{ mode === 'PNC' ? $t('common.mode_pnc') : $t('common.mode_anc') }}
           </span>
@@ -21,14 +21,27 @@
         <template v-if="mode === 'ANC'">
           <IonItem lines="full">
             <IonLabel position="stacked">{{ $t('profile.lmp_label') }}</IonLabel>
-            <IonInput v-model="form.lmp" type="date" />
+            <IonInput
+              v-model="form.lmp"
+              type="date"
+              :min="lmpRange.min"
+              :max="lmpRange.max"
+              @ionInput="onLmpInput"
+            />
           </IonItem>
           <IonItem lines="full">
             <IonLabel position="stacked">{{ $t('profile.edd_label') }}</IonLabel>
-            <IonInput v-model="form.edd" type="date" />
+            <IonInput
+              v-model="form.edd"
+              type="date"
+              :min="eddRange.min"
+              :max="eddRange.max"
+              @ionInput="onEddInput"
+            />
           </IonItem>
-          <p class="field-hint">{{ $t('profile.date_pair_hint') }}</p>
-          <div class="hint-listen">
+          <p class="profile-hint">{{ $t('profile.date_pair_hint') }}</p>
+          <p v-if="dateOutOfRange" class="profile-hint profile-hint--warn">{{ $t('common.date_out_of_range') }}</p>
+          <div class="profile-hint-listen">
             <ListenButton size="sm" accent="blue" :text="$t('profile.date_pair_hint')" />
           </div>
         </template>
@@ -44,21 +57,21 @@
           </IonItem>
           <IonItem lines="full">
             <IonLabel position="stacked">{{ $t('profile.delivery_mode_label') }}</IonLabel>
-            <IonSelect v-model="form.deliveryMode" interface="popover">
+            <IonSelect v-model="form.deliveryMode" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
               <IonSelectOption value="vaginal">{{ $t('profile.mode_vaginal') }}</IonSelectOption>
               <IonSelectOption value="caesarean">{{ $t('profile.mode_caesarean') }}</IonSelectOption>
             </IonSelect>
           </IonItem>
           <IonItem lines="full">
             <IonLabel position="stacked">{{ $t('profile.birth_outcome_label') }}</IonLabel>
-            <IonSelect v-model="form.birthOutcome" interface="popover">
+            <IonSelect v-model="form.birthOutcome" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
               <IonSelectOption value="live_birth">{{ $t('profile.outcome_live_birth') }}</IonSelectOption>
               <IonSelectOption value="stillbirth">{{ $t('profile.outcome_stillbirth') }}</IonSelectOption>
             </IonSelect>
           </IonItem>
           <IonItem lines="full">
             <IonLabel position="stacked">{{ $t('profile.baby_sex_label') }}</IonLabel>
-            <IonSelect v-model="form.babySex" interface="popover">
+            <IonSelect v-model="form.babySex" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
               <IonSelectOption value="female">{{ $t('profile.sex_female') }}</IonSelectOption>
               <IonSelectOption value="male">{{ $t('profile.sex_male') }}</IonSelectOption>
             </IonSelect>
@@ -87,7 +100,7 @@
         </IonItem>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.prev_outcomes_label') }}</IonLabel>
-          <IonSelect v-model="form.previousOutcomes" :placeholder="$t('profile.optional')" interface="popover">
+          <IonSelect v-model="form.previousOutcomes" :placeholder="$t('profile.optional')" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="none">{{ $t('profile.outcome_none') }}</IonSelectOption>
             <IonSelectOption value="miscarriage">{{ $t('profile.outcome_miscarriage') }}</IonSelectOption>
             <IonSelectOption value="stillbirth">{{ $t('profile.outcome_stillbirth') }}</IonSelectOption>
@@ -100,7 +113,7 @@
         </IonItem>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.pregnancy_type_label') }}</IonLabel>
-          <IonSelect v-model="form.pregnancyType" :placeholder="$t('profile.optional')" interface="popover">
+          <IonSelect v-model="form.pregnancyType" :placeholder="$t('profile.optional')" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="single">{{ $t('profile.type_single') }}</IonSelectOption>
             <IonSelectOption value="multiple">{{ $t('profile.type_multiple') }}</IonSelectOption>
           </IonSelect>
@@ -110,16 +123,16 @@
           <IonToggle v-model="form.highRisk" />
         </IonItem>
 
-        <IonButton expand="block" class="primary-action" @click="savePregnancy">
+        <IonButton expand="block" class="profile-action" :disabled="dateOutOfRange" @click="savePregnancy">
           {{ activePregnancy ? $t('common.save') : $t('profile.new_pregnancy_btn') }}
         </IonButton>
       </section>
 
       <!-- Birth registration -->
-      <section v-if="activePregnancy && mode === 'ANC'" ref="birthSection" class="form-card">
-        <h2 class="form-title">{{ $t('profile.birth_registration') }}</h2>
-        <p class="field-hint">{{ $t('profile.birth_registration_hint') }}</p>
-        <div class="hint-listen">
+      <section v-if="activePregnancy && mode === 'ANC'" ref="birthSection" class="profile-card">
+        <h2 class="profile-card-title">{{ $t('profile.birth_registration') }}</h2>
+        <p class="profile-hint">{{ $t('profile.birth_registration_hint') }}</p>
+        <div class="profile-hint-listen">
           <ListenButton size="sm" accent="blue" :text="$t('profile.birth_registration_hint')" />
         </div>
         <IonItem lines="full">
@@ -132,21 +145,21 @@
         </IonItem>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.delivery_mode_label') }}</IonLabel>
-          <IonSelect v-model="birth.deliveryMode" interface="popover">
+          <IonSelect v-model="birth.deliveryMode" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="vaginal">{{ $t('profile.mode_vaginal') }}</IonSelectOption>
             <IonSelectOption value="caesarean">{{ $t('profile.mode_caesarean') }}</IonSelectOption>
           </IonSelect>
         </IonItem>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.birth_outcome_label') }}</IonLabel>
-          <IonSelect v-model="birth.birthOutcome" interface="popover">
+          <IonSelect v-model="birth.birthOutcome" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="live_birth">{{ $t('profile.outcome_live_birth') }}</IonSelectOption>
             <IonSelectOption value="stillbirth">{{ $t('profile.outcome_stillbirth') }}</IonSelectOption>
           </IonSelect>
         </IonItem>
         <IonItem lines="full">
           <IonLabel position="stacked">{{ $t('profile.baby_sex_label') }}</IonLabel>
-          <IonSelect v-model="birth.babySex" interface="popover">
+          <IonSelect v-model="birth.babySex" interface="popover" :interface-options="{ cssClass: 'profile-select-popover' }">
             <IonSelectOption value="female">{{ $t('profile.sex_female') }}</IonSelectOption>
             <IonSelectOption value="male">{{ $t('profile.sex_male') }}</IonSelectOption>
           </IonSelect>
@@ -165,7 +178,7 @@
         </IonItem>
         <IonButton
           expand="block"
-          class="primary-action"
+          class="profile-action"
           :disabled="!birth.deliveryDate"
           @click="saveBirth"
         >
@@ -177,7 +190,7 @@
         v-if="activePregnancy"
         expand="block"
         fill="outline"
-        class="danger-action"
+        class="profile-action profile-action--danger"
         @click="confirmClosePregnancy"
       >
         {{ $t('profile.close_pregnancy_btn') }}
@@ -207,7 +220,7 @@ import { personOutline } from 'ionicons/icons';
 import PageShell from '../../components/PageShell.vue';
 import ListenButton from '../../components/ListenButton.vue';
 import { usePregnancy } from '../../composables/usePregnancy';
-import { lmpFromEdd, eddFromLmp, formatDate } from '../../utils/date';
+import { lmpFromEdd, eddFromLmp, eddBounds, isWithinBounds, lmpBounds } from '../../utils/date';
 import type { DeliveryMode, BirthOutcome } from '../../db/schemas';
 
 const { t } = useI18n();
@@ -222,6 +235,11 @@ onIonViewDidEnter(() => {
   if (route.query.section !== 'birth') return;
   birthSection.value?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
+
+const lmpRange = lmpBounds();
+const eddRange = eddBounds();
+/** The date field the mother typed last; it decides which date is the source when both are saved. */
+const typedDate = ref<'lmp' | 'edd' | null>(null);
 
 const form = ref({
   lmp: '',
@@ -253,12 +271,6 @@ const birth = ref({
   postnatalDangerSigns: ''
 });
 
-const deliveryDisplay = computed(() =>
-  activePregnancy.value?.deliveryDate
-    ? formatDate(activePregnancy.value.deliveryDate)
-    : ''
-);
-
 onMounted(() => {
   const p = activePregnancy.value;
   form.value.lmp = p?.lmp ?? '';
@@ -277,6 +289,25 @@ onMounted(() => {
   form.value.complications = p?.complications ?? '';
   form.value.postnatalDangerSigns = p?.postnatalDangerSigns ?? '';
 });
+
+/** Only the field the mother typed is checked; a stored date from before the bounds still loads. */
+const dateOutOfRange = computed(() =>
+  (typedDate.value === 'lmp' && !!form.value.lmp && !isWithinBounds(form.value.lmp, lmpRange)) ||
+  (typedDate.value === 'edd' && !!form.value.edd && !isWithinBounds(form.value.edd, eddRange))
+);
+
+/** Mirror the typed LMP into EDD live; a cleared field leaves the other one for save to fall back on. */
+function onLmpInput(event: Event): void {
+  typedDate.value = 'lmp';
+  const value = String((event.target as HTMLIonInputElement).value ?? '');
+  if (value) form.value.edd = eddFromLmp(value);
+}
+
+function onEddInput(event: Event): void {
+  typedDate.value = 'edd';
+  const value = String((event.target as HTMLIonInputElement).value ?? '');
+  if (value) form.value.lmp = lmpFromEdd(value);
+}
 
 async function showSaved(): Promise<void> {
   const toast = await toastController.create({
@@ -305,6 +336,7 @@ async function savePregnancy(): Promise<void> {
     patch.lmp = lmpFromEdd(form.value.edd);
     form.value.lmp = patch.lmp;
   }
+  if (typedDate.value) patch.dateSource = typedDate.value;
   if (mode.value === 'PNC') {
     patch.deliveryDate = form.value.deliveryDate || null;
     patch.deliveryPlace = form.value.deliveryPlace;
@@ -361,39 +393,6 @@ async function confirmClosePregnancy(): Promise<void> {
 </script>
 
 <style scoped>
-.stack {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.form-card {
-  background-color: var(--color-card-bg, #eaeaea);
-  border-radius: 20px;
-  padding: 16px 14px 18px 14px;
-  outline: 1.5px solid var(--color-card-border, transparent);
-}
-
-/* Ionic field placeholders: readable in every theme. */
-.form-card ion-input,
-.form-card ion-select,
-.form-card ion-textarea {
-  --placeholder-color: var(--color-text-muted, #5c5c5c);
-  --placeholder-opacity: 1;
-}
-
-/* Unchecked toggle track: the Ionic default is black at 39%, invisible on dark. */
-.form-card ion-toggle {
-  --track-background: color-mix(in srgb, var(--color-card-text, #1a1a1a) 40%, transparent);
-}
-
-.form-title {
-  margin: 0 4px 8px 4px;
-  font-size: 1.05rem;
-  font-weight: 800;
-  color: var(--color-card-text, #1a1a1a);
-}
-
 .form-title-row {
   display: flex;
   align-items: center;
@@ -410,29 +409,4 @@ async function confirmClosePregnancy(): Promise<void> {
 
 .chip-anc { background: var(--color-reminders-bg, #f6c945); color: var(--color-reminders-text, #000); }
 .chip-pnc { background: var(--color-information-bg, #7bc62d); color: var(--color-information-text, #000); }
-
-.field-hint {
-  margin: 4px 8px 8px 8px;
-  font-size: 0.8rem;
-  color: var(--color-text-muted, #5c5c5c);
-}
-
-.hint-listen {
-  margin: 0 8px 8px 8px;
-}
-
-.primary-action {
-  margin: 12px 4px 0 4px;
-  --background: var(--color-profile-bg, #33a1de);
-  --color: var(--color-profile-text, #000);
-  --border-radius: 999px;
-  font-weight: 700;
-}
-
-.danger-action {
-  --border-radius: 999px;
-  --color: var(--color-danger, #c0392b);
-  --border-color: var(--color-danger, #c0392b);
-  font-weight: 700;
-}
 </style>
