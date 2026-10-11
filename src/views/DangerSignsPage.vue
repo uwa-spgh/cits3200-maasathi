@@ -22,8 +22,8 @@
         />
       </ExpandableCard>
 
-      <p class="seek-care-note">{{ $t('danger_signs.seek_care_note') }}</p>
-      <div class="seek-care-listen">
+      <div class="seek-care-note">
+        <p>{{ $t('danger_signs.seek_care_note') }}</p>
         <ListenButton size="sm" accent="red" :text="$t('danger_signs.seek_care_note')" />
       </div>
     </div>
@@ -37,15 +37,9 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenButton from '../components/ListenButton.vue';
 import ListenList from '../components/ListenList.vue';
+import { DANGER_SIGN_GROUPS as groups } from '../content/topics';
 
 const { t } = useI18n();
-
-const groups = [
-  { key: 'pregnancy', count: 11 },
-  { key: 'labour', count: 7 },
-  { key: 'postpartum', count: 9 },
-  { key: 'newborn', count: 6 }
-];
 
 /** The translated signs for one group, in display order. */
 function signTexts(group: { key: string; count: number }): string[] {
@@ -60,13 +54,11 @@ function signTexts(group: { key: string; count: number }): string[] {
   gap: 14px;
 }
 
-.seek-care-listen {
-  display: flex;
-  justify-content: center;
-}
-
 .seek-care-note {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   padding: 14px 16px;
   border-radius: 18px;
   background: var(--color-surface, #fff);
@@ -76,5 +68,9 @@ function signTexts(group: { key: string; count: number }): string[] {
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
+}
+
+.seek-care-note p {
+  margin: 0;
 }
 </style>

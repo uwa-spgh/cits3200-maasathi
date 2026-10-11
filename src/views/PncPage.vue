@@ -44,6 +44,7 @@ import { useI18n } from 'vue-i18n';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { PNC_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const route = useRoute();
 const ionRouter = useIonRouter();
@@ -69,25 +70,6 @@ onMounted(async () => {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 });
-
-interface Topic {
-  key: string;
-  points: number;
-  route?: string;
-}
-
-// Layla's authored PNC topics (nutrition is separate in Nutrition section)
-const infoTopics: Topic[] = [
-  { key: 'routine_care', points: 0, route: 'PncRoutineCare' },
-  { key: 'rest', points: 1 },
-  { key: 'bleeding', points: 1 },
-  { key: 'pain', points: 1 },
-  { key: 'cleanliness', points: 1 },
-  { key: 'cord_healing', points: 10 },
-  { key: 'checkup', points: 1 },
-  { key: 'family_planning', points: 1 },
-  { key: 'mood', points: 1 }
-];
 
 /** The displayed points for a topic, in order. ListenList reads these exact strings. */
 function topicPoints(topic: Topic): string[] {

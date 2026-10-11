@@ -31,22 +31,9 @@ import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { TETANUS_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const { t } = useI18n();
-
-interface Topic {
-  key: string;
-  points: number;
-}
-
-const infoTopics: Topic[] = [
-  { key: 'what_is_tetanus', points: 1 },
-  { key: 'newborn_risk', points: 2 },
-  { key: 'tt_protection', points: 1 },
-  { key: 'five_dose_schedule', points: 2 },
-  { key: 'bring_epi_card', points: 1 },
-  { key: 'previous_doses', points: 1 }
-];
 
 /** The displayed points for a topic, in order. ListenList reads these exact strings. */
 function topicPoints(topic: Topic): string[] {
