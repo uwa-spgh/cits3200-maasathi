@@ -37,15 +37,9 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenButton from '../components/ListenButton.vue';
 import ListenList from '../components/ListenList.vue';
+import { DANGER_SIGN_GROUPS as groups } from '../content/topics';
 
 const { t } = useI18n();
-
-const groups = [
-  { key: 'pregnancy', count: 11 },
-  { key: 'labour', count: 7 },
-  { key: 'postpartum', count: 9 },
-  { key: 'newborn', count: 6 }
-];
 
 /** The translated signs for one group, in display order. */
 function signTexts(group: { key: string; count: number }): string[] {

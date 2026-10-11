@@ -21,6 +21,7 @@ import '@ionic/vue/css/display.css';
 import './theme/variables.css';
 import './theme/profile.css';
 import { useTheme } from './composables/useTheme';
+import { loadClipManifest } from './audio/clips';
 
 const app = createApp(App);
 
@@ -29,6 +30,8 @@ const router = createRouter();
 app.use(IonicVue);
 app.use(router);
 app.use(i18n);
+
+void loadClipManifest();
 
 const { applyThemeToDOM } = useTheme();
 applyThemeToDOM();

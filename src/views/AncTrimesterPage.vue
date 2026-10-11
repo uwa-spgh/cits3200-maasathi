@@ -41,16 +41,11 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
 import ListenText from '../components/ListenText.vue';
+import { TRIMESTER_DANGER_SIGN_COUNT, TRIMESTER_VISITS } from '../content/topics';
 
 const props = defineProps<{ trimester?: string }>();
 
 const { t } = useI18n();
-
-const TRIMESTER_VISITS: Record<string, string[]> = {
-  '1': ['visit1'],
-  '2': ['visit2'],
-  '3': ['visit3', 'visit4']
-};
 
 const visits = computed(() => TRIMESTER_VISITS[props.trimester ?? '1'] ?? ['visit1']);
 
@@ -60,7 +55,7 @@ const breadcrumb = computed(() =>
 
 /** The first five danger signs shown on this page. */
 const dangerSigns = computed(() =>
-  Array.from({ length: 5 }, (_, i) => t(`danger_signs.pregnancy.signs.sign${i + 1}`))
+  Array.from({ length: TRIMESTER_DANGER_SIGN_COUNT }, (_, i) => t(`danger_signs.pregnancy.signs.sign${i + 1}`))
 );
 
 const hasTests = computed(() => t('anc.tests_body').trim() !== '');

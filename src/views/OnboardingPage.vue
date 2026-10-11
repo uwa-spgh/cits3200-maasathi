@@ -16,7 +16,7 @@
           <IonIcon :icon=onBoardingIcons.wavingHand class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.welcome_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.welcome_text') }}</p>
-          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.welcome_text')" />
+          <ListenButton class="step-listen" size="sm" :text="spoken('language')" />
           <LanguageSwitcher class="language-picker" />
           <button class="answer-btn primary" @click="advance('name')">
             {{ $t('common.next') }}
@@ -27,6 +27,7 @@
         <section v-else-if="step === 'name'" class="step-card">
           <IonIcon :icon=onBoardingIcons.pen class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.name_title') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('name')" />
           <IonItem lines="none" class="step-input">
             <IonInput
               v-model="name"
@@ -46,6 +47,7 @@
         <section v-else-if="step === 'lmp_known'" class="step-card">
           <IonIcon :icon=onBoardingIcons.menstrualHealth class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('lmp_known')" />
           <button class="answer-btn" @click="advance('lmp_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('edd_known')">{{ $t('common.no') }}</button>
         </section>
@@ -54,6 +56,7 @@
         <section v-else-if="step === 'lmp_date'" class="step-card">
           <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_lmp_when') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('lmp_date')" />
           <IonItem lines="none" class="step-input">
             <IonInput
               v-model="lmp"
@@ -77,6 +80,7 @@
         <section v-else-if="step === 'edd_known'" class="step-card">
           <IonIcon :icon=onBoardingIcons.childFace class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('edd_known')" />
           <button class="answer-btn" @click="advance('edd_date')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="advance('estimate')">{{ $t('common.no') }}</button>
         </section>
@@ -85,6 +89,7 @@
         <section v-else-if="step === 'edd_date'" class="step-card">
           <IonIcon :icon=onBoardingIcons.clockWthreeDots class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_edd_when') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('edd_date')" />
           <IonItem lines="none" class="step-input">
             <IonInput
               v-model="edd"
@@ -120,7 +125,7 @@
             </button>
           </div>
           <p class="step-hint">{{ $t('onboarding.estimate_hint') }}</p>
-          <ListenButton class="step-listen" size="sm" :text="$t('onboarding.estimate_hint')" />
+          <ListenButton class="step-listen" size="sm" :text="spoken('estimate')" />
           <button
             class="answer-btn primary"
             :disabled="estimateMonths === null"
@@ -134,6 +139,7 @@
         <section v-else-if="step === 'tt_ever'" class="step-card">
           <IonIcon :icon=onBoardingIcons.syringe class="step-icon" />
           <h1 class="step-title">{{ $t('profile.tt_question') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('tt_ever')" />
           <button class="answer-btn" @click="advance('tt_count_known')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('never')">{{ $t('common.no') }}</button>
           <button class="answer-btn subtle" @click="setTtAndFinish('unknown')">
@@ -145,6 +151,7 @@
         <section v-else-if="step === 'tt_count_known'" class="step-card">
           <IonIcon :icon=onBoardingIcons.vaccineDoses class="step-icon" />
           <h1 class="step-title">{{ $t('onboarding.q_tt_count') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('tt_count_known')" />
           <button class="answer-btn" @click="advance('tt_details')">{{ $t('common.yes') }}</button>
           <button class="answer-btn" @click="setTtAndFinish('unknown')">{{ $t('common.no') }}</button>
         </section>
@@ -153,6 +160,7 @@
         <section v-else-if="step === 'tt_details'" class="step-card">
           <IonIcon :icon=onBoardingIcons.vaccineDoses class="step-icon" />
           <h1 class="step-title">{{ $t('profile.tt_dose_count_label') }}</h1>
+          <ListenButton class="step-listen" size="sm" :text="spoken('tt_details')" />
           <div class="count-chips">
             <button
               v-for="n in 5"
@@ -185,7 +193,7 @@
         <section v-else class="step-card">
           <h1 class="step-title">{{ $t('onboarding.done_title') }}</h1>
           <p class="step-text">{{ $t('onboarding.done_text') }}</p>
-          <ListenButton class="step-listen" size="sm" accent="green" :text="$t('onboarding.done_text')" />
+          <ListenButton class="step-listen" size="sm" accent="green" :text="spoken('done')" />
           <IonIcon :icon="heartCircleOutline" class="done-icon" />
           <button class="answer-btn primary" :disabled="saving" @click="finish">
             {{ $t('onboarding.start_app') }}
@@ -213,6 +221,8 @@ import { completeOnboarding } from '../bootstrap';
 import { addDaysIso, eddBounds, eddFromLmp, isWithinBounds, lmpBounds, lmpFromEdd, todayIso } from '../utils/date';
 import { requestNotificationPermission } from '../services/notifications';
 import { registerBackHandler } from '../utils/backHandler';
+import { ONBOARDING_SPEECH, type OnboardingSpeechStep } from '../content/topics';
+import { speechText } from '../utils/speechChunks';
 import type { TtStatus } from '../db/schemas';
 
 type Step =
@@ -230,6 +240,12 @@ type Step =
 
 const router = useIonRouter();
 const { t } = useI18n();
+
+/** What a step's Listen button reads: its title, then any hint shown with it. */
+function spoken(step: OnboardingSpeechStep): string {
+  const [title, ...rest] = ONBOARDING_SPEECH[step].map((key) => t(key));
+  return speechText(title, rest);
+}
 const { setUserName } = useUser();
 const { registerPregnancy } = usePregnancy();
 const { setRegistration } = useTt();

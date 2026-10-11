@@ -31,24 +31,9 @@ import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { PNC_BREASTFEEDING_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const { t } = useI18n();
-
-interface Topic {
-  key: string;
-  points: number;
-}
-
-const infoTopics: Topic[] = [
-  { key: 'start_early', points: 1 },
-  { key: 'only_breastmilk', points: 1 },
-  { key: 'feed_often', points: 1 },
-  { key: 'good_position', points: 1 },
-  { key: 'enough_milk', points: 1 },
-  { key: 'sore_breasts', points: 1 },
-  { key: 'both_breasts', points: 1 },
-  { key: 'get_help', points: 1 }
-];
 
 /** The displayed points for a topic, in order. ListenList reads these exact strings. */
 function topicPoints(topic: Topic): string[] {

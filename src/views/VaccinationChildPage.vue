@@ -34,20 +34,10 @@ import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { CHILD_VACCINE_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const route = useRoute();
 const { t } = useI18n();
-
-interface Topic {
-  key: string;
-  points: number;
-}
-
-// Child vaccination topics (moved here from the PNC page; text lives under `pnc.*`)
-const infoTopics: Topic[] = [
-  { key: 'vaccines_after_birth', points: 6 },
-  { key: 'childhood_immunisation', points: 9 }
-];
 
 /** Set via ?topic=key (e.g. from the Home page's "What to know right now"
  *  widget) to auto-expand and scroll to that specific card. */

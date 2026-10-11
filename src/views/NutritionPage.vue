@@ -38,12 +38,12 @@ import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ContentText from '../components/ContentText.vue';
 import ListenButton from '../components/ListenButton.vue';
+import { NUTRITION_TOPICS as topics } from '../content/topics';
 import { speechText } from '../utils/speechChunks';
 
 const route = useRoute();
 const { t } = useI18n();
 
-const topics = ['healthy_diet', 'ifa', 'calcium', 'hydration', 'activity'] as const;
 type Topic = (typeof topics)[number];
 
 /** The raw body text for a topic card; empty when no translation exists. */

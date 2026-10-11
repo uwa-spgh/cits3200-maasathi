@@ -83,6 +83,7 @@ import PageShell from '../components/PageShell.vue';
 import PlaceholderBox from '../components/PlaceholderBox.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { DANGER_SIGN_GROUPS } from '../content/topics';
 import { NATIONAL_LABEL_KEY, useEmergencyContacts } from '../composables/useEmergencyContacts';
 import { usePregnancy } from '../composables/usePregnancy';
 import { useI18n } from 'vue-i18n';
@@ -95,20 +96,15 @@ const editing = ref(false);
 /** Numbers being typed while editing; copied into the saved contacts only on Save. */
 const draft = reactive<Record<string, string>>({});
 
-const dangerGroups = ref<{ key: string; signs: string[] }[]>([]);
+const signCounts = Object.fromEntries(DANGER_SIGN_GROUPS.map((g) => [g.key, g.count]));
 
-const SIGN_COUNTS: Record<string, number> = {
-  pregnancy: 11,
-  labour: 7,
-  postpartum: 9,
-  newborn: 6
-};
+const dangerGroups = ref<{ key: string; signs: string[] }[]>([]);
 
 onMounted(() => {
   void load();
   dangerGroups.value = emergencyGroups().map((key) => ({
     key,
-    signs: Array.from({ length: SIGN_COUNTS[key] }, (_, i) => `sign${i + 1}`)
+    signs: Array.from({ length: signCounts[key] }, (_, i) => `sign${i + 1}`)
   }));
 });
 
