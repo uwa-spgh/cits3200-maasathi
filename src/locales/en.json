@@ -20,12 +20,6 @@
     "mode_pnc": "PNC mode",
     "part_of": "Part {current} of {total}"
   },
-  "nav": {
-    "home": "Home",
-    "reminders": "Reminders",
-    "information": "Info",
-    "profile": "Profile"
-  },
   "notification": {
     "title": "MaaSathi reminder",
     "reminder_anc": "Your #ordinal ANC visit is #date",

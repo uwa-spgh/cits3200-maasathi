@@ -20,12 +20,6 @@
     "mode_pnc": "পিএনসি মোড",
     "part_of": "{total} এর মধ্যে অংশ {current}"
   },
-  "nav": {
-    "home": "হোম",
-    "reminders": "স্মারক",
-    "information": "তথ্য",
-    "profile": "প্রোফাইল"
-  },
   "notification": {
     "title": "মা সাথী স্মারক",
     "reminder_anc": "আপনার #ordinal ANC ভিজিট #date",
@@ -253,7 +247,6 @@
     "read_anc_guide": "ANC নির্দেশিকা পড়ুন",
     "read_pnc_guide": "PNC নির্দেশিকা পড়ুন",
     "read_tt_guide": "টিটি টিকা নির্দেশিকা পড়ুন",
-    "completed_label": "{date}-এ সম্পন্ন",
     "visit_info_btn": "এই পরিদর্শনের তথ্য দেখুন",
     "learn_more_tt": "টিটেনাস টিকা ও ইপিআই কার্ডের তথ্য",
     "contact_info_btn": "এই যোগাযোগের তথ্য দেখুন",
