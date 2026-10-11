@@ -3,7 +3,7 @@ import { completeOnboardingMvp } from '../support/onboarding';
 
 /**
  * MVP-02 — Reminders timeline shows at least one item
- * Source: docs/e2e-p0-acceptance-journeys.md
+ * Source: docs/e2e-handoff-to-team.md
  *
  * Entry: Home yellow Reminder card → Learn more (BottomNav has no Reminders tab).
  */

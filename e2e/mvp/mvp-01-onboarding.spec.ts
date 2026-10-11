@@ -4,7 +4,7 @@ import { completeOnboardingMvp, MVP_SAMPLE } from '../support/onboarding';
 
 /**
  * MVP-01 — First-run onboarding completes and lands on Home
- * Source: docs/e2e-p0-acceptance-journeys.md
+ * Source: docs/e2e-handoff-to-team.md
  */
 test.describe('MVP-01 onboarding', () => {
   test('incomplete user cannot open Home', async ({ page }) => {

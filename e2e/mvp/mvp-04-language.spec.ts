@@ -9,7 +9,7 @@ function visiblePage(page: import('@playwright/test').Page) {
 
 /**
  * MVP-04 — Language switch EN ↔ BN via Profile
- * Source: docs/e2e-p0-acceptance-journeys.md
+ * Source: docs/e2e-handoff-to-team.md
  */
 test.describe('MVP-04 language switch', () => {
   test('EN → BN → Reminders still works → back to EN', async ({ page }) => {
