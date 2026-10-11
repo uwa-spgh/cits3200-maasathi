@@ -55,8 +55,7 @@ void props;
 .section-header-wrap {
   display: flex;
   flex-direction: column;
-  /* This wrapper slides during iOS transitions and must cover the outgoing title. */
-  background: var(--color-app-bg, #fbf7f5);
+  background: transparent;
   /* Clear the status bar / Dynamic Island. No ion-toolbar wraps this header, so
      Ionic's built-in safe-area padding does not apply. Resolves to 0 on Android. */
   padding-top: var(--ion-safe-area-top, 0px);
