@@ -100,18 +100,8 @@ test.describe('Complete UI coverage', () => {
       await visiblePage(page).getByRole('button', { name: item.name }).click();
       await expect(page).toHaveURL(item.url);
     }
-  });
-
-  test('Reminders expand opens WeekInfo guidance', async ({ page }) => {
-    await page.goto('/reminders');
-    const first = visiblePage(page).locator('.timeline-item').first();
-    await expect(first).toBeVisible();
-    await first.locator('.item-card').click();
-    const guidance = visiblePage(page).getByRole('button', { name: /View visit guidance|View contact guidance|View Tetanus/i });
-    if (await guidance.count()) {
-      await guidance.first().click();
-      await expect(page).toHaveURL(/week-info|vaccination\/tetanus/i);
-    }
+    await page.goto('/profile');
+    await expect(visiblePage(page).getByRole('radiogroup', { name: 'Appearance' })).toBeVisible();
   });
 
   test('greeting still shows registered name on Home', async ({ page }) => {
@@ -119,5 +109,28 @@ test.describe('Complete UI coverage', () => {
     await expect(
       visiblePage(page).getByRole('heading', { name: `Hello, ${MVP_SAMPLE.name}` })
     ).toBeVisible();
+  });
+});
+
+/**
+ * Which reminders are listed depends on today's date, so fix the clock (as in
+ * manual/manual-d) for the test that expects ANC Visit 2.
+ */
+test.describe('Reminder guidance on a fixed date', () => {
+  test.use({ timezoneId: 'Australia/Perth' });
+
+  test.beforeEach(async ({ page }) => {
+    await page.clock.setFixedTime(new Date('2026-10-10T04:00:00Z')); // 12:00 in Perth
+    await completeOnboardingMvp(page);
+  });
+
+  test('Reminders expand opens WeekInfo guidance', async ({ page }) => {
+    await page.goto('/reminders');
+    const visit = visiblePage(page).locator('.timeline-item').filter({ hasText: 'ANC Visit 2' });
+    await expect(visit).toBeVisible();
+    await visit.locator('.item-card').click();
+    await visit.getByRole('button', { name: 'View visit guidance' }).click();
+    await expect(page).toHaveURL(/week-info\?ref=visit2&mode=ANC/i);
+    await expect(visiblePage(page).locator('.stage-title')).toContainText('ANC Visit 2');
   });
 });
