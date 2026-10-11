@@ -32,6 +32,6 @@ app.use(i18n);
 const { applyThemeToDOM } = useTheme();
 applyThemeToDOM();
 
-void router.isReady().then(() => {
-  app.mount('#app');
-});
+router.isReady()
+  .catch((e) => console.error('MaaSathi: initial navigation failed', e))
+  .finally(() => app.mount('#app'));

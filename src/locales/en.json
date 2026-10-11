@@ -723,7 +723,8 @@
     "close_confirm_message": "This pregnancy and its reminders will be moved to your history. This cannot be undone.",
     "reset_data_btn": "Reset all data",
     "reset_confirm_title": "Reset all data?",
-    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device."
+    "reset_confirm_message": "All profile, pregnancy and reminder data will be permanently deleted from this device.",
+    "reset_failed": "Could not reset your data. Please try again."
   },
   "history": {
     "pregnancy_details": "Pregnancy details",

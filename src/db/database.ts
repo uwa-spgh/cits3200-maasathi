@@ -203,7 +203,10 @@ class LocalStorageDriver implements DbDriver {
     let raw: string | null = null;
     try {
       raw = localStorage.getItem(key);
-      return raw ? (JSON.parse(raw) as Record<string, unknown>[]) : [];
+      if (!raw) return [];
+      const parsed: unknown = JSON.parse(raw);
+      if (!Array.isArray(parsed)) throw new Error(`Table ${table} payload is not an array`);
+      return parsed.filter((r): r is Record<string, unknown> => r !== null && typeof r === 'object');
     } catch (e) {
       if (raw !== null) {
         try {
@@ -277,8 +280,14 @@ class SQLiteDriver implements DbDriver {
 
   async init(): Promise<void> {
     const sqlite = new SQLiteConnection(CapacitorSQLite);
-    const db = await sqlite.createConnection('maasathi', false, 'no-encryption', 1, false);
-    await db.open();
+    // The native connection outlives a WebView reload (e.g. after a data reset), so
+    // createConnection would fail with "already exists". Reconcile first, then reuse it.
+    const consistent = (await sqlite.checkConnectionsConsistency()).result;
+    const exists = (await sqlite.isConnection('maasathi', false)).result;
+    const db = consistent && exists
+      ? await sqlite.retrieveConnection('maasathi', false)
+      : await sqlite.createConnection('maasathi', false, 'no-encryption', 1, false);
+    if (!(await db.isDBOpen()).result) await db.open();
     this.db = db;
     // Idempotent: creates missing tables, leaves existing data untouched.
     await db.execute(DDL.join('\n'));
