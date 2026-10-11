@@ -113,13 +113,16 @@
   },
   "emergency": {
     "title": "Emergency",
-    "no_number": "No number saved — add one in Profile",
+    "no_number": "No number saved — tap Edit to add one",
     "nearest_facility_placeholder": "Nearest health facility (offline)",
     "danger_signs": "Relevant danger signs",
     "contacts": {
       "national": "Call emergency services",
+    "edit": "Edit numbers",
+    "number_placeholder": "Phone number",
       "hospital": "Call hospital",
-      "doctor": "Call doctor"
+      "doctor": "Call doctor",
+      "family": "Call family contact"
     }
   },
   "danger_signs": {
@@ -667,7 +670,6 @@
       "item3": "Clean soft cloths",
       "item4": "Baby blanket"
     },
-    "plan_advice_text": "Remember to go over your birth plan with family and others supporting you.",
     "age_label": "Age",
     "age_placeholder": "Enter your age",
     "pregnancy_info": "Current pregnancy",
