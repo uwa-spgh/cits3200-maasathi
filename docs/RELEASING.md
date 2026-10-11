@@ -118,6 +118,12 @@ builds exist for that purpose and cannot cause it.
 **Nightlies stop silently after 60 days** without activity on a public repository. This is GitHub
 behaviour, not a fault in the setup.
 
+**A release tag can be pushed directly, or published by hand.** Both routes work; the workflow
+leaves the tag it is building out of the version it compares against, so `git push origin v1.0.1`
+no longer fails as un-installable against itself. Publishing by hand (Actions → Run workflow)
+remains the way to rebuild an existing tag after a fix, because a re-pushed tag would otherwise
+reuse the workflow from the tagged commit.
+
 **Rolling back to a nightly is refused.** Once `v1.0.1` is installed, its own nightlies are
 rejected with `INSTALL_FAILED_VERSION_DOWNGRADE`. That is intentional; the debug build covers
 unstable testing.

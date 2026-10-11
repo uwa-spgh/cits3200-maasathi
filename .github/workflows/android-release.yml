@@ -145,8 +145,25 @@ jobs:
           today="$(date -u +%Y-%m-%d)"
           event="${{ github.event_name }}"
 
-          # Most recent real release. rc and nightly tags are deliberately skipped.
-          latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+          # The real release tag this run is building, if any. A tag-triggered run
+          # checks out the tag it was started for, so it must be left out of
+          # latest_release below or the run would compare its version against
+          # itself and abort as un-installable.
+          if [[ "$event" == "workflow_dispatch" ]]; then
+            current_tag="$INPUT_TAG"
+          elif [[ "$event" == "push" ]]; then
+            current_tag="$GITHUB_REF_NAME"
+          else
+            current_tag=""
+          fi
+
+          # Most recent real release. rc and nightly tags are deliberately skipped,
+          # as is the tag currently being built.
+          if [[ -n "$current_tag" ]]; then
+            latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | grep -vFx "$current_tag" | sort -V | tail -1 || true)"
+          else
+            latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
+          fi
 
           if [[ "$event" == "schedule" ]]; then
             if [[ -z "$latest_release" ]]; then
