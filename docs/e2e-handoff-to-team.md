@@ -66,16 +66,16 @@ Each row below corresponds to one `test(...)` case. A case can check several pag
 | 12 | Broader UI checks | After opening the Information hub directly, each of its five topic buttons navigates to ANC, PNC, Nutrition, Vaccination, or Danger signs. |
 | 13 | Broader UI checks | Directly opening trimester URLs 1, 2, and 3 displays the ANC trimester container at each requested URL. |
 | 14 | Broader UI checks | PNC displays its container and first topic card. Separately, Vaccination's “About tetanus” button opens the tetanus education page and displays its content container. |
-| 15 | Broader UI checks | Directly opening Danger signs and Emergency displays their page containers; Emergency has at least one visible link with a `tel:` href. No call is placed. |
+| 15 | Broader UI checks | Directly opening Danger signs displays its page container. |
 | 16 | Broader UI checks | Profile menu buttons navigate to Personal information, My pregnancy, My vaccinations, Emergency contacts, and Settings. |
 | 17 | Broader UI checks | The first Reminders item is visible and clicked. If a guidance button is present, clicking it navigates to WeekInfo or tetanus education. |
 | 18 | Broader UI checks | Opening Home after onboarding displays the registered user's greeting. |
 
-The static-route case includes Home, WeekInfo, Emergency, Reminders, Information, ANC, ANC trimester 1, PNC, breastfeeding, Vaccination, tetanus education, Danger signs, Nutrition, Profile, and its five child pages. Onboarding and History Summary are checked separately.
+The static-route case includes Home, WeekInfo, Reminders, Information, ANC, ANC trimester 1, PNC, breastfeeding, Vaccination, tetanus education, Danger signs, Nutrition, Profile, and its five child pages. Onboarding and History Summary are checked separately.
 
 ### Coverage limits
 
-- Direct URL checks do not prove that an in-app button exists. The suite does not test Home → Information hub, ANC → trimester buttons, PNC → breastfeeding, or Danger signs → Emergency as navigation paths.
+- Direct URL checks do not prove that an in-app button exists. The suite does not test Home → Information hub, ANC → trimester buttons, or PNC → breastfeeding as navigation paths.
 - The static-route case checks URLs and the shared `ion-app` container. Breastfeeding currently receives that basic check; its article content is not asserted. The trimester case checks the container, not whether each trimester has the correct distinct content.
 - History Summary can skip when no pregnancy ID is available. The Reminders guidance case can pass without a navigation check when no guidance button is found. A green summary should be read with these limits in mind.
 

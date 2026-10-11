@@ -75,15 +75,10 @@ test.describe('Complete UI coverage', () => {
     await expect(visiblePage(page).locator('.tt-education')).toBeVisible();
   });
 
-  test('Danger signs and Emergency pages render their key content', async ({ page }) => {
+  test('Danger signs page renders its key content', async ({ page }) => {
     await page.goto('/information/danger-signs');
     await expect(page).toHaveURL(/danger-signs/i);
     await expect(visiblePage(page).locator('.danger-signs-page')).toBeVisible();
-
-    await page.goto('/emergency');
-    await expect(page).toHaveURL(/emergency/i);
-    await expect(visiblePage(page).locator('.emergency-page')).toBeVisible();
-    await expect(visiblePage(page).locator('a[href^="tel:"]').first()).toBeVisible();
   });
 
   test('Profile menu opens every child page', async ({ page }) => {

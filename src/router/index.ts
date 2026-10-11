@@ -6,7 +6,6 @@ import { settingsRepo } from '../db/database';
 import { ensureAppData } from '../bootstrap';
 import HomePage from '../views/HomePage.vue';
 import WeekInfoPage from '../views/WeekInfoPage.vue';
-import EmergencyPage from '../views/EmergencyPage.vue';
 import RemindersPage from '../views/RemindersPage.vue';
 import InformationPage from '../views/InformationPage.vue';
 import AncPage from '../views/AncPage.vue';
@@ -35,7 +34,6 @@ const ONBOARDING_ROUTE: RouteRecordRaw = {
 
 const AUX_ROUTES: RouteRecordRaw[] = [
   { path: '/week-info', name: 'WeekInfo', component: WeekInfoPage },
-  { path: '/emergency', name: 'Emergency', component: EmergencyPage },
   { path: '/reminders', name: 'Reminders', component: RemindersPage },
   { path: '/information', name: 'Information', component: InformationPage },
   { path: '/information/anc', name: 'Anc', component: AncPage },

@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { ref } from 'vue';
 import { settingsRepo } from '../db/database';
 
 export interface EmergencyContact {
@@ -6,6 +6,11 @@ export interface EmergencyContact {
   phone: string;
 }
 
+/**
+ * Emergency contact numbers. Only the family contact is used now, as the birth plan's
+ * emergency contact; the other rows are kept so numbers saved by older versions are not lost.
+ * Label keys are storage ids and no longer have translations.
+ */
 const STORAGE_KEY = 'maasathi_emergency_contacts';
 /** Birth plan's emergency contact before it was merged into this list; read once, then cleared. */
 const LEGACY_BIRTH_PLAN_CONTACT_KEY = 'maasathi_birth_plan_emergency_contact';
@@ -26,10 +31,6 @@ const contacts = ref<EmergencyContact[]>(DEFAULT_CONTACTS.map((c) => ({ ...c }))
 const loaded = ref(false);
 
 export function useEmergencyContacts() {
-  const dialableContacts = computed<EmergencyContact[]>(() =>
-    contacts.value.filter((c) => c.phone.trim() !== '')
-  );
-
   async function load(): Promise<void> {
     const saved = await settingsRepo.getJson<EmergencyContact[] | null>(STORAGE_KEY, null);
     const rows = Array.isArray(saved) ? saved : [];
@@ -65,18 +66,12 @@ export function useEmergencyContacts() {
     return contacts.value.find((c) => c.labelKey === labelKey)?.phone ?? '';
   }
 
-  function telHref(phone: string): string {
-    return `tel:${phone.replace(/\s+/g, '')}`;
-  }
-
   return {
     contacts,
     loaded,
-    dialableContacts,
     load,
     save,
     setPhone,
-    phoneOf,
-    telHref
+    phoneOf
   };
 }

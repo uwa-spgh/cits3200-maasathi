@@ -31,21 +31,9 @@ import { informationCircleOutline } from 'ionicons/icons';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { PNC_ROUTINE_CARE_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const { t } = useI18n();
-
-interface Topic {
-  key: string;
-  points: number;
-}
-
-const infoTopics: Topic[] = [
-  { key: 'keep_baby_warm', points: 4 },
-  { key: 'routine_breastfeed', points: 4 },
-  { key: 'keep_baby_clean', points: 4 },
-  { key: 'keep_baby_safe', points: 3 },
-  { key: 'baby_checkups', points: 3 }
-];
 
 /** The displayed points for a topic, in order. ListenList reads these exact strings. */
 function topicPoints(topic: Topic): string[] {

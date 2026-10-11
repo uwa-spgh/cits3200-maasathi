@@ -9,7 +9,6 @@ import { visiblePage } from '../support/visiblePage';
 const STATIC_ROUTES: { path: string; label: string }[] = [
   { path: '/home', label: 'Home' },
   { path: '/week-info', label: 'WeekInfo' },
-  { path: '/emergency', label: 'Emergency' },
   { path: '/reminders', label: 'Reminders' },
   { path: '/information', label: 'Information' },
   { path: '/information/anc', label: 'Anc' },

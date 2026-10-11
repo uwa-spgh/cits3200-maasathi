@@ -43,6 +43,7 @@ import { useI18n } from 'vue-i18n';
 import PageShell from '../components/PageShell.vue';
 import ExpandableCard from '../components/ExpandableCard.vue';
 import ListenList from '../components/ListenList.vue';
+import { ANC_TOPICS as infoTopics, type TopicDef as Topic } from '../content/topics';
 
 const route = useRoute();
 const ionRouter = useIonRouter();
@@ -68,32 +69,6 @@ onMounted(async () => {
     el.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 });
-
-interface Topic {
-  key: string;
-  points: number;
-}
-
-// Layla's authored ANC topics (nutrition is separate in Nutrition section)
-const infoTopics: Topic[] = [
-  { key: 'early_care', points: 2 },
-  { key: 'anc_visits', points: 2 },
-  { key: 'iron_folic_acid', points: 2 },
-  { key: 'calcium_supplementation', points: 2 },
-  { key: 'pre_eclampsia_monitoring', points: 4 },
-  { key: 'physical_activity', points: 2 },
-  { key: 'hydration_rest', points: 2 },
-  { key: 'mental_wellbeing', points: 2 },
-  { key: 'danger_signs_note', points: 1 },
-  { key: 'birth_preparedness', points: 2 },
-  { key: 'skilled_birth_care', points: 2 },
-  { key: 'signs_of_labour', points: 5 },
-  { key: 'labour_go_to_facility', points: 12 },
-  { key: 'maternal_immunisation', points: 2 },
-  { key: 'avoid_harmful_substances', points: 2 },
-  { key: 'hygiene_infection_prevention', points: 2 },
-  { key: 'preparing_baby_care', points: 2 }
-];
 
 /** The translated bullet points for a topic, in order. */
 function topicPoints(topic: Topic): string[] {

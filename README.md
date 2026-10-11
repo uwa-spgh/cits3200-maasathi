@@ -47,7 +47,6 @@ maasathi/
     │   ├── HomePage.vue         # Home screen: greeting, stage-based message card, and the 2x2 action tile grid.
     │   ├── OnboardingPage.vue   # First-launch wizard: language, name, LMP/EDD, TT vaccination history.
     │   ├── WeekInfoPage.vue     # Placeholder page showing information about the current pregnancy/postpartum stage.
-    │   ├── EmergencyPage.vue    # Offline emergency call buttons (tel: links) and the danger-signs checklist.
     │   ├── RemindersPage.vue    # The timeline: today's date, upcoming and past ANC/TT/PNC reminders.
     │   ├── InformationPage.vue  # Information hub: ANC, PNC, danger signs, nutrition, vaccination.
     │   ├── AncPage.vue          # ANC information drill-down: trimester selector.
@@ -82,7 +81,7 @@ maasathi/
     │   ├── useTt.ts             # Bangladesh EPI 5-dose lifetime TT schedule logic: registration options, next-dose calculation from last dose date (+4 weeks), dose recording.
     │   ├── useSchedule.ts       # Generates and persists the reminder timeline (4 ANC visits, TT dose, 4 PNC contacts, milestones) and marks items completed.
     │   ├── useHistory.ts        # Archived pregnancy summaries for the Profile history section.
-    │   ├── useEmergencyContacts.ts # Editable emergency contact numbers used by the Emergency page.
+    │   ├── useEmergencyContacts.ts # Stores the birth plan's emergency contact number.
     │   └── useTheme.ts          # Theme colour presets (normal/contrast/dark) applied via CSS variables.
     │
     ├── db/
@@ -183,6 +182,9 @@ cd android && ./gradlew assembleDebug
 # Or open Android Studio
 npx cap open android
 ```
+
+## Listen audio
+Listen buttons play pre-recorded English and Bengali clips, falling back to the device voice when a clip is missing. See [docs/AUDIO.md](docs/AUDIO.md) for how the clips are generated and kept in step with the text.
 
 ## Update Server
 `server/update_server.py` is a minimal, optional update server, kept small for users with limited mobile data. It is **not hosted yet**, and the app's check (`src/services/updateCheck.ts`) stays off until `UPDATE_CHECK_URL` is set.
