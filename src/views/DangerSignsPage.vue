@@ -22,8 +22,8 @@
         />
       </ExpandableCard>
 
-      <p class="seek-care-note">{{ $t('danger_signs.seek_care_note') }}</p>
-      <div class="seek-care-listen">
+      <div class="seek-care-note">
+        <p>{{ $t('danger_signs.seek_care_note') }}</p>
         <ListenButton size="sm" accent="red" :text="$t('danger_signs.seek_care_note')" />
       </div>
     </div>
@@ -54,13 +54,11 @@ function signTexts(group: { key: string; count: number }): string[] {
   gap: 14px;
 }
 
-.seek-care-listen {
-  display: flex;
-  justify-content: center;
-}
-
 .seek-care-note {
-  margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
   padding: 14px 16px;
   border-radius: 18px;
   background: var(--color-surface, #fff);
@@ -70,5 +68,9 @@ function signTexts(group: { key: string; count: number }): string[] {
   font-weight: 700;
   line-height: 1.4;
   text-align: center;
+}
+
+.seek-care-note p {
+  margin: 0;
 }
 </style>

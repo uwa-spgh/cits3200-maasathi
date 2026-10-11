@@ -122,7 +122,6 @@ Android has since been moved to the Capacitor 8 pins and **builds cleanly**. See
   10 minutes after launch. **Untested on iOS, and the shared-code changes affect it** — read
   [What this means for iOS](#what-this-means-for-ios) before testing. The iOS Simulator does not
   reliably deliver local notifications, so use a physical device.
-- **`tel:` links on the Emergency page** — untested. A simulator or emulator cannot place a call.
 - **Onboarding wizard** — language, name, LMP/EDD, TT vaccination history. Untested on device.
 - **Bengali locale** switching, and the ANC/PNC/vaccination/danger-signs pages. Untested on device.
 
@@ -208,7 +207,6 @@ The APK builds and packages correctly. SQLite has now been confirmed on device
 [Notification behaviour](#notification-behaviour-fixed). Still outstanding:
 
 - **Onboarding wizard on device** — language, name, LMP/EDD, TT vaccination history.
-- **`tel:` links** on the Emergency page — a simulator or emulator cannot place a call.
 - **Bengali locale** end to end, including the ANC/PNC/vaccination/danger-signs pages.
 - **iOS** — none of the Android verification applies, and the notification changes touch shared
   code. The iOS side of this upgrade is still only "builds and renders onboarding". See

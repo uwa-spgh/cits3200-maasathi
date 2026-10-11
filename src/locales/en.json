@@ -113,20 +113,6 @@
     "body_stage": "",
     "body_milestones": ""
   },
-  "emergency": {
-    "title": "Emergency",
-    "no_number": "No number saved — tap Edit to add one",
-    "nearest_facility_placeholder": "Nearest health facility (offline)",
-    "danger_signs": "Relevant danger signs",
-    "edit": "Edit numbers",
-    "number_placeholder": "Phone number",
-    "contacts": {
-      "national": "Call emergency services",
-      "hospital": "Call hospital",
-      "doctor": "Call doctor",
-      "family": "Call family contact"
-    }
-  },
   "danger_signs": {
     "section_title": "Danger signs — go to the health facility immediately",
     "newborn_title": "Newborn danger signs — go to the health facility immediately",
