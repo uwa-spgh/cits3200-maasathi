@@ -118,7 +118,7 @@ cat <<'EOF'
   MAASATHI_KEY_ALIAS="$ALIAS" \
   MAASATHI_KEY_PASSWORD='<key password>' \
   MAASATHI_VERSION_CODE=1 \
-  MAASATHI_VERSION_NAME=1.0.0 \
+  MAASATHI_VERSION_NAME=0.1.2 \
   ./gradlew assembleRelease
 
   # must be app-release.apk, NOT app-release-unsigned.apk

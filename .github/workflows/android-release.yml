@@ -14,6 +14,14 @@ name: Android release
 # Both verify the APK is really signed and 16 KB aligned, and run the Playwright
 # suite as a gate, before anything reaches a release page.
 #
+# The next version is the last release with its patch ticked: after v0.1.1 the
+# nightlies are v0.1.2-nightly-<date>. Nightlies tick that last digit by
+# themselves and never move a minor or major. To step the line up deliberately —
+# to 0.2.0, or 1.0.0 — a maintainer writes that version into a VERSION file at
+# the repo root; nightlies then follow it until it is released, after which the
+# patch tick resumes on its own. A release is cut at a tag of your choosing, so
+# long as it outranks the last release. See docs/RELEASING.md.
+#
 # Required repository secrets (Settings > Secrets and variables > Actions):
 #   ANDROID_KEYSTORE_BASE64   base64 of release.keystore  (`base64 -w0 release.keystore`)
 #   ANDROID_KEYSTORE_PASSWORD store password
@@ -57,8 +65,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # All tags are needed: a nightly derives its version from the most recent
-      # release tag, and counts the nightlies already built for that version.
+      # All tags are needed: the next version is derived from the most recent
+      # release (with VERSION overriding it), a nightly counts the ones already
+      # built for that version, and every build checks it outranks the last release.
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
@@ -145,6 +154,25 @@ jobs:
           today="$(date -u +%Y-%m-%d)"
           event="${{ github.event_name }}"
 
+          # The only thing a nightly does on its own is tick the patch: after
+          # v0.1.1 the nightlies are v0.1.2-nightly-<date>. Stepping the minor or
+          # major is deliberate, and a maintainer expresses it by editing VERSION
+          # (to 0.2.0, or 1.0.0) — nothing moves a major or minor version by
+          # itself. Keeping that one decision in one file is what stops the
+          # nightly line and the release line naming different versions, which is
+          # how the 1.0.0 nightlies once outranked 0.1.x and left every real
+          # release un-installable next to them.
+          #
+          # VERSION is optional. Absent or empty, nightlies just tick the patch.
+          version=""
+          if [[ -f VERSION ]]; then
+            version="$(tr -d '[:space:]' < VERSION)"
+          fi
+          if [[ -n "$version" && ! "$version" =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
+            echo "::error::VERSION must be MAJOR.MINOR.PATCH with no leading v, got '${version}'"
+            exit 1
+          fi
+
           # The real release tag this run is building, if any. A tag-triggered run
           # checks out the tag it was started for, so it must be left out of
           # latest_release below or the run would compare its version against
@@ -165,16 +193,34 @@ jobs:
             latest_release="$(git tag --list | grep -E '^v[0-9]+\.[0-9]+\.[0-9]+$' | sort -V | tail -1 || true)"
           fi
 
-          if [[ "$event" == "schedule" ]]; then
-            if [[ -z "$latest_release" ]]; then
-              # Nothing released yet, so the version under development is 1.0.0
-              # rather than a 0.0.x placeholder.
-              next_major=1; next_minor=0; next_patch=0
+          # The patch tick, and the floor the last release set. With nothing
+          # released yet the line starts at 0.1.0 rather than jumping to 1.0.0.
+          if [[ -n "$latest_release" ]]; then
+            IFS=. read -r lmaj lmin lpat <<< "${latest_release#v}"
+            auto_base="${lmaj}.${lmin}.$(( 10#$lpat + 1 ))"
+            last_release_code=$(( 10#$lmaj * 100000000 + 10#$lmin * 1000000 + 10#$lpat * 10000 + 9999 ))
+          else
+            auto_base="0.1.0"
+            last_release_code=0
+          fi
+
+          # VERSION only takes effect when it is a genuine step up, i.e. strictly
+          # above the last release. Once that release is cut VERSION is spent and
+          # the patch tick resumes, so it never has to be cleared by hand.
+          base="$auto_base"
+          if [[ -n "$version" ]]; then
+            IFS=. read -r vmaj vmin vpat <<< "$version"
+            version_floor_code=$(( 10#$vmaj * 100000000 + 10#$vmin * 1000000 + 10#$vpat * 10000 ))
+            if (( version_floor_code > last_release_code )); then
+              base="$version"
+              echo "VERSION ${version} is ahead of ${latest_release:-nothing released}; building nightlies for it"
             else
-              IFS=. read -r lmaj lmin lpat <<< "${latest_release#v}"
-              next_major="$lmaj"; next_minor="$lmin"; next_patch="$(( lpat + 1 ))"
+              echo "VERSION ${version} is spent (at or below ${latest_release:-nothing released}); ticking the patch to ${base}"
             fi
-            tag="v${next_major}.${next_minor}.${next_patch}-nightly-${today}"
+          fi
+
+          if [[ "$event" == "schedule" ]]; then
+            tag="v${base}-nightly-${today}"
           elif [[ "$event" == "workflow_dispatch" ]]; then
             tag="$INPUT_TAG"
           else
@@ -237,13 +283,28 @@ jobs:
             exit 1
           fi
 
-          # Safety net: whatever we are building must outrank the latest release,
-          # or nobody who installed it will be able to take this build.
+          # A nightly belongs to the line under development: the patch tick, or
+          # the version VERSION is stepping to. The scheduled run builds its tag
+          # from that, so this only ever catches a hand-pushed nightly tag naming
+          # some other version — which is exactly how the line diverged once
+          # before. A release or rc is a deliberate choice of tag, so it is
+          # governed by the installability check below instead.
+          if [[ "$tag" == *-nightly-* ]]; then
+            if [[ "${major}.${minor}.${patch}" != "$base" ]]; then
+              echo "::error::nightly ${tag} is not on the current line (${base}); nightlies tick the patch from the last release, or follow VERSION"
+              exit 1
+            fi
+          fi
+
+          # Whatever we are building must outrank the last release, or nobody who
+          # installed that release could take this build. A version outranks the
+          # last release exactly when its whole number band sits above it, so
+          # comparing the band's floor is enough. Nightlies are already on the
+          # line above; this catches a release or rc chosen below the last one.
           if [[ -n "$latest_release" ]]; then
-            IFS=. read -r pmaj pmin ppat <<< "${latest_release#v}"
-            previous_code=$(( 10#$pmaj * 100000000 + 10#$pmin * 1000000 + 10#$ppat * 10000 + 9999 ))
-            if (( version_code <= previous_code )); then
-              echo "::error::versionCode ${version_code} does not exceed ${latest_release}'s ${previous_code}; nobody could install this"
+            tag_floor_code=$(( 10#$major * 100000000 + 10#$minor * 1000000 + 10#$patch * 10000 ))
+            if (( tag_floor_code < last_release_code )); then
+              echo "::error::${tag} is at or below ${latest_release}; nobody could install this"
               exit 1
             fi
           fi
