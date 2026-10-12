@@ -22,7 +22,7 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
     await page.clock.setFixedTime(TODAY);
   });
 
-  test('LMP determines recorded week, due date, and ANC visit dates', async ({ page }) => {
+  test('32-week LMP registration records ANC dates and shows missed early visits as overdue', async ({ page }) => {
     await completeOnboardingMvp(page, { lmp: FIXED_SAMPLE_LMP });
 
     const [pregnancy] = await rows(page, 'pregnancy');
@@ -35,7 +35,8 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
     const schedule = await rows(page, 'schedule_item');
     const due = (type: string, ref: string) =>
       schedule.find((item) => item.type === type && item.ref === ref)?.due_date;
-    // Registered at 32 weeks: visit 1 is capped at the end of week 16, so it shows as overdue
+    // Late registration retains missed visits. Visit 1 is capped at LMP + 16 weeks,
+    // so it must appear before Visit 2 as overdue rather than as due on registration day.
     expect(due('ANC', 'visit1')).toBe('2026-06-21');
     expect(due('ANC', 'visit2')).toBe('2026-08-30');
     expect(due('ANC', 'visit3')).toBe('2026-10-11');
@@ -44,8 +45,14 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
 
     await page.goto('/reminders');
     const reminders = visiblePage(page);
-    await expect(reminders.locator('.timeline-item').filter({ hasText: 'ANC Visit 2' }))
-      .toContainText('30 Aug 2026');
+    const visit1 = reminders.locator('.timeline-item').filter({ hasText: 'ANC Visit 1' });
+    const visit2 = reminders.locator('.timeline-item').filter({ hasText: 'ANC Visit 2' });
+    await expect(visit1.locator('.date-chip')).toHaveText('21 Jun 2026');
+    await expect(visit1.locator('.due-badge')).toHaveText('111 days overdue');
+    await expect(visit2.locator('.date-chip')).toHaveText('30 Aug 2026');
+    await expect(visit2.locator('.due-badge')).toHaveText('41 days overdue');
+    await expect(reminders.locator('.timeline-item .item-title').first())
+      .toHaveText('ANC Visit 1 (before 16 weeks)');
     await reminders.getByRole('button', { name: /See all upcoming/ }).click();
     await expect(reminders.locator('.timeline-item').filter({ hasText: 'ANC Visit 4' }))
       .toContainText('8 Nov 2026');

@@ -82,13 +82,14 @@ test.describe('pregnancy dates', () => {
 });
 
 /**
- * Bangladesh is UTC+6. At 19:30 UTC on 11 Oct it is already 01:30 on 12 Oct locally, so the
- * first ANC visit must be due on 12 Oct. A `.slice(0, 10)` of the UTC timestamp would say 11 Oct.
+ * Bangladesh is UTC+6. At 19:30 UTC on 11 Oct it is already 01:30 on 12 Oct locally.
+ * Before 16 weeks, Visit 1 uses the local registration date, so both storage and the
+ * reminder must show 12 Oct / Due today. Slicing the UTC timestamp would incorrectly show 11 Oct.
  */
 test.describe('registration day in Bangladesh time', () => {
   test.use({ timezoneId: 'Asia/Dhaka' });
 
-  test('ANC visit 1 is due on the local date of registration', async ({ page }) => {
+  test('before 16 weeks, ANC visit 1 uses the local registration date and displays Due today', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-10-11T19:30:00Z'));
     // About 10 weeks pregnant, so visit 1 falls on the registration day
     // (after week 16 it would be capped at week 16 instead)
@@ -97,5 +98,11 @@ test.describe('registration day in Bangladesh time', () => {
     const items = await readTable<ScheduleRow>(page, 'schedule_item');
     const visit1 = items.find((i) => i.type === 'ANC' && i.ref === 'visit1');
     expect(visit1?.due_date).toBe('2026-10-12');
+
+    await page.goto('/reminders');
+    const reminder = visiblePage(page).locator('.timeline-item').filter({ hasText: 'ANC Visit 1' });
+    await expect(reminder.locator('.item-title')).toHaveText('ANC Visit 1 (before 16 weeks)');
+    await expect(reminder.locator('.date-chip')).toHaveText('12 Oct 2026');
+    await expect(reminder.locator('.due-badge')).toHaveText('Due today');
   });
 });
