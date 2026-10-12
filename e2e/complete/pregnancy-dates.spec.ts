@@ -90,7 +90,9 @@ test.describe('registration day in Bangladesh time', () => {
 
   test('ANC visit 1 is due on the local date of registration', async ({ page }) => {
     await page.clock.setFixedTime(new Date('2026-10-11T19:30:00Z'));
-    await completeOnboardingMvp(page);
+    // About 10 weeks pregnant, so visit 1 falls on the registration day
+    // (after week 16 it would be capped at week 16 instead)
+    await completeOnboardingMvp(page, { lmp: '2026-08-03' });
 
     const items = await readTable<ScheduleRow>(page, 'schedule_item');
     const visit1 = items.find((i) => i.type === 'ANC' && i.ref === 'visit1');

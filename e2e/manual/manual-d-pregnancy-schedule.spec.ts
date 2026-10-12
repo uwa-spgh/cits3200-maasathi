@@ -35,7 +35,8 @@ test.describe('Manual Test D — pregnancy dates and reminders', () => {
     const schedule = await rows(page, 'schedule_item');
     const due = (type: string, ref: string) =>
       schedule.find((item) => item.type === type && item.ref === ref)?.due_date;
-    expect(due('ANC', 'visit1')).toBe('2026-10-10');
+    // Registered at 32 weeks: visit 1 is capped at the end of week 16, so it shows as overdue
+    expect(due('ANC', 'visit1')).toBe('2026-06-21');
     expect(due('ANC', 'visit2')).toBe('2026-08-30');
     expect(due('ANC', 'visit3')).toBe('2026-10-11');
     expect(due('ANC', 'visit4')).toBe('2026-11-08');
