@@ -18,7 +18,7 @@ nightly onto a release without uninstalling and losing their data.
 | GitHub prerelease | always | only if the box is ticked |
 | Installs over | the last release, and each later nightly | its own nightlies |
 
-The version is the last release with its patch ticked, unless `VERSION` steps the line up. See
+The version is the last release with its patch ticked, and only cutting a release moves it. See
 [Nightly builds](#nightly-builds) and [Version numbers](#version-numbers).
 
 ## Publishing a release
@@ -49,19 +49,11 @@ step does nothing; the checked-in placeholder (`code: 1`) never offers an update
 ## Nightly builds
 
 These need no action. A nightly is the last release with its patch ticked: after `v0.1.1` the
-nightlies are `v0.1.2-nightly-<date>`, and they keep ticking the last digit on their own. They never
-move a minor or major version.
+nightlies are `v0.1.2-nightly-<date>`, and they keep ticking the last digit on their own. Nothing
+but a release moves the version: nightlies never change it, and there is no other file to edit.
 
-To advance the line deliberately — to `0.2.0`, or to `1.0.0` — write that version into the `VERSION`
-file at the repo root and commit it:
-
-```bash
-echo 0.2.0 > VERSION
-git commit -am 'start 0.2.0'
-```
-
-Nightlies then follow `VERSION` until it is released, after which the patch tick resumes by itself;
-there is nothing to clear. Leave `VERSION` absent or empty when you are not stepping up.
+To advance the line — to `0.1.2`, `0.2.0`, or `1.0.0` — cut that release (above). Nightlies then tick
+from it, so after `v0.2.0` they become `v0.2.1-nightly-<date>`.
 
 To force a nightly for the current line, push a matching dated tag (the nightly runs are otherwise
 triggered on a schedule):
@@ -151,7 +143,7 @@ unstable testing.
 **A stray high version poisons later releases.** versionCode is compared numerically, so a build
 numbered above the line you are shipping makes every lower release un-installable to everyone who
 took it — this is exactly what the old `1.0.0` nightlies did to `0.1.x`. Versioning is anchored to
-the last release plus `VERSION`, and nightlies off that line are refused, so this cannot recur
+the last release, and nightlies off that line are refused, so this cannot recur
 silently.
 
 **macOS needs a different base64 command.** `base64 -i release.keystore | tr -d '\n'`, not plain
@@ -168,11 +160,11 @@ v0.1.2-nightly-2026-10-02   ->  1020001      installs over v0.1.1
 v0.1.2                      ->  1029999      installs over its own nightlies
 ```
 
-Stepping up — `VERSION` set to `0.2.0`, then cut as `v0.2.0` — moves the whole band:
+Cutting `v0.2.0` moves the whole band, and the nightlies follow it:
 
 ```
-v0.2.0-nightly-2026-10-20   ->  2000001      installs over v0.1.2
 v0.2.0                      ->  2009999
+v0.2.1-nightly-2026-10-20   ->  2010001      installs over v0.2.0
 ```
 
 The workflow validates every bound and fails with a message naming the fix rather than quietly
