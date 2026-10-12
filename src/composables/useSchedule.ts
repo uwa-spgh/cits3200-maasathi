@@ -8,7 +8,6 @@ import { useTt } from './useTt';
 
 const ANC_VISITS = ['visit1', 'visit2', 'visit3', 'visit4'] as const;
 const PNC_CONTACTS = ['contact1', 'contact2', 'contact3', 'contact4'] as const;
-const ANC_VISIT_LATEST_WEEKS = { visit1: 16, visit2: 28, visit3: 32, visit4: 36 } as const;
 
 const items = ref<ScheduleItem[]>([]);
 const activePregnancyId = ref<string | null>(null);
@@ -38,12 +37,13 @@ function desiredItems(
     const lmp = pregnancy.lmp ?? null;
     if (lmp) {
       const registeredDate = isoToLocalDate(pregnancy.registeredAt);
-      const weeksAtRegistration = weeksBetweenIso(lmp, registeredDate);
+      const visit1Cap = addDaysIso(lmp, 16 * 7); // end of week 16
+
       for (const visit of ANC_VISITS) {
-        if (weeksAtRegistration >= ANC_VISIT_LATEST_WEEKS[visit]) continue;
         const dueDate =
           visit === 'visit1'
-            ? registeredDate
+            // registration date, but never later than week 16
+            ? (registeredDate < visit1Cap ? registeredDate : visit1Cap)
             : addDaysIso(lmp, ANC_VISIT_TARGET_WEEKS[visit] * 7);
         result.push({
           id: itemId(pregnancy.id, 'ANC', visit),
