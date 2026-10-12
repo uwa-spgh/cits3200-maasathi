@@ -32,7 +32,7 @@ function expectAncFromLmp(items: ScheduleItem[], registeredAt: string) {
     'visit3',
     'visit4'
   ]);
-  expect(byRef(items, 'ANC', 'visit1').dueDate).toBe(registeredAt.slice(0, 10));
+  expect(byRef(items, 'ANC', 'visit1').dueDate).toBe('2026-04-23'); // LMP + 16 weeks
   expect(byRef(items, 'ANC', 'visit2').dueDate).toBe('2026-07-02'); // LMP + 26 weeks
   expect(byRef(items, 'ANC', 'visit3').dueDate).toBe('2026-08-13'); // LMP + 32 weeks
   expect(byRef(items, 'ANC', 'visit4').dueDate).toBe('2026-09-10'); // LMP + 36 weeks
