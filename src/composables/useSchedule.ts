@@ -3,11 +3,12 @@ import { pregnancyRepo, scheduleRepo } from '../db/database';
 import type { Pregnancy, ScheduleItem } from '../db/schemas';
 import { t } from '../i18n';
 import { cancelItemReminders, scheduleItemReminders } from '../services/notifications';
-import { ANC_VISIT_TARGET_WEEKS, PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, isoToLocalDate, todayIso } from '../utils/date';
+import { ANC_VISIT_TARGET_WEEKS, PNC_CONTACT_OFFSET_DAYS, addDaysIso, eddFromLmp, isoToLocalDate, todayIso, weeksBetweenIso } from '../utils/date';
 import { useTt } from './useTt';
 
 const ANC_VISITS = ['visit1', 'visit2', 'visit3', 'visit4'] as const;
 const PNC_CONTACTS = ['contact1', 'contact2', 'contact3', 'contact4'] as const;
+const ANC_VISIT_LATEST_WEEKS = { visit1: 16, visit2: 28, visit3: 32, visit4: 36 } as const;
 
 const items = ref<ScheduleItem[]>([]);
 const activePregnancyId = ref<string | null>(null);
@@ -37,7 +38,9 @@ function desiredItems(
     const lmp = pregnancy.lmp ?? null;
     if (lmp) {
       const registeredDate = isoToLocalDate(pregnancy.registeredAt);
+      const weeksAtRegistration = weeksBetweenIso(lmp, registeredDate);
       for (const visit of ANC_VISITS) {
+        if (weeksAtRegistration >= ANC_VISIT_LATEST_WEEKS[visit]) continue;
         const dueDate =
           visit === 'visit1'
             ? registeredDate

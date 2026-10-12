@@ -35,6 +35,11 @@ export function daysBetween(fromIso: string, toIsoB: string): number {
   return Math.round((to.getTime() - from.getTime()) / 86400000);
 }
 
+export function weeksBetweenIso(fromIso: string, toIso: string): number {
+  const ms = Date.parse(`${toIso}T00:00:00Z`) - Date.parse(`${fromIso}T00:00:00Z`);
+  return ms / (7 * 24 * 60 * 60 * 1000);
+}
+
 export const PREGNANCY_DURATION_DAYS = 280;
 
 export function eddFromLmp(lmpIso: string): string {
