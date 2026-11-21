@@ -45,14 +45,6 @@ on:
         required: false
         default: false
         type: boolean
-  schedule:
-    # 02:17 UTC daily. GitHub cron is UTC, and deliberately off the hour because
-    # everyone schedules :00 and the queue is throttled.
-    #
-    # Scheduled workflows only run for workflow files on the default branch, and
-    # GitHub disables them on public repositories after 60 days without activity.
-    # If nightlies simply stop, check that before suspecting the build.
-    - cron: '17 2 * * *'
 
 permissions:
   contents: write
